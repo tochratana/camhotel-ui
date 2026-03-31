@@ -12,22 +12,20 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "light";
+
+    const storedTheme = localStorage.getItem("theme") as Theme | null;
+    if (storedTheme === "dark" || storedTheme === "light") return storedTheme;
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
   const isAnimating = useRef(false);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme") as Theme | null;
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-      .matches
-      ? "dark"
-      : "light";
-    const initialTheme = storedTheme || systemTheme;
-    setTheme(initialTheme);
     document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(initialTheme);
-    setMounted(true);
-  }, []);
+    document.documentElement.classList.add(theme);
+  }, [theme]);
 
   const toggleTheme = useCallback((e?: React.MouseEvent) => {
     if (isAnimating.current) return;

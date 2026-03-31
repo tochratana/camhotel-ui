@@ -1,4 +1,4 @@
-import {footerData} from "@/lib/data/menuData";
+import {footerData} from "@/data/menuData";
 import Link from "next/link";
 
 export default function Footer() {

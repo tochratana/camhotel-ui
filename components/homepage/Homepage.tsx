@@ -1,6 +1,6 @@
 import Image from "next/image";
 import {ChevronDown, ConciergeBell, Mail, MapPin, Phone, Utensils} from "lucide-react";
-import {roomCard} from "@/lib/data/roomCard";
+import {roomCard} from "@/data/roomCard";
 import RoomCard from "@/components/homepage/RoomCard";
 
 export default function Homepage() {

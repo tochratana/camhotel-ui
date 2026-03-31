@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import {ThemeProvider} from "@/components/theme/ThemeProvider";
+import StoreProvider from "@/components/provider/StoreProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -32,11 +33,13 @@ export default function RootLayout({
             suppressHydrationWarning
         >
         <body className="min-h-full flex flex-col bg-background text-foreground">
-        <ThemeProvider>
-            <Navbar/>
-            {children}
-            <Footer/>
-        </ThemeProvider>
+        <StoreProvider>
+            <ThemeProvider>
+                <Navbar/>
+                {children}
+                <Footer/>
+            </ThemeProvider>
+        </StoreProvider>
         </body>
         </html>
     );

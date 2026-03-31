@@ -16,8 +16,9 @@ export default function ThemeToggle() {
                  border border-slate-200 dark:border-slate-600
                  transition-colors duration-200
                  group overflow-hidden"
-      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-      title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+      aria-label="Toggle theme"
+      title="Toggle theme"
+      suppressHydrationWarning
     >
       {/* Sun icon */}
       <Sun
