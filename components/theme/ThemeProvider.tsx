@@ -1,0 +1,99 @@
+"use client";
+
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+
+type Theme = "light" | "dark";
+
+type ThemeContextType = {
+  theme: Theme;
+  toggleTheme: (e?: React.MouseEvent) => void;
+};
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>("light");
+  const [mounted, setMounted] = useState(false);
+  const isAnimating = useRef(false);
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") as Theme | null;
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+      .matches
+      ? "dark"
+      : "light";
+    const initialTheme = storedTheme || systemTheme;
+    setTheme(initialTheme);
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(initialTheme);
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = useCallback((e?: React.MouseEvent) => {
+    if (isAnimating.current) return;
+    
+    const newTheme = theme === "light" ? "dark" : "light";
+
+    // If the View Transition API is supported, use it for a smooth diagonal sweep
+    if (document.startViewTransition && e) {
+      isAnimating.current = true;
+
+      // Get click coordinates (from the toggle button)
+      const x = e.clientX;
+      const y = e.clientY;
+
+      // Calculate the max radius needed to cover the entire screen
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      const transition = document.startViewTransition(() => {
+        document.documentElement.classList.remove("light", "dark");
+        document.documentElement.classList.add(newTheme);
+        setTheme(newTheme);
+        localStorage.setItem("theme", newTheme);
+      });
+
+      transition.ready.then(() => {
+        document.documentElement.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${endRadius}px at ${x}px ${y}px)`,
+            ],
+          },
+          {
+            duration: 700,
+            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+            pseudoElement: "::view-transition-new(root)",
+          }
+        );
+      });
+
+      transition.finished.then(() => {
+        isAnimating.current = false;
+      });
+    } else {
+      // Fallback: no animation
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(newTheme);
+      setTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    }
+  }, [theme]);
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("useTheme must be used within ThemeProvider");
+  }
+  return context;
+}

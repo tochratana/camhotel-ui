@@ -4,10 +4,10 @@ import Link from "next/link";
 export default function Footer() {
     const currentYear = new Date().getFullYear()
     return (
-        <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+        <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0a0c16]">
             <div className="flex flex-col md:flex-row justify-between items-center px-8 py-12 w-full mx-auto max-w-7xl">
                 <div className="mb-8 md:mb-0">
-                    <div className="font-sans font-bold text-lg text-blue-900 dark:text-blue-100 mb-2">
+                    <div className="font-sans font-bold text-lg text-blue-900 dark:text-blue-200 mb-2">
                         CamHotel
                     </div>
                     <p className="font-sans text-xs text-slate-500 dark:text-slate-400">
