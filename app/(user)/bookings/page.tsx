@@ -1,4 +1,4 @@
-export default function page(){
+export default function Page(){
     return(
         <>
             <h2>Booking page</h2>
