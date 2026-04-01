@@ -1,7 +1,5 @@
-export default function Page(){
-    return(
-        <>
-            <h2>Facility page</h2>
-        </>
-    )
+import FacilityBlock from "@/components/facilities/FacilityBlock";
+
+export default function Page() {
+    return <FacilityBlock/>
 }
