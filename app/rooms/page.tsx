@@ -1,7 +1,7 @@
-export default function Page(){
-    return(
-        <>
-            <h2>Room page</h2>
-        </>
+import RoomListUser from "@/components/rooms/RoomListUser";
+
+export default function Page() {
+    return (
+        <RoomListUser/>
     )
 }
