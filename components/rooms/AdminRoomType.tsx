@@ -17,7 +17,7 @@ export default function AdminRoomType() {
                         </div>
                         <div>
                             <div
-                                className="text-lg font-black text-[#00236f] dark:text-blue-300 font-['Manrope']">CamHotel
+                                className="text-lg font-black text-[#00236f] dark:text-blue-300 ">CamHotel
                             </div>
                             <div
                                 className="text-[10px] uppercase tracking-widest font-bold text-[#757682] dark:text-slate-400">Premium
@@ -28,33 +28,33 @@ export default function AdminRoomType() {
                 </div>
 
                 <nav className="flex-1 space-y-1 overflow-y-auto">
-                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1 font-['Manrope'] text-sm font-semibold"
+                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1  text-sm font-semibold"
                        href="#">
                         <span className="material-symbols-outlined align-middle">dashboard</span>
                         Dashboard
                     </a>
-                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1 font-['Manrope'] text-sm font-semibold"
+                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1  text-sm font-semibold"
                        href="#">
                         <span className="material-symbols-outlined align-middle">bed</span>
                         Rooms
                     </a>
-                    <a className="flex items-center gap-3 bg-white dark:bg-slate-900 text-[#00236f] dark:text-blue-300 shadow-sm border border-slate-100 dark:border-slate-800 rounded-lg my-1 mx-2 px-4 py-2.5 font-['Manrope'] text-sm font-semibold transition-transform duration-200 hover:translate-x-1"
+                    <a className="flex items-center gap-3 bg-white dark:bg-slate-900 text-[#00236f] dark:text-blue-300 shadow-sm border border-slate-100 dark:border-slate-800 rounded-lg my-1 mx-2 px-4 py-2.5  text-sm font-semibold transition-transform duration-200 hover:translate-x-1"
                        href="#">
                         <span className="material-symbols-outlined align-middle"
                               style={{fontVariationSettings: "'FILL' 1"}}>category</span>
                         Room Types
                     </a>
-                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1 font-['Manrope'] text-sm font-semibold"
+                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1  text-sm font-semibold"
                        href="#">
                         <span className="material-symbols-outlined align-middle">event_available</span>
                         Bookings
                     </a>
-                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1 font-['Manrope'] text-sm font-semibold"
+                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1  text-sm font-semibold"
                        href="#">
                         <span className="material-symbols-outlined align-middle">payments</span>
                         Payments
                     </a>
-                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1 font-['Manrope'] text-sm font-semibold"
+                    <a className="flex items-center gap-3 mx-2 my-1 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-transform duration-200 hover:translate-x-1  text-sm font-semibold"
                        href="#">
                         <span className="material-symbols-outlined align-middle">group</span>
                         Users
@@ -62,12 +62,12 @@ export default function AdminRoomType() {
                 </nav>
 
                 <div className="px-4 mt-auto border-t border-[#c5c5d3]/30 dark:border-slate-800 pt-4">
-                    <a className="flex items-center gap-3 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-all text-sm font-semibold font-['Manrope']"
+                    <a className="flex items-center gap-3 px-4 py-2.5 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 rounded-lg transition-all text-sm font-semibold "
                        href="#">
                         <span className="material-symbols-outlined align-middle">settings</span>
                         Settings
                     </a>
-                    <a className="flex items-center gap-3 px-4 py-2.5 text-[#ba1a1a] dark:text-red-400 hover:bg-[#ffdad6]/40 dark:hover:bg-red-900/20 rounded-lg transition-all text-sm font-semibold font-['Manrope']"
+                    <a className="flex items-center gap-3 px-4 py-2.5 text-[#ba1a1a] dark:text-red-400 hover:bg-[#ffdad6]/40 dark:hover:bg-red-900/20 rounded-lg transition-all text-sm font-semibold "
                        href="#">
                         <span className="material-symbols-outlined align-middle">logout</span>
                         Logout
@@ -92,7 +92,7 @@ export default function AdminRoomType() {
                 <div
                     className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 md:mb-10 gap-4 sm:gap-0">
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-extrabold text-[#1a1b21] dark:text-white tracking-tight mb-2 font-['Manrope']">
+                        <h1 className="text-2xl md:text-3xl font-extrabold text-[#1a1b21] dark:text-white tracking-tight mb-2 ">
                             Room Types Management
                         </h1>
                         <p className="text-[#444651] dark:text-slate-400 font-['Inter'] text-sm">
@@ -115,7 +115,7 @@ export default function AdminRoomType() {
                             Categories
                         </div>
                         <div
-                            className="text-2xl md:text-3xl font-['Manrope'] font-extrabold text-[#00236f] dark:text-blue-400">04
+                            className="text-2xl md:text-3xl  font-extrabold text-[#00236f] dark:text-blue-400">04
                         </div>
                     </div>
                     <div
@@ -125,7 +125,7 @@ export default function AdminRoomType() {
                             Base Price
                         </div>
                         <div
-                            className="text-2xl md:text-3xl font-['Manrope'] font-extrabold text-[#00236f] dark:text-blue-400">$425
+                            className="text-2xl md:text-3xl  font-extrabold text-[#00236f] dark:text-blue-400">$425
                         </div>
                     </div>
                     <div
@@ -135,7 +135,7 @@ export default function AdminRoomType() {
                             High
                         </div>
                         <div
-                            className="text-2xl md:text-3xl font-['Manrope'] font-extrabold text-[#00236f] dark:text-blue-400">08
+                            className="text-2xl md:text-3xl  font-extrabold text-[#00236f] dark:text-blue-400">08
                         </div>
                     </div>
                     <div
@@ -145,7 +145,7 @@ export default function AdminRoomType() {
                             Status
                         </div>
                         <div
-                            className="text-2xl md:text-3xl font-['Manrope'] font-extrabold text-[#f39461] dark:text-amber-500">100%
+                            className="text-2xl md:text-3xl  font-extrabold text-[#f39461] dark:text-amber-500">100%
                         </div>
                     </div>
                 </div>
@@ -185,7 +185,7 @@ export default function AdminRoomType() {
                                         </div>
                                         <div>
                                             <div
-                                                className="font-['Manrope'] font-bold text-[#1a1b21] dark:text-white">Single
+                                                className=" font-bold text-[#1a1b21] dark:text-white">Single
                                             </div>
                                             <div className="text-xs text-[#444651] dark:text-slate-400">Standard
                                                 Comfort
@@ -201,7 +201,7 @@ export default function AdminRoomType() {
                                 <td className="px-4 md:px-6 py-5">
                                     <div className="flex items-baseline gap-1">
                                         <span
-                                            className="text-lg font-['Manrope'] font-bold text-[#00236f] dark:text-blue-400">$120</span>
+                                            className="text-lg  font-bold text-[#00236f] dark:text-blue-400">$120</span>
                                         <span
                                             className="text-[10px] text-[#757682] dark:text-slate-500 font-bold">/NIGHT</span>
                                     </div>
@@ -241,7 +241,7 @@ export default function AdminRoomType() {
                                         </div>
                                         <div>
                                             <div
-                                                className="font-['Manrope'] font-bold text-[#1a1b21] dark:text-white">Double
+                                                className=" font-bold text-[#1a1b21] dark:text-white">Double
                                             </div>
                                             <div className="text-xs text-[#444651] dark:text-slate-400">Shared Luxury
                                             </div>
@@ -255,7 +255,7 @@ export default function AdminRoomType() {
                                 <td className="px-4 md:px-6 py-5">
                                     <div className="flex items-baseline gap-1">
                                         <span
-                                            className="text-lg font-['Manrope'] font-bold text-[#00236f] dark:text-blue-400">$210</span>
+                                            className="text-lg  font-bold text-[#00236f] dark:text-blue-400">$210</span>
                                         <span
                                             className="text-[10px] text-[#757682] dark:text-slate-500 font-bold">/NIGHT</span>
                                     </div>
@@ -295,7 +295,7 @@ export default function AdminRoomType() {
                                         </div>
                                         <div>
                                             <div
-                                                className="font-['Manrope'] font-bold text-[#1a1b21] dark:text-white">Suite
+                                                className=" font-bold text-[#1a1b21] dark:text-white">Suite
                                             </div>
                                             <div className="text-xs text-[#444651] dark:text-slate-400">Executive Tier
                                             </div>
@@ -310,7 +310,7 @@ export default function AdminRoomType() {
                                 <td className="px-4 md:px-6 py-5">
                                     <div className="flex items-baseline gap-1">
                                         <span
-                                            className="text-lg font-['Manrope'] font-bold text-[#00236f] dark:text-blue-400">$450</span>
+                                            className="text-lg  font-bold text-[#00236f] dark:text-blue-400">$450</span>
                                         <span
                                             className="text-[10px] text-[#757682] dark:text-slate-500 font-bold">/NIGHT</span>
                                     </div>
@@ -350,7 +350,7 @@ export default function AdminRoomType() {
                                         </div>
                                         <div>
                                             <div
-                                                className="font-['Manrope'] font-bold text-[#4b1c00] dark:text-amber-500">Penthouse
+                                                className=" font-bold text-[#4b1c00] dark:text-amber-500">Penthouse
                                             </div>
                                             <div
                                                 className="text-[10px] bg-[#ffdbcb] dark:bg-amber-900/40 text-[#773205] dark:text-amber-200 px-1.5 py-0.5 rounded font-bold uppercase inline-block mt-1 border border-transparent dark:border-amber-500/20">VVIP
@@ -367,7 +367,7 @@ export default function AdminRoomType() {
                                 <td className="px-4 md:px-6 py-5">
                                     <div className="flex items-baseline gap-1">
                                         <span
-                                            className="text-lg font-['Manrope'] font-bold text-[#4b1c00] dark:text-amber-500">$1,250</span>
+                                            className="text-lg  font-bold text-[#4b1c00] dark:text-amber-500">$1,250</span>
                                         <span
                                             className="text-[10px] text-[#757682] dark:text-slate-500 font-bold">/NIGHT</span>
                                     </div>
@@ -423,7 +423,7 @@ export default function AdminRoomType() {
                     <div
                         className="bg-[#00236f]/5 dark:bg-blue-900/10 rounded-2xl p-6 md:p-8 border border-[#00236f]/5 dark:border-blue-500/10 relative overflow-hidden">
                         <div className="relative z-10">
-                            <h3 className="font-['Manrope'] font-extrabold text-[#00236f] dark:text-blue-400 text-lg md:text-xl mb-3">Dynamic
+                            <h3 className=" font-extrabold text-[#00236f] dark:text-blue-400 text-lg md:text-xl mb-3">Dynamic
                                 Pricing Insight</h3>
                             <p className="text-[#444651] dark:text-slate-300 text-sm leading-relaxed mb-6">
                                 Based on your current data, the <strong
@@ -450,7 +450,7 @@ export default function AdminRoomType() {
                                 <span
                                     className="material-symbols-outlined text-[#4b1c00] dark:text-amber-500 align-middle">lightbulb</span>
                             </div>
-                            <h3 className="font-['Manrope'] font-bold text-[#1a1b21] dark:text-white">Curator&#39;s
+                            <h3 className=" font-bold text-[#1a1b21] dark:text-white">Curator&#39;s
                                 Tip</h3>
                         </div>
                         <p className="text-[#444651] dark:text-slate-400 text-sm italic leading-relaxed">

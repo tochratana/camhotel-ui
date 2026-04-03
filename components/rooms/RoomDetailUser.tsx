@@ -23,7 +23,7 @@ export default function RoomDetailUser() {
                                 <p className="text-[#b6c4ff] dark:text-blue-300 font-['Inter'] text-xs md:text-sm uppercase tracking-[0.2em] mb-2 font-bold">
                                     Signature Collection
                                 </p>
-                                <h1 className="text-white text-4xl md:text-5xl font-extrabold tracking-tight font-['Manrope']">
+                                <h1 className="text-white text-4xl md:text-5xl font-extrabold tracking-tight ">
                                     Deluxe Ocean Suite
                                 </h1>
                             </div>
@@ -44,30 +44,30 @@ export default function RoomDetailUser() {
                                 <div>
                                     <p className="text-[#444651] dark:text-slate-400 font-['Inter'] text-[0.65rem] md:text-xs uppercase tracking-widest mb-1 font-semibold">Room
                                         Number</p>
-                                    <p className="text-lg md:text-xl font-bold text-[#1a1b21] dark:text-slate-100 font-['Manrope']">402-A</p>
+                                    <p className="text-lg md:text-xl font-bold text-[#1a1b21] dark:text-slate-100 ">402-A</p>
                                 </div>
                                 <div>
                                     <p className="text-[#444651] dark:text-slate-400 font-['Inter'] text-[0.65rem] md:text-xs uppercase tracking-widest mb-1 font-semibold">Room
                                         Type</p>
-                                    <p className="text-lg md:text-xl font-bold text-[#1a1b21] dark:text-slate-100 font-['Manrope']">Deluxe
+                                    <p className="text-lg md:text-xl font-bold text-[#1a1b21] dark:text-slate-100 ">Deluxe
                                         Suite</p>
                                 </div>
                                 <div>
                                     <p className="text-[#444651] dark:text-slate-400 font-['Inter'] text-[0.65rem] md:text-xs uppercase tracking-widest mb-1 font-semibold">Floor</p>
-                                    <p className="text-lg md:text-xl font-bold text-[#1a1b21] dark:text-slate-100 font-['Manrope']">12th
+                                    <p className="text-lg md:text-xl font-bold text-[#1a1b21] dark:text-slate-100 ">12th
                                         Floor</p>
                                 </div>
                                 <div>
                                     <p className="text-[#444651] dark:text-slate-400 font-['Inter'] text-[0.65rem] md:text-xs uppercase tracking-widest mb-1 font-semibold">Base
                                         Rate</p>
-                                    <p className="text-lg md:text-xl font-bold text-[#1a1b21] dark:text-slate-100 font-['Manrope']">$540
+                                    <p className="text-lg md:text-xl font-bold text-[#1a1b21] dark:text-slate-100 ">$540
                                         / Night</p>
                                 </div>
                             </div>
 
                             {/* Description */}
                             <div className="space-y-4 md:space-y-6">
-                                <h2 className="text-2xl md:text-3xl font-bold text-[#1e3a8a] dark:text-blue-300 font-['Manrope']">Architectural
+                                <h2 className="text-2xl md:text-3xl font-bold text-[#1e3a8a] dark:text-blue-300 ">Architectural
                                     Sophistication</h2>
                                 <p className="text-[#444651] dark:text-slate-300 leading-relaxed text-base md:text-lg max-w-3xl">
                                     Designed with an emphasis on space and natural light, the Deluxe Ocean Suite offers
@@ -183,7 +183,7 @@ export default function RoomDetailUser() {
                                         <div>
                                             <p className="text-[#444651] dark:text-slate-400 font-['Inter'] text-[0.65rem] md:text-xs uppercase tracking-widest mb-1 font-semibold">Total
                                                 for 1 night</p>
-                                            <h4 className="text-3xl md:text-4xl font-black text-[#1e3a8a] dark:text-blue-300 font-['Manrope']">$540.00</h4>
+                                            <h4 className="text-3xl md:text-4xl font-black text-[#1e3a8a] dark:text-blue-300 ">$540.00</h4>
                                         </div>
                                         <span
                                             className="bg-[#dce1ff] dark:bg-blue-900/60 text-[#00164e] dark:text-blue-200 text-[0.6rem] md:text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider border border-transparent dark:border-blue-800/50">

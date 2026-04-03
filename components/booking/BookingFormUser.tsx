@@ -4,12 +4,12 @@ import Image from "next/image";
 export default function BookingFormUser() {
     return (
         <div
-            className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-300">
+            className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 antialiased transition-colors duration-300">
             <div className="pt-32 pb-24 px-6 md:px-12 max-w-screen-2xl mx-auto">
 
                 {/* Page Header */}
                 <div className="mb-14">
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-[#00236f] dark:text-blue-300 tracking-tight mb-4 font-['Manrope']">
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-[#00236f] dark:text-blue-300 tracking-tight mb-4 ">
                         Book Your Stay
                     </h1>
                     <p className="text-[#444651] dark:text-slate-300 max-w-2xl text-lg leading-relaxed">
@@ -30,7 +30,7 @@ export default function BookingFormUser() {
                                 <div
                                     className="w-10 h-10 rounded-full bg-[#dce1ff] dark:bg-blue-900/50 flex items-center justify-center text-[#00164e] dark:text-blue-200 font-bold shrink-0">1
                                 </div>
-                                <h2 className="text-2xl font-bold text-[#1a1b21] dark:text-white font-['Manrope']">Personal
+                                <h2 className="text-2xl font-bold text-[#1a1b21] dark:text-white ">Personal
                                     Information</h2>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -74,7 +74,7 @@ export default function BookingFormUser() {
                                 <div
                                     className="w-10 h-10 rounded-full bg-[#dce1ff] dark:bg-blue-900/50 flex items-center justify-center text-[#00164e] dark:text-blue-200 font-bold shrink-0">2
                                 </div>
-                                <h2 className="text-2xl font-bold text-[#1a1b21] dark:text-white font-['Manrope']">Stay
+                                <h2 className="text-2xl font-bold text-[#1a1b21] dark:text-white ">Stay
                                     Details</h2>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -134,7 +134,7 @@ export default function BookingFormUser() {
                                 <div
                                     className="w-10 h-10 rounded-full bg-[#dce1ff] dark:bg-blue-900/50 flex items-center justify-center text-[#00164e] dark:text-blue-200 font-bold shrink-0">3
                                 </div>
-                                <h2 className="text-2xl font-bold text-[#1a1b21] dark:text-white font-['Manrope']">Special
+                                <h2 className="text-2xl font-bold text-[#1a1b21] dark:text-white ">Special
                                     Requests</h2>
                             </div>
                             <div className="flex flex-col space-y-2">
@@ -183,7 +183,7 @@ export default function BookingFormUser() {
                             </div>
 
                             <div className="p-6 md:p-8 space-y-6">
-                                <h3 className="text-xl font-bold text-[#1a1b21] dark:text-white font-['Manrope']">Booking
+                                <h3 className="text-xl font-bold text-[#1a1b21] dark:text-white ">Booking
                                     Summary</h3>
                                 <div className="space-y-4">
                                     <div
@@ -212,7 +212,7 @@ export default function BookingFormUser() {
                                     <div>
                                         <p className="text-[0.65rem] font-bold uppercase tracking-tighter text-[#757682] dark:text-slate-400 mb-1">Total
                                             Amount</p>
-                                        <p className="text-2xl md:text-3xl font-extrabold text-[#00236f] dark:text-blue-400 tracking-tight font-['Manrope']">$1,724.80</p>
+                                        <p className="text-2xl md:text-3xl font-extrabold text-[#00236f] dark:text-blue-400 tracking-tight ">$1,724.80</p>
                                     </div>
                                     <span
                                         className="material-symbols-outlined text-[#1e3a8a] dark:text-blue-500 text-4xl align-middle">payments</span>

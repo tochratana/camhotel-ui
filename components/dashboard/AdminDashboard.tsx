@@ -4,20 +4,20 @@ import Image from "next/image";
 export default function AdminDashboard() {
     return (
         <div
-            className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-300 flex flex-col md:flex-row">
+            className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 antialiased transition-colors duration-300 flex flex-col md:flex-row">
 
             {/* SideNavBar - Hidden on Mobile */}
             <aside
                 className="hidden md:flex flex-col bg-[#faf8ff] dark:bg-slate-950 h-screen w-64 fixed left-0 top-0 border-r border-[#c5c5d3]/20 dark:border-slate-800 pt-20 pb-6 z-40 transition-colors duration-300">
                 <div className="px-6 mb-8 mt-4">
                     <div className="bg-[#00236f]/5 dark:bg-blue-900/20 p-4 rounded-xl">
-                        <p className="text-[#00236f] dark:text-blue-300 font-black text-lg font-['Manrope']">CamHotel</p>
-                        <p className="text-[#1e3a8a]/70 dark:text-blue-400/70 text-xs font-semibold font-['Manrope']">Premium
+                        <p className="text-[#00236f] dark:text-blue-300 font-black text-lg ">CamHotel</p>
+                        <p className="text-[#1e3a8a]/70 dark:text-blue-400/70 text-xs font-semibold ">Premium
                             Management</p>
                     </div>
                 </div>
 
-                <nav className="flex-1 px-4 space-y-1 font-['Manrope'] text-sm font-semibold overflow-y-auto">
+                <nav className="flex-1 px-4 space-y-1  text-sm font-semibold overflow-y-auto">
                     <a className="flex items-center gap-3 bg-white dark:bg-slate-900 text-[#1e3a8a] dark:text-blue-300 shadow-sm border border-slate-100 dark:border-slate-800 rounded-lg py-2.5 px-3 my-1 transition-all"
                        href="#">
                         <span className="material-symbols-outlined text-[#1e3a8a] dark:text-blue-400 align-middle"
@@ -52,12 +52,12 @@ export default function AdminDashboard() {
                 </nav>
 
                 <div className="px-4 mt-auto space-y-1">
-                    <a className="flex items-center gap-3 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 py-2.5 px-3 rounded-lg transition-all font-['Manrope'] text-sm font-semibold"
+                    <a className="flex items-center gap-3 text-[#555d7e] dark:text-slate-400 hover:bg-[#e9e7ef] dark:hover:bg-slate-800/80 py-2.5 px-3 rounded-lg transition-all  text-sm font-semibold"
                        href="#">
                         <span className="material-symbols-outlined align-middle">settings</span>
                         Settings
                     </a>
-                    <a className="flex items-center gap-3 text-[#ba1a1a] dark:text-red-400 hover:bg-[#ba1a1a]/10 dark:hover:bg-red-900/20 py-2.5 px-3 rounded-lg transition-all font-['Manrope'] text-sm font-semibold"
+                    <a className="flex items-center gap-3 text-[#ba1a1a] dark:text-red-400 hover:bg-[#ba1a1a]/10 dark:hover:bg-red-900/20 py-2.5 px-3 rounded-lg transition-all  text-sm font-semibold"
                        href="#">
                         <span className="material-symbols-outlined align-middle">logout</span>
                         Logout
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
                 <div
                     className="mb-8 md:mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-0">
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-extrabold text-[#1a1b21] dark:text-white tracking-tight font-['Manrope']">
+                        <h1 className="text-2xl md:text-3xl font-extrabold text-[#1a1b21] dark:text-white tracking-tight ">
                             Management Dashboard
                         </h1>
                         <p className="text-[#757682] dark:text-slate-400 mt-1 font-['Inter'] text-sm md:text-base">
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
                                 className="material-symbols-outlined text-[#00236f]/40 dark:text-blue-400/50 align-middle">bed</span>
                         </div>
                         <div>
-                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white font-['Manrope']">128</p>
+                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white ">128</p>
                             <p className="text-xs text-[#757682] dark:text-slate-400 mt-1">Across 4 wings</p>
                         </div>
                     </div>
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
                                 className="material-symbols-outlined text-[#00236f]/40 dark:text-blue-400/50 align-middle">event_note</span>
                         </div>
                         <div>
-                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white font-['Manrope']">42</p>
+                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white ">42</p>
                             <div className="flex items-center gap-1 mt-1">
                                 <span
                                     className="material-symbols-outlined text-xs text-green-600 dark:text-green-400 align-middle">trending_up</span>
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
                                 className="material-symbols-outlined text-[#00236f]/40 dark:text-blue-400/50 align-middle">group_work</span>
                         </div>
                         <div>
-                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white font-['Manrope']">88%</p>
+                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white ">88%</p>
                             <div className="w-full bg-[#e9e7ef] dark:bg-slate-700 h-1.5 rounded-full mt-2">
                                 <div className="bg-[#00236f] dark:bg-blue-500 h-full rounded-full w-[88%]"></div>
                             </div>
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
                                 className="material-symbols-outlined text-[#4b1c00]/40 dark:text-amber-500/50 align-middle">payments</span>
                         </div>
                         <div>
-                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white font-['Manrope']">$14,250</p>
+                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white ">$14,250</p>
                             <p className="text-xs text-[#757682] dark:text-slate-400 mt-1">Weekly: $98,400</p>
                         </div>
                     </div>
@@ -179,7 +179,7 @@ export default function AdminDashboard() {
                                 className="material-symbols-outlined text-[#ba1a1a]/40 dark:text-red-500/50 align-middle">warning</span>
                         </div>
                         <div>
-                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white font-['Manrope']">07</p>
+                            <p className="text-3xl font-extrabold text-[#1a1b21] dark:text-white ">07</p>
                             <p className="text-xs text-[#ba1a1a] dark:text-red-400 font-bold mt-1">Requires
                                 Attention</p>
                         </div>
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
                             <div
                                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 sm:gap-0">
                                 <div>
-                                    <h3 className="text-lg font-bold font-['Manrope'] text-[#1a1b21] dark:text-white">Weekly
+                                    <h3 className="text-lg font-bold  text-[#1a1b21] dark:text-white">Weekly
                                         Performance</h3>
                                     <p className="text-xs text-[#757682] dark:text-slate-400">Revenue and Occupancy
                                         tracking</p>
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
                         <div
                             className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-xl shadow-sm border border-transparent dark:border-slate-800">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-lg font-bold font-['Manrope'] text-[#1a1b21] dark:text-white">Operational
+                                <h3 className="text-lg font-bold  text-[#1a1b21] dark:text-white">Operational
                                     View</h3>
                                 <button
                                     className="text-[#00236f] dark:text-blue-400 text-xs font-bold hover:underline">View
@@ -310,7 +310,7 @@ export default function AdminDashboard() {
                         {/* Recent Activity Sidebar */}
                         <div
                             className="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-xl shadow-sm border border-[#c5c5d3]/30 dark:border-slate-800">
-                            <h3 className="text-lg font-bold font-['Manrope'] text-[#1a1b21] dark:text-white mb-6">Recent
+                            <h3 className="text-lg font-bold  text-[#1a1b21] dark:text-white mb-6">Recent
                                 Activity</h3>
                             <div className="space-y-6">
 
@@ -435,7 +435,7 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-3 mb-4">
                                 <span
                                     className="material-symbols-outlined text-[#ffdbcb] dark:text-amber-300 align-middle">hotel_class</span>
-                                <h3 className="font-['Manrope'] font-bold uppercase text-xs tracking-widest">VIP Arrival
+                                <h3 className=" font-bold uppercase text-xs tracking-widest">VIP Arrival
                                     Alert</h3>
                             </div>
                             <p className="text-sm font-medium mb-4 text-[#ffdbcb]/90 dark:text-amber-100/90 leading-relaxed">
