@@ -9,6 +9,7 @@
   --card-border: #e2e8f0;
   --section-alt-bg: #f4f3fa;
   --input-bg: #f8fafc;
+  --text-card-footer: #00164E;
 }
 
 .dark {
@@ -18,6 +19,7 @@
   --card-border: #2d3154;
   --section-alt-bg: #111327;
   --input-bg: #1a1d33;
+  --text-card-footer: #8FA7FE
 }
 
 @theme inline {
@@ -27,8 +29,7 @@
   --color-card-border: var(--card-border);
   --color-section-alt-bg: var(--section-alt-bg);
   --color-input-bg: var(--input-bg);
-  /*--font-sans: var(--font-geist-sans);*/
-  /*--font-mono: var(--font-geist-mono);*/
+  --color-text-card-footer: var(--text-card-footer);
 }
 
 /* View Transition API styles for the sweep animation */
