@@ -1,7 +1,5 @@
-export default function page(){
-    return(
-        <>
-            <h2>Contact page</h2>
-        </>
-    )
+import Contact from "@/components/contact/Contact";
+
+export default function Page() {
+    return <Contact/>
 }

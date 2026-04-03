@@ -8,6 +8,7 @@ export default function ThemeToggle() {
 
   return (
     <button
+      type="button"
       id="theme-toggle-btn"
       onClick={(e) => toggleTheme(e)}
       className="relative w-10 h-10 rounded-full flex items-center justify-center
@@ -18,7 +19,6 @@ export default function ThemeToggle() {
                  group overflow-hidden"
       aria-label="Toggle theme"
       title="Toggle theme"
-      suppressHydrationWarning
     >
       {/* Sun icon */}
       <Sun

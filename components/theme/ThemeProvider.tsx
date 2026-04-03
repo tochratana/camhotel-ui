@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 
 type Theme = "light" | "dark";
 
@@ -10,22 +17,47 @@ type ThemeContextType = {
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const THEME_CHANGED_EVENT = "camhotel-theme-changed";
+
+function getPreferredTheme(): Theme {
+  const storedTheme = localStorage.getItem("theme") as Theme | null;
+
+  if (storedTheme === "dark" || storedTheme === "light") {
+    return storedTheme;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function subscribeToThemeChanges(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(THEME_CHANGED_EVENT, callback);
+
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(THEME_CHANGED_EVENT, callback);
+  };
+}
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") return "light";
-
-    const storedTheme = localStorage.getItem("theme") as Theme | null;
-    if (storedTheme === "dark" || storedTheme === "light") return storedTheme;
-
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  });
+  const theme = useSyncExternalStore<Theme>(
+    subscribeToThemeChanges,
+    getPreferredTheme,
+    () => "light"
+  );
   const isAnimating = useRef(false);
 
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark");
     document.documentElement.classList.add(theme);
   }, [theme]);
+
+  const applyTheme = useCallback((nextTheme: Theme) => {
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    window.dispatchEvent(new Event(THEME_CHANGED_EVENT));
+  }, []);
 
   const toggleTheme = useCallback((e?: React.MouseEvent) => {
     if (isAnimating.current) return;
@@ -47,10 +79,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       );
 
       const transition = document.startViewTransition(() => {
-        document.documentElement.classList.remove("light", "dark");
-        document.documentElement.classList.add(newTheme);
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
+        applyTheme(newTheme);
       });
 
       transition.ready.then(() => {
@@ -74,12 +103,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       });
     } else {
       // Fallback: no animation
-      document.documentElement.classList.remove("light", "dark");
-      document.documentElement.classList.add(newTheme);
-      setTheme(newTheme);
-      localStorage.setItem("theme", newTheme);
+      applyTheme(newTheme);
     }
-  }, [theme]);
+  }, [applyTheme, theme]);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
