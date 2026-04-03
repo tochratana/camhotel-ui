@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from "next/image";
 
-export default function AdminRoomType() {
+export default function RoomTypeAdmin() {
     return (
         <div
             className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-300 flex flex-col md:flex-row">
