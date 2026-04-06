@@ -20,7 +20,7 @@ export default function Homepage() {
                 </div>
                 <div className="relative z-10 text-center px-6 max-w-4xl">
                     <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
-                        Toch Ratana <span className="text-[#dce1ff]">Stay Awaits</span>
+                        Your Premium <span className="text-[#dce1ff]">Stay Awaits</span>
                     </h1>
                     <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light leading-relaxed">
                         Experience architectural elegance and curated hospitality at CamHotel. Every detail designed for
@@ -51,7 +51,8 @@ export default function Homepage() {
                         <div
                             className="absolute -bottom-6 -right-6 bg-[#1e3a8a] dark:bg-blue-600 p-8 rounded-xl shadow-xl hidden lg:block">
                             <p className="text-white font-bold text-4xl italic">35+</p>
-                            <p className="text-[#dce1ff] dark:text-blue-200 text-xs uppercase tracking-widest">Years of Excellence</p>
+                            <p className="text-[#dce1ff] dark:text-blue-200 text-xs uppercase tracking-widest">Years of
+                                Excellence</p>
                         </div>
                     </div>
                     <div className="space-y-8">
@@ -70,13 +71,15 @@ export default function Homepage() {
                             <div className="space-y-2">
                                 <ConciergeBell className="text-[#00236f] dark:text-blue-400 w-8 h-8"/>
                                 <h4 className="font-bold text-slate-900 dark:text-white">Bespoke Concierge</h4>
-                                <p className="text-sm text-slate-500 dark:text-slate-400">Personalized attention to your every request,
+                                <p className="text-sm text-slate-500 dark:text-slate-400">Personalized attention to your
+                                    every request,
                                     24/7.</p>
                             </div>
                             <div className="space-y-2">
                                 <Utensils className="text-[#00236f] dark:text-blue-400 w-8 h-8"/>
                                 <h4 className="font-bold text-slate-900 dark:text-white">Fine Dining</h4>
-                                <p className="text-sm text-slate-500 dark:text-slate-400">World-class culinary experiences crafted by master
+                                <p className="text-sm text-slate-500 dark:text-slate-400">World-class culinary
+                                    experiences crafted by master
                                     chefs.</p>
                             </div>
                         </div>
@@ -94,7 +97,8 @@ export default function Homepage() {
                             <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mt-2">Curated
                                 Sanctuaries</h2>
                         </div>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm italic">Booking available after login</p>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm italic">Booking available after
+                            login</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {
