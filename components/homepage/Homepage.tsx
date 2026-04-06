@@ -20,7 +20,7 @@ export default function Homepage() {
                 </div>
                 <div className="relative z-10 text-center px-6 max-w-4xl">
                     <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
-                        Your Premium <span className="text-[#dce1ff]">Stay Awaits</span>
+                        Toch Ratana <span className="text-[#dce1ff]">Stay Awaits</span>
                     </h1>
                     <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light leading-relaxed">
                         Experience architectural elegance and curated hospitality at CamHotel. Every detail designed for
