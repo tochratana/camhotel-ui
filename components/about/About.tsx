@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from "next/image";
+import { LucideArrowRight, LucideDraftingCompass, LucidePencil } from 'lucide-react';
 
 export default function About() {
     return (
@@ -89,7 +90,9 @@ export default function About() {
                             {/* Bento Item 1 */}
                             <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-8 md:p-10 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
                                 <div>
-                                    <span className="material-symbols-outlined text-[#1e3a8a] dark:text-blue-400 text-4xl mb-6 block">architecture</span>
+                                    <span className="material-symbols-outlined text-[#1e3a8a] dark:text-blue-400 text-4xl mb-6 block">
+                                        <LucideDraftingCompass size={48} />
+                                    </span>
                                     <h3 className="text-2xl font-bold text-[#00236f] dark:text-blue-300 mb-4">Intentional Space</h3>
                                     <p className="text-[#444651] dark:text-slate-300 leading-relaxed">
                                         Every piece of furniture, every lighting fixture, and every texture has been curated to create a sense of belonging. Our design philosophy rejects the sterile in favor of the soulful, ensuring each guest experience feels uniquely hand-crafted.
@@ -159,7 +162,9 @@ export default function About() {
                                     src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop"
                                 />
                                 <div className="absolute -bottom-2 md:-bottom-4 right-4 bg-[#4b1c00] dark:bg-blue-600 text-white p-3 md:p-4 rounded-full shadow-lg flex items-center justify-center">
-                                    <span className="material-symbols-outlined">history_edu</span>
+                                    <span className="material-symbols-outlined">
+                                        <LucidePencil size={20} />
+                                    </span>
                                 </div>
                             </div>
                             <div className="space-y-6 text-center md:text-left">
@@ -211,7 +216,9 @@ export default function About() {
                                 <h2 className="text-3xl md:text-4xl font-extrabold text-[#00236f] dark:text-blue-300 mt-2">The Hands Behind the Curation</h2>
                             </div>
                             <button className="text-[#00236f] dark:text-blue-400 font-bold flex items-center gap-2 hover:translate-x-2 transition-transform">
-                                Join Our Team <span className="material-symbols-outlined">arrow_forward</span>
+                                Join Our Team <span className="material-symbols-outlined">
+                                    <LucideArrowRight size={20} />  
+                                </span>
                             </button>
                         </div>
 
