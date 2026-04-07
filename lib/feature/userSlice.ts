@@ -1,4 +1,7 @@
-import { clearStoredBasicToken, setStoredBasicToken, toBasicToken } from "@/lib/auth";
+import {
+  clearStoredBasicToken,
+  setStoredBasicToken,
+} from "@/lib/admin-auth";
 import {
   ApiResponse,
   AuthResponse,
@@ -8,25 +11,79 @@ import {
 } from "@/types/auth";
 import { fakeStoreApi } from "./api";
 
+function getAccessToken(payload: unknown): string | null {
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+
+  const data = payload as {
+    accessToken?: unknown;
+    data?: {
+      accessToken?: unknown;
+      token?: unknown;
+    };
+    token?: unknown;
+  };
+
+  if (typeof data.accessToken === "string") {
+    return data.accessToken;
+  }
+
+  if (typeof data.data?.accessToken === "string") {
+    return data.data.accessToken;
+  }
+
+  if (typeof data.data?.token === "string") {
+    return data.data.token;
+  }
+
+  if (typeof data.token === "string") {
+    return data.token;
+  }
+
+  return null;
+}
+
 export const authApi = fakeStoreApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<ApiResponse<AuthResponse>, LoginCredentials>({
       queryFn: async (credentials, _api, _extraOptions, baseQuery) => {
-        const token = toBasicToken(credentials.email, credentials.password);
-        const result = await baseQuery({
-          url: "/auth/me",
-          method: "GET",
-          headers: {
-            Authorization: `Basic ${token}`,
-          },
+        const loginResult = await baseQuery({
+          url: "/auth/login",
+          method: "POST",
+          body: credentials,
         });
 
-        if (result.error) {
-          return { error: result.error };
+        if (loginResult.error) {
+          return { error: loginResult.error };
+        }
+
+        const token = getAccessToken(loginResult.data);
+        if (!token) {
+          return {
+            error: {
+              status: 500,
+              data: { message: "Login succeeded but access token is missing." },
+            },
+          } as never;
         }
 
         setStoredBasicToken(token);
-        return { data: result.data as ApiResponse<AuthResponse> };
+
+        const meResult = await baseQuery({
+          url: "/auth/me",
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (meResult.error) {
+          clearStoredBasicToken();
+          return { error: meResult.error };
+        }
+
+        return { data: meResult.data as ApiResponse<AuthResponse> };
       },
       invalidatesTags: ["Auth"],
     }),

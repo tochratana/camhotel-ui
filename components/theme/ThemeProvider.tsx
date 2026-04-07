@@ -9,10 +9,11 @@ import {
   useSyncExternalStore,
 } from "react";
 
-type Theme = "light" | "dark";
+export type Theme = "light" | "dark";
 
 type ThemeContextType = {
   theme: Theme;
+  setTheme: (nextTheme: Theme) => void;
   toggleTheme: (e?: React.MouseEvent) => void;
 };
 
@@ -58,6 +59,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("theme", nextTheme);
     window.dispatchEvent(new Event(THEME_CHANGED_EVENT));
   }, []);
+
+  const setTheme = useCallback((nextTheme: Theme) => {
+    applyTheme(nextTheme);
+  }, [applyTheme]);
 
   const toggleTheme = useCallback((e?: React.MouseEvent) => {
     if (isAnimating.current) return;
@@ -108,7 +113,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [applyTheme, theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

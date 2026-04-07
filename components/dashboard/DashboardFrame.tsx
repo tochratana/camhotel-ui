@@ -1,0 +1,45 @@
+"use client";
+
+import { CSSProperties, ReactNode } from "react";
+import { AppSidebar } from "@/components/app-sidebar";
+import { DashboardShellConfig } from "@/components/dashboard/types";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+type DashboardFrameProps = {
+  config: DashboardShellConfig;
+  children: ReactNode;
+  headerTitle?: string;
+  headerDescription?: string;
+};
+
+export default function DashboardFrame({
+  config,
+  children,
+  headerTitle,
+  headerDescription,
+}: DashboardFrameProps) {
+  return (
+    <TooltipProvider>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as CSSProperties
+        }
+      >
+        <AppSidebar data={config} variant="inset" />
+        <SidebarInset>
+          <SiteHeader
+            title={headerTitle ?? config.headerTitle}
+            description={headerDescription ?? config.headerDescription}
+          />
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </TooltipProvider>
+  );
+}
+

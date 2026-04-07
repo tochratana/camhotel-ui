@@ -1,7 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getStoredBasicToken } from "@/lib/auth";
+import { getStoredBasicToken } from "@/lib/admin-auth";
 
-const normalizedBaseUrl = (process.env.NEXT_PUBLIC_API ?? "").replace(/\/+$/, "");
+const normalizedBaseUrl = (process.env.NEXT_PUBLIC_API ?? "").replace(
+  /\/+$/,
+  "",
+);
 
 export const fakeStoreApi = createApi({
   reducerPath: "authApi",
@@ -11,7 +14,8 @@ export const fakeStoreApi = createApi({
     prepareHeaders: (headers) => {
       const token = getStoredBasicToken();
       if (token) {
-        headers.set("Authorization", `Basic ${token}`);
+        const hasAuthScheme = /^(Bearer|Basic)\s/i.test(token);
+        headers.set("Authorization", hasAuthScheme ? token : `Bearer ${token}`);
       }
       return headers;
     },

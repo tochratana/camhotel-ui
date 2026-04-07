@@ -1,13 +1,16 @@
 import React from "react";
+import AuthGuard from "@/components/auth/AuthGuard";
 
-export default function AdminLayout({children}: Readonly<{
-    children: React.ReactNode;
+export default function AdminLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
 }>) {
-    return (
-        <main className="min-h-screen bg-background px-6 pt-28 pb-20">
-            <div className="mx-auto w-full max-w-7xl">
-                {children}
-            </div>
-        </main>
-    );
+  return (
+    <AuthGuard allowedRoles={["ADMIN"]}>
+      <main className="min-h-screen bg-background px-4 py-6 sm:px-6 sm:py-8">
+        <div className="mx-auto w-full">{children}</div>
+      </main>
+    </AuthGuard>
+  );
 }

@@ -3,19 +3,32 @@
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { clearStoredBasicToken } from "@/lib/auth";
+import {
+  AppRole,
+  clearStoredBasicToken,
+  getDashboardPathByRole,
+  normalizeRole,
+} from "@/lib/admin-auth";
 import { useAuthToken } from "@/lib/hooks/useAuthToken";
 import { useGetCurrentUserQuery } from "@/lib/feature/userSlice";
 
-export default function AuthGuard({ children }: { children: React.ReactNode }) {
+type AuthGuardProps = {
+  children: React.ReactNode;
+  allowedRoles?: AppRole[];
+};
+
+export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
   const token = useAuthToken();
   const hasToken = Boolean(token);
 
-  const { data, error, isLoading, isFetching } = useGetCurrentUserQuery(undefined, {
-    skip: !hasToken,
-  });
+  const { data, error, isLoading, isFetching } = useGetCurrentUserQuery(
+    undefined,
+    {
+      skip: !hasToken,
+    },
+  );
 
   useEffect(() => {
     if (!hasToken) {
@@ -33,6 +46,18 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [error, pathname, router]);
 
+  const userRole = normalizeRole(data?.data?.role?.name);
+  const hasRoleRestriction = Array.isArray(allowedRoles) && allowedRoles.length > 0;
+  const hasUnauthorizedRole =
+    hasRoleRestriction &&
+    userRole !== null &&
+    !allowedRoles.includes(userRole);
+
+  useEffect(() => {
+    if (!hasUnauthorizedRole || !userRole) return;
+    router.replace(getDashboardPathByRole(userRole));
+  }, [hasUnauthorizedRole, router, userRole]);
+
   if (!hasToken || isLoading || isFetching) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center text-slate-500">
@@ -45,6 +70,14 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center text-slate-500">
         Verifying session...
+      </div>
+    );
+  }
+
+  if (hasUnauthorizedRole) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center text-slate-500">
+        <Loader2 className="w-5 h-5 animate-spin" />
       </div>
     );
   }

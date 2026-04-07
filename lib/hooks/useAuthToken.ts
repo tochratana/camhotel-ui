@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { AUTH_CHANGED_EVENT, getStoredBasicToken } from "@/lib/auth";
+import { AUTH_CHANGED_EVENT, getStoredBasicToken } from "@/lib/admin-auth";
 
 function subscribeToAuthChanges(callback: () => void) {
   window.addEventListener("storage", callback);
@@ -14,5 +14,9 @@ function subscribeToAuthChanges(callback: () => void) {
 }
 
 export function useAuthToken() {
-  return useSyncExternalStore(subscribeToAuthChanges, getStoredBasicToken, () => null);
+  return useSyncExternalStore(
+    subscribeToAuthChanges,
+    getStoredBasicToken,
+    () => null,
+  );
 }
