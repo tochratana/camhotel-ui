@@ -108,7 +108,7 @@ export default function FacilityBlock() {
                                 </div>
                                 <div className="rounded-xl overflow-hidden shadow-sm aspect-square">
                                     <Image
-                                        src="https://images.unsplash.com/photo-1550966841-3ee5ad60d0d9?auto=format&fit=crop&q=80&w=600"
+                                        src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600"
                                         alt="Restaurant"
                                         width={100}
                                         height={400}

@@ -1,3 +1,12 @@
+export type LoginResponse = {
+  message?: string;
+  accessToken?: string;
+  data?: {
+    accessToken?: string;
+  };
+};
+
+
 export type LoginCredentials = {
   email: string;
   password: string;

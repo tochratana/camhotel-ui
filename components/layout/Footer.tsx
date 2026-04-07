@@ -1,7 +1,27 @@
+"use client";
+
 import {footerData} from "@/data/menuData";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+    const pathname = usePathname();
+
+    const hideFooterRoutes = [
+        "/login",
+        "/register",
+        "/admin",
+        "/staff",
+        "/customer",
+        "/bookings",
+        "/profile",
+        "/dashboard",
+    ];
+    const shouldHideFooter = hideFooterRoutes.some(
+        (route) => pathname === route || pathname.startsWith(`${route}/`)
+    );
+    if (shouldHideFooter) return null;
+
     const currentYear = new Date().getFullYear()
     return (
         <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0a0c16]">

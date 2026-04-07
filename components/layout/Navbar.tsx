@@ -6,20 +6,41 @@ import { Loader2, LogOut, UserRound } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { navBarData } from "@/data/menuData";
 import ThemeToggle from "@/components/theme/ThemeToggle";
-import { clearStoredBasicToken } from "@/lib/auth";
+import {
+  clearStoredBasicToken,
+  getDashboardPathByRole,
+  normalizeRole,
+} from "@/lib/admin-auth";
 import { useAuthToken } from "@/lib/hooks/useAuthToken";
-import { useGetCurrentUserQuery, useLogoutMutation } from "@/lib/feature/userSlice";
+import {
+  useGetCurrentUserQuery,
+  useLogoutMutation,
+} from "@/lib/feature/userSlice";
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
+  const hideNavbarRoutes = [
+    "/login",
+    "/register",
+    "/admin",
+    "/staff",
+    "/customer",
+    "/bookings",
+    "/profile",
+    "/dashboard",
+  ];
+  const shouldHideNavbar = hideNavbarRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+
   const token = useAuthToken();
   const hasToken = Boolean(token);
 
   const { data, error, isFetching } = useGetCurrentUserQuery(undefined, {
-    skip: !hasToken,
+    skip: !hasToken || shouldHideNavbar,
   });
 
   useEffect(() => {
@@ -31,10 +52,11 @@ export default function Navbar() {
     }
   }, [error]);
 
-  const isAuthPage = pathname === "/login" || pathname === "/register";
-  if (isAuthPage) return null;
+  if (shouldHideNavbar) return null;
 
   const user = data?.data;
+  const userRole = normalizeRole(user?.role?.name);
+  const accountHref = userRole ? getDashboardPathByRole(userRole) : "/profile";
 
   const handleLogout = async () => {
     await logout().unwrap();
@@ -44,7 +66,10 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#161929]/90 backdrop-blur-md shadow-sm dark:shadow-[#0c0e1a]/50">
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
-        <Link href="/" className="text-2xl font-bold tracking-tighter text-[#00236f] dark:text-blue-200 font-sans">
+        <Link
+          href="/"
+          className="text-2xl font-bold tracking-tighter text-[#00236f] dark:text-blue-200 font-sans"
+        >
           CamHotel
         </Link>
 
@@ -73,7 +98,7 @@ export default function Navbar() {
               ) : (
                 <>
                   <Link
-                    href="/profile"
+                    href={accountHref}
                     className="inline-flex items-center gap-2 bg-[#00236f] text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#1e3a8a] dark:bg-blue-600 dark:hover:bg-blue-500"
                   >
                     <UserRound className="h-4 w-4" />
@@ -84,7 +109,11 @@ export default function Navbar() {
                     disabled={isLoggingOut}
                     className="inline-flex items-center gap-2 border border-slate-300 px-4 py-2 rounded-lg font-semibold text-sm text-slate-700 hover:bg-slate-100 dark:border-[#2d3154] dark:text-slate-200 dark:hover:bg-[#1d2138] disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    {isLoggingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
+                    {isLoggingOut ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <LogOut className="h-4 w-4" />
+                    )}
                     Logout
                   </button>
                 </>

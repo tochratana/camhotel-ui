@@ -13,7 +13,7 @@ export default function About() {
                             alt="Stunning architectural interior of a luxury hotel lobby"
                             width={100}
                             height={400}
-                            src="https://images.unsplash.com/photo-1542314831-c6a4d270b0e2?q=80&w=2070&auto=format&fit=crop"
+                            src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop"
                         />
                         <div className="absolute inset-0 bg-[#00236f]/30 backdrop-brightness-75 dark:bg-slate-900/50"></div>
                     </div>
@@ -58,7 +58,7 @@ export default function About() {
                                     alt="Vintage hotel facade"
                                     width={100}
                                     height={400}
-                                    src="https://images.unsplash.com/photo-1551882547-ff40c0d129df?q=80&w=1964&auto=format&fit=crop"
+                                    src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1964&auto=format&fit=crop"
                                 />
                                 <Image
                                     className="rounded-xl shadow-lg h-64 sm:h-96 w-full object-cover hidden sm:block"
@@ -121,7 +121,7 @@ export default function About() {
                                     alt="Artfully arranged table setting"
                                     width={100}
                                     height={400}
-                                    src="https://images.unsplash.com/photo-1618220179428-22790b46a0eb?q=80&w=2027&auto=format&fit=crop"
+                                    src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2027&auto=format&fit=crop"
                                 />
                                 <h4 className="text-xl font-bold text-[#00236f] dark:text-blue-300 mb-2">Sensory Detail</h4>
                                 <p className="text-[#444651] dark:text-slate-300 text-sm">From custom ambient scents to high-fidelity acoustic damping, we curate for all five senses.</p>
