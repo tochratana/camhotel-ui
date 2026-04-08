@@ -69,3 +69,13 @@ export type RoomsQuery = PaginationQuery & {
 export type BookingsQuery = PaginationQuery & {
   status?: BookingStatus;
 };
+
+export type UpdateBookingStatusPayload = {
+  id: number;
+  status: BookingStatus;
+};
+
+export type UpdateRoomStatusPayload = {
+  id: number;
+  status: RoomStatus;
+};

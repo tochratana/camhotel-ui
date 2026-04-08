@@ -3,7 +3,6 @@
 import {
   Loader2,
   CalendarIcon,
-  MapPinIcon,
   DollarSignIcon,
   CreditCardIcon,
 } from "lucide-react";

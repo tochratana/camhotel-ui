@@ -6,8 +6,11 @@ import type {
   BookingsQuery,
   PaginationQuery,
   RoomResponse,
+  RoomStatus,
   RoomTypeResponse,
   RoomsQuery,
+  UpdateBookingStatusPayload,
+  UpdateRoomStatusPayload,
 } from "@/types/hotel";
 
 function withQuery(path: string, params?: Record<string, unknown>) {
@@ -79,6 +82,27 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
         }),
       providesTags: ["Auth"],
     }),
+    updateBookingStatus: builder.mutation<
+      ApiResponse<BookingResponse>,
+      UpdateBookingStatusPayload
+    >({
+      query: ({ id, status }) => ({
+        url: `/bookings/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    updateRoomStatus: builder.mutation<ApiResponse<RoomResponse>, UpdateRoomStatusPayload>(
+      {
+        query: ({ id, status }) => ({
+          url: `/rooms/${id}/status`,
+          method: "PATCH",
+          body: { status } satisfies { status: RoomStatus },
+        }),
+        invalidatesTags: ["Auth"],
+      },
+    ),
     getBookingPolicy: builder.query<ApiResponse<{ cancellationWindowHours: number }>, void>(
       {
         query: () => "/booking-policy",
@@ -94,5 +118,7 @@ export const {
   useGetAllBookingsQuery,
   useGetMyBookingsQuery,
   useGetUsersQuery,
+  useUpdateBookingStatusMutation,
+  useUpdateRoomStatusMutation,
   useGetBookingPolicyQuery,
 } = hotelApi;

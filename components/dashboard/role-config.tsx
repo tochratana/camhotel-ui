@@ -36,7 +36,7 @@ export const adminDashboardConfig: DashboardShellConfig = {
     },
     {
       title: "Rooms",
-      url: "/rooms",
+      url: "/staff/rooms",
       icon: <BedDoubleIcon />,
     },
     {
@@ -71,8 +71,9 @@ export const staffDashboardConfig: DashboardShellConfig = {
     avatar: "/avatars/shadcn.jpg",
   },
   quickAction: {
-    title: "Open Dashboard",
-    url: "/staff",
+    title: "Open Queue",
+    url: "/staff/bookings",
+    showEmailIcon: false,
   },
   navMain: [
     {
@@ -82,19 +83,19 @@ export const staffDashboardConfig: DashboardShellConfig = {
     },
     {
       title: "Bookings",
-      url: "/staff",
+      url: "/staff/bookings",
       icon: <BookCheckIcon />,
     },
     {
       title: "Rooms",
-      url: "/rooms",
+      url: "/staff/rooms",
       icon: <BedDoubleIcon />,
     },
-    {
-      title: "Support",
-      url: "/contact",
-      icon: <ContactIcon />,
-    },
+    // {
+    //   title: "Support",
+    //   url: "/contact",
+    //   icon: <ContactIcon />,
+    // },
     {
       title: "Settings",
       url: "/staff/settings",
@@ -119,7 +120,6 @@ export const customerDashboardConfig: DashboardShellConfig = {
   quickAction: {
     title: "Book Room",
     url: "/rooms",
-    showEmailIcon: false,
   },
   navMain: [
     {
@@ -129,12 +129,12 @@ export const customerDashboardConfig: DashboardShellConfig = {
     },
     {
       title: "My Bookings",
-      url: "/customer/mybookings",
+      url: "/bookings",
       icon: <BookCheckIcon />,
     },
     {
       title: "Profile",
-      url: "/customer/profile",
+      url: "/profile",
       icon: <UserRoundIcon />,
     },
     {
