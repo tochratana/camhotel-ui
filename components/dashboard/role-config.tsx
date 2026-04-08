@@ -7,7 +7,6 @@ import {
   CalendarCheck2Icon,
   ClipboardListIcon,
   CommandIcon,
-  ContactIcon,
   LayoutDashboardIcon,
   Settings2Icon,
   UserRoundIcon,
@@ -25,8 +24,8 @@ export const adminDashboardConfig: DashboardShellConfig = {
     avatar: "/avatars/shadcn.jpg",
   },
   quickAction: {
-    title: "Browse Rooms",
-    url: "/rooms",
+    title: "Manage Bookings",
+    url: "/admin/bookings",
   },
   navMain: [
     {
@@ -36,18 +35,23 @@ export const adminDashboardConfig: DashboardShellConfig = {
     },
     {
       title: "Rooms",
-      url: "/staff/rooms",
+      url: "/admin/rooms",
       icon: <BedDoubleIcon />,
     },
     {
       title: "Room Types",
-      url: "/admin",
+      url: "/admin/room-types",
       icon: <ClipboardListIcon />,
     },
     {
       title: "Bookings",
-      url: "/admin",
+      url: "/admin/bookings",
       icon: <CalendarCheck2Icon />,
+    },
+    {
+      title: "Users",
+      url: "/admin/users",
+      icon: <UserRoundIcon />,
     },
     {
       title: "Settings",
