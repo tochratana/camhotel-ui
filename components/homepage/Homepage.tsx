@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo } from "react";
+import {useMemo} from "react";
 import {ChevronDown, ConciergeBell, Mail, MapPin, Phone, Utensils} from "lucide-react";
 import {roomCard} from "@/data/roomCard";
-import { useGetRoomsQuery } from "@/lib/feature/hotelSlice";
+import {useGetRoomsQuery} from "@/lib/feature/hotelSlice";
 import RoomCard from "@/components/homepage/RoomCard";
 
 function toSafeImage(imageUrl: string | null | undefined, fallback: string) {
@@ -17,7 +17,7 @@ function toSafeImage(imageUrl: string | null | undefined, fallback: string) {
 }
 
 export default function Homepage() {
-    const { data, isFetching, isError } = useGetRoomsQuery({
+    const {data, isFetching, isError} = useGetRoomsQuery({
         page: 0,
         size: 4,
         status: "AVAILABLE",
@@ -88,7 +88,8 @@ export default function Homepage() {
                         <div className="aspect-4/5 rounded-2xl overflow-hidden shadow-2xl">
                             <Image
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGKCYAGgmC9djnyY2gXdUFO5mpIrsJE0XKLzZbvxU8z-0S1ddkt_b14rMHw-Ic-FIQreXF69ouPiP9LsJUU97x4kEjElUXXVKXXRdTtKs9Pr3MdhaGy6f7i7exOYZqSolarkTJ8IcNEI-MmAx3Rr6Y21YCTcPzwX9O7Hcwa7fBsiTYP0Q48f0nOiAXhUaxcHyKdudqAjVdyfmRz5CeDN8un29JGoz8XUwZooye0OPBHW-BdCyvQxJDji8x18Z95fn6J7Wl1-_PGB0"
-                                className="w-full h-full object-cover" alt="Heritage" width={100} height={100} unoptimized={true}/>
+                                className="w-full h-full object-cover" alt="Heritage" width={100} height={100}
+                                unoptimized={true}/>
                         </div>
                         <div
                             className="absolute -bottom-6 -right-6 bg-[#1e3a8a] dark:bg-blue-600 p-8 rounded-xl shadow-xl hidden lg:block">
@@ -190,21 +191,32 @@ export default function Homepage() {
                                 </li>
                             </ul>
                         </div>
-                        <div className="lg:w-2/3 p-12">
-                            <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="w-full lg:w-2/3 p-4 sm:p-8 lg:p-12">
+                            <form className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                 <input
-                                    className="w-full bg-input-bg dark:text-white border-none rounded-lg p-4 focus:ring-2 focus:ring-[#00236f] dark:focus:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                                    placeholder="Full Name"/>
+                                    type="text"
+                                    className="w-full bg-input-bg dark:bg-input-bg dark:text-white border-none rounded-lg p-4 focus:ring-2 focus:ring-[#00236f] dark:focus:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                    placeholder="Full Name"
+                                />
                                 <input
-                                    className="w-full bg-input-bg dark:text-white border-none rounded-lg p-4 focus:ring-2 focus:ring-[#00236f] dark:focus:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                                    placeholder="Email Address"/>
+                                    type="email"
+                                    className="w-full bg-input-bg dark:bg-input-bg dark:text-white border-none rounded-lg p-4 focus:ring-2 focus:ring-[#00236f] dark:focus:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                    placeholder="Email Address"
+                                />
                                 <textarea
-                                    className="col-span-2 w-full bg-input-bg dark:text-white border-none rounded-lg p-4 focus:ring-2 focus:ring-[#00236f] dark:focus:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                                    rows={4} placeholder="How can we assist you?"></textarea>
-                                <button
-                                    className="bg-[#00236f] dark:bg-blue-600 text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest text-sm transition-all hover:bg-[#1e3a8a] dark:hover:bg-blue-500">
-                                    Send Message
-                                </button>
+                                    className="col-span-1 md:col-span-2 w-full bg-input-bg dark:bg-input-bg dark:text-white border-none rounded-lg p-4 focus:ring-2 focus:ring-[#00236f] dark:focus:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                    rows={4}
+                                    placeholder="How can we assist you?"
+                                ></textarea>
+
+                                <div className="col-span-1 md:col-span-2">
+                                    <button
+                                        type="submit"
+                                        className="w-full md:w-auto bg-[#00236f] dark:bg-blue-600 text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest text-sm transition-all hover:bg-[#1e3a8a] dark:hover:bg-blue-500 active:scale-95"
+                                    >
+                                        Send Message
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
