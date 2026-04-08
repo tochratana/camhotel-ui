@@ -56,6 +56,7 @@ export default function Homepage() {
                         alt="Lobby"
                         width={100}
                         height={400}
+                        unoptimized={true}
                     />
                     <div className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px]"></div>
                 </div>
@@ -87,7 +88,7 @@ export default function Homepage() {
                         <div className="aspect-4/5 rounded-2xl overflow-hidden shadow-2xl">
                             <Image
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGKCYAGgmC9djnyY2gXdUFO5mpIrsJE0XKLzZbvxU8z-0S1ddkt_b14rMHw-Ic-FIQreXF69ouPiP9LsJUU97x4kEjElUXXVKXXRdTtKs9Pr3MdhaGy6f7i7exOYZqSolarkTJ8IcNEI-MmAx3Rr6Y21YCTcPzwX9O7Hcwa7fBsiTYP0Q48f0nOiAXhUaxcHyKdudqAjVdyfmRz5CeDN8un29JGoz8XUwZooye0OPBHW-BdCyvQxJDji8x18Z95fn6J7Wl1-_PGB0"
-                                className="w-full h-full object-cover" alt="Heritage" width={100} height={100}/>
+                                className="w-full h-full object-cover" alt="Heritage" width={100} height={100} unoptimized={true}/>
                         </div>
                         <div
                             className="absolute -bottom-6 -right-6 bg-[#1e3a8a] dark:bg-blue-600 p-8 rounded-xl shadow-xl hidden lg:block">

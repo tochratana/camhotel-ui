@@ -16,6 +16,7 @@ import {
   useGetCurrentUserQuery,
   useLogoutMutation,
 } from "@/lib/feature/userSlice";
+import Image from "next/image";
 
 export default function Navbar() {
   const router = useRouter();
@@ -68,9 +69,9 @@ export default function Navbar() {
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
         <Link
           href="/"
-          className="text-2xl font-bold tracking-tighter text-[#00236f] dark:text-blue-200 font-sans"
+          className="text-2xl font-bold tracking-tighter text-green-900 dark:text-blue-200 font-sans"
         >
-          CamHotel
+          CAM<span className="text-amber-400">-</span>HOTEL
         </Link>
 
         <div className="hidden md:flex items-center space-x-8">
