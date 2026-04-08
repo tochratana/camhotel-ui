@@ -13,10 +13,25 @@ function subscribeToAuthChanges(callback: () => void) {
   };
 }
 
+function subscribeToHydration() {
+  return () => {};
+}
+
 export function useAuthToken() {
   return useSyncExternalStore(
     subscribeToAuthChanges,
     getStoredBasicToken,
     () => null,
   );
+}
+
+export function useAuthTokenState() {
+  const token = useAuthToken();
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
+
+  return { token, isHydrated };
 }

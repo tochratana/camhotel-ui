@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getStoredBasicToken } from "@/lib/admin-auth";
 
-const normalizedBaseUrl = (process.env.NEXT_PUBLIC_API ?? "").replace(
-  /\/+$/,
-  "",
-);
+// Use Next.js route handlers as a BFF proxy so the browser does not call
+// backend domains directly.
+const normalizedBaseUrl = (
+  process.env.NEXT_PUBLIC_API_PROXY_BASE_URL ?? "/api/v1"
+).replace(/\/+$/, "");
 
 export const fakeStoreApi = createApi({
   reducerPath: "authApi",

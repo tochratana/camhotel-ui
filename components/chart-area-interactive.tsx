@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
+import type { DashboardChartPoint } from "@/components/dashboard/types"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
   Card,
@@ -140,9 +141,20 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartAreaInteractive() {
+type ChartAreaInteractiveProps = {
+  data?: DashboardChartPoint[]
+  title?: string
+  description?: string
+}
+
+export function ChartAreaInteractive({
+  data,
+  title = "Activity Overview",
+  description = "Recent trend snapshot",
+}: ChartAreaInteractiveProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
+  const sourceData = data && data.length > 0 ? data : chartData
 
   React.useEffect(() => {
     if (isMobile) {
@@ -150,9 +162,11 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile])
 
-  const filteredData = chartData.filter((item) => {
+  const filteredData = sourceData.filter((item) => {
     const date = new Date(item.date)
-    const referenceDate = new Date("2024-06-30")
+    const referenceDate = sourceData[sourceData.length - 1]
+      ? new Date(sourceData[sourceData.length - 1].date)
+      : new Date()
     let daysToSubtract = 90
     if (timeRange === "30d") {
       daysToSubtract = 30
@@ -167,12 +181,10 @@ export function ChartAreaInteractive() {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Total Visitors</CardTitle>
+        <CardTitle>{title}</CardTitle>
         <CardDescription>
-          <span className="hidden @[540px]/card:block">
-            Total for the last 3 months
-          </span>
-          <span className="@[540px]/card:hidden">Last 3 months</span>
+          <span className="hidden @[540px]/card:block">{description}</span>
+          <span className="@[540px]/card:hidden">Latest trend</span>
         </CardDescription>
         <CardAction>
           <ToggleGroup

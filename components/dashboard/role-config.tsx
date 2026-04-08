@@ -1,32 +1,17 @@
-import { DashboardShellConfig } from "@/components/dashboard/types";
+import type { DashboardShellConfig } from "@/components/dashboard/types";
+import { resolveDashboardUser } from "@/lib/dashboard-data";
+import type { AuthResponse } from "@/types/auth";
 import {
   BedDoubleIcon,
   BookCheckIcon,
   CalendarCheck2Icon,
-  CircleHelpIcon,
   ClipboardListIcon,
   CommandIcon,
   ContactIcon,
-  FileChartColumnIcon,
-  FileIcon,
   LayoutDashboardIcon,
-  SearchIcon,
   Settings2Icon,
   UserRoundIcon,
 } from "lucide-react";
-
-const baseSecondary = [
-  {
-    title: "Get Help",
-    url: "/contact",
-    icon: <CircleHelpIcon />,
-  },
-  {
-    title: "Search",
-    url: "/rooms",
-    icon: <SearchIcon />,
-  },
-];
 
 export const adminDashboardConfig: DashboardShellConfig = {
   appName: "CamHotel Admin",
@@ -40,8 +25,8 @@ export const adminDashboardConfig: DashboardShellConfig = {
     avatar: "/avatars/shadcn.jpg",
   },
   quickAction: {
-    title: "Add Room",
-    url: "/dashboard/rooms",
+    title: "Browse Rooms",
+    url: "/rooms",
   },
   navMain: [
     {
@@ -51,17 +36,17 @@ export const adminDashboardConfig: DashboardShellConfig = {
     },
     {
       title: "Rooms",
-      url: "/dashboard/rooms",
+      url: "/rooms",
       icon: <BedDoubleIcon />,
     },
     {
       title: "Room Types",
-      url: "/dashboard/roomtype",
+      url: "/admin",
       icon: <ClipboardListIcon />,
     },
     {
       title: "Bookings",
-      url: "/dashboard/booking",
+      url: "/admin",
       icon: <CalendarCheck2Icon />,
     },
     {
@@ -70,19 +55,8 @@ export const adminDashboardConfig: DashboardShellConfig = {
       icon: <Settings2Icon />,
     },
   ],
-  navSecondary: baseSecondary,
-  documents: [
-    {
-      name: "Operations Reports",
-      url: "/dashboard/booking",
-      icon: <FileChartColumnIcon />,
-    },
-    {
-      name: "Room Catalog",
-      url: "/dashboard/rooms",
-      icon: <FileIcon />,
-    },
-  ],
+  navSecondary: [],
+  documents: [],
 };
 
 export const staffDashboardConfig: DashboardShellConfig = {
@@ -97,8 +71,8 @@ export const staffDashboardConfig: DashboardShellConfig = {
     avatar: "/avatars/shadcn.jpg",
   },
   quickAction: {
-    title: "View Queue",
-    url: "/bookings",
+    title: "Open Dashboard",
+    url: "/staff",
   },
   navMain: [
     {
@@ -108,7 +82,7 @@ export const staffDashboardConfig: DashboardShellConfig = {
     },
     {
       title: "Bookings",
-      url: "/bookings",
+      url: "/staff",
       icon: <BookCheckIcon />,
     },
     {
@@ -127,19 +101,8 @@ export const staffDashboardConfig: DashboardShellConfig = {
       icon: <Settings2Icon />,
     },
   ],
-  navSecondary: baseSecondary,
-  documents: [
-    {
-      name: "Today Schedule",
-      url: "/bookings",
-      icon: <FileChartColumnIcon />,
-    },
-    {
-      name: "Service Notes",
-      url: "/contact",
-      icon: <FileIcon />,
-    },
-  ],
+  navSecondary: [],
+  documents: [],
 };
 
 export const customerDashboardConfig: DashboardShellConfig = {
@@ -156,6 +119,7 @@ export const customerDashboardConfig: DashboardShellConfig = {
   quickAction: {
     title: "Book Room",
     url: "/rooms",
+    showEmailIcon: false,
   },
   navMain: [
     {
@@ -165,17 +129,12 @@ export const customerDashboardConfig: DashboardShellConfig = {
     },
     {
       title: "My Bookings",
-      url: "/bookings",
+      url: "/customer/mybookings",
       icon: <BookCheckIcon />,
     },
     {
-      title: "Rooms",
-      url: "/rooms",
-      icon: <BedDoubleIcon />,
-    },
-    {
       title: "Profile",
-      url: "/profile",
+      url: "/customer/profile",
       icon: <UserRoundIcon />,
     },
     {
@@ -184,17 +143,34 @@ export const customerDashboardConfig: DashboardShellConfig = {
       icon: <Settings2Icon />,
     },
   ],
-  navSecondary: baseSecondary,
-  documents: [
-    {
-      name: "Booking History",
-      url: "/bookings",
-      icon: <FileChartColumnIcon />,
-    },
-    {
-      name: "Account Notes",
-      url: "/profile",
-      icon: <FileIcon />,
-    },
-  ],
+  navSecondary: [],
+  documents: [],
 };
+
+function withResolvedUser(
+  config: DashboardShellConfig,
+  profile?: AuthResponse,
+): DashboardShellConfig {
+  return {
+    ...config,
+    user: resolveDashboardUser(profile, config.user),
+  };
+}
+
+export function getAdminDashboardConfig(
+  profile?: AuthResponse,
+): DashboardShellConfig {
+  return withResolvedUser(adminDashboardConfig, profile);
+}
+
+export function getStaffDashboardConfig(
+  profile?: AuthResponse,
+): DashboardShellConfig {
+  return withResolvedUser(staffDashboardConfig, profile);
+}
+
+export function getCustomerDashboardConfig(
+  profile?: AuthResponse,
+): DashboardShellConfig {
+  return withResolvedUser(customerDashboardConfig, profile);
+}

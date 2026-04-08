@@ -1,30 +1,38 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
-import { DashboardShellConfig } from "@/components/dashboard/types"
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { DashboardShellConfig } from "@/components/dashboard/types";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { CommandIcon } from "lucide-react"
+  SidebarFooter,
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { CommandIcon, LogOutIcon } from "lucide-react";
+import { clearStoredBasicToken } from "@/lib/admin-auth";
 
 export function AppSidebar({
   data,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  data: DashboardShellConfig
+  data: DashboardShellConfig;
 }) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    clearStoredBasicToken();
+    router.push("/login");
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -44,12 +52,18 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} quickAction={data.quickAction} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <Button
+          onClick={handleLogout}
+          variant="destructive"
+          className="w-full justify-start gap-2"
+        >
+          <LogOutIcon className="h-4 w-4" />
+          Logout
+        </Button>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

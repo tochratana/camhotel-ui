@@ -9,7 +9,7 @@ import {
   getDashboardPathByRole,
   normalizeRole,
 } from "@/lib/admin-auth";
-import { useAuthToken } from "@/lib/hooks/useAuthToken";
+import { useAuthTokenState } from "@/lib/hooks/useAuthToken";
 import { useGetCurrentUserQuery } from "@/lib/feature/userSlice";
 
 type AuthGuardProps = {
@@ -20,21 +20,22 @@ type AuthGuardProps = {
 export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const token = useAuthToken();
+  const { token, isHydrated } = useAuthTokenState();
   const hasToken = Boolean(token);
 
   const { data, error, isLoading, isFetching } = useGetCurrentUserQuery(
     undefined,
     {
-      skip: !hasToken,
+      skip: !isHydrated || !hasToken,
     },
   );
 
   useEffect(() => {
+    if (!isHydrated) return;
     if (!hasToken) {
       router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [hasToken, pathname, router]);
+  }, [hasToken, isHydrated, pathname, router]);
 
   useEffect(() => {
     if (!error) return;
@@ -58,7 +59,7 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
     router.replace(getDashboardPathByRole(userRole));
   }, [hasUnauthorizedRole, router, userRole]);
 
-  if (!hasToken || isLoading || isFetching) {
+  if (!isHydrated || !hasToken || isLoading || isFetching) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center text-slate-500">
         <Loader2 className="w-5 h-5 animate-spin" />

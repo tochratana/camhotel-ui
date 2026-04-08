@@ -24,6 +24,7 @@ export function NavMain({
   quickAction?: {
     title: string
     url: string
+    showEmailIcon?: boolean
   }
 }) {
   const pathname = usePathname()
@@ -55,14 +56,16 @@ export function NavMain({
                   <span>{quickAction.title}</span>
                 </Link>
               </SidebarMenuButton>
-              <Button
-                size="icon"
-                className="size-8 group-data-[collapsible=icon]:opacity-0"
-                variant="outline"
-              >
-                <MailIcon />
-                <span className="sr-only">Inbox</span>
-              </Button>
+              {quickAction.showEmailIcon !== false ? (
+                <Button
+                  size="icon"
+                  className="size-8 group-data-[collapsible=icon]:opacity-0"
+                  variant="outline"
+                >
+                  <MailIcon />
+                  <span className="sr-only">Inbox</span>
+                </Button>
+              ) : null}
             </SidebarMenuItem>
           </SidebarMenu>
         ) : null}

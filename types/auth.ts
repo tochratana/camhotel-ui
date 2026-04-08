@@ -6,6 +6,11 @@ export type LoginResponse = {
   };
 };
 
+export type LoginRequest = {
+  email: string;
+  password: string;
+};
+
 
 export type LoginCredentials = {
   email: string;
@@ -30,6 +35,7 @@ export type UserResponse = {
   fullName: string;
   email: string;
   phoneNumber: string | null;
+  profileImage?: string | null;
   createdAt: string;
   isDeleted: boolean;
 };
@@ -39,6 +45,7 @@ export type AuthResponse = {
   fullName: string;
   email: string;
   phoneNumber: string | null;
+  profileImage?: string | null;
   role: RoleResponse;
 };
 

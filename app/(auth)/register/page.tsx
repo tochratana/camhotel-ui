@@ -1,7 +1,9 @@
-export default function Page(){
-    return(
-        <>
-            <h2>Register page</h2>
-        </>
-    )
+import RegisterForm from "@/components/form/register-form";
+
+export default function Page() {
+  return (
+    <>
+      <RegisterForm />
+    </>
+  );
 }

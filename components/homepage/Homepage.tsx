@@ -1,9 +1,40 @@
+"use client";
+
 import Image from "next/image";
+import { useMemo } from "react";
 import {ChevronDown, ConciergeBell, Mail, MapPin, Phone, Utensils} from "lucide-react";
 import {roomCard} from "@/data/roomCard";
+import { useGetRoomsQuery } from "@/lib/feature/hotelSlice";
 import RoomCard from "@/components/homepage/RoomCard";
 
 export default function Homepage() {
+    const { data, isFetching, isError } = useGetRoomsQuery({
+        page: 0,
+        size: 4,
+        status: "AVAILABLE",
+    });
+
+    const featuredRooms = useMemo(() => {
+        const apiRooms = data?.data?.content ?? [];
+        if (apiRooms.length === 0) {
+            return roomCard;
+        }
+
+        return apiRooms.slice(0, 4).map((room, index) => {
+            const fallback = roomCard[index % roomCard.length];
+            const roomType = room.roomType?.name ?? "Room";
+            const nightlyPrice = Number(room.currentPrice ?? 0);
+
+            return {
+                title: `${roomType} ${room.roomNumber}`,
+                tag: room.status === "AVAILABLE" ? "Available" : room.status,
+                image: fallback.image,
+                description: `${roomType} on floor ${room.floorNumber}. From $${nightlyPrice.toFixed(0)} per night.`,
+                isVip: nightlyPrice >= 350,
+            };
+        });
+    }, [data]);
+
     return (
         <main className="bg-background min-h-screen font-sans selection:bg-[#dce1ff] dark:selection:bg-blue-900/50">
             {/* Hero Section */}
@@ -98,11 +129,11 @@ export default function Homepage() {
                                 Sanctuaries</h2>
                         </div>
                         <p className="text-slate-500 dark:text-slate-400 text-sm italic">Booking available after
-                            login</p>
+                            login{isFetching ? " • loading live rooms..." : ""}{isError ? " • showing fallback list" : ""}</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {
-                            roomCard.map((item, index) => (
+                            featuredRooms.map((item, index) => (
                                 <RoomCard
                                     key={index}
                                     title={item.title}

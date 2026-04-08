@@ -21,6 +21,7 @@ export type DashboardUser = {
 export type DashboardQuickAction = {
   title: string;
   url: string;
+  showEmailIcon?: boolean;
 };
 
 export type DashboardShellConfig = {
@@ -34,4 +35,30 @@ export type DashboardShellConfig = {
   navSecondary: DashboardLinkItem[];
   documents: DashboardDocumentItem[];
   quickAction?: DashboardQuickAction;
+};
+
+export type MetricTrend = "up" | "down" | "flat";
+
+export type DashboardMetricCard = {
+  title: string;
+  value: string;
+  changeLabel: string;
+  trend: MetricTrend;
+  context: string;
+};
+
+export type DashboardChartPoint = {
+  date: string;
+  desktop: number;
+  mobile: number;
+};
+
+export type DashboardTableRow = {
+  id: number;
+  header: string;
+  type: string;
+  status: string;
+  target: string;
+  limit: string;
+  reviewer: string;
 };

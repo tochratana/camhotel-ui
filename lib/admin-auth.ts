@@ -1,12 +1,9 @@
+import { LoginCredentials } from "@/types/auth";
+
 const AUTH_STORAGE_KEY = "camhotel_basic_auth_token";
 export const AUTH_CHANGED_EVENT = "camhotel-auth-changed";
 
 export type AppRole = "ADMIN" | "STAFF" | "CUSTOMER";
-
-interface LoginRequest {
-  email: string;
-  password: string;
-}
 
 export function getStoredBasicToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -59,8 +56,8 @@ export function getDashboardPathByRole(role: string): string {
   }
 }
 
-export async function LoginAdmin(loginData: LoginRequest) {
-  const res = await fetch("/api/login", {
+export async function LoginAdmin(loginData: LoginCredentials) {
+  const res = await fetch("/api/v1/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -81,7 +78,7 @@ export async function LoginAdmin(loginData: LoginRequest) {
 }
 
 export async function getAdminData(token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
+  const res = await fetch("/api/v1/auth/me", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -100,3 +97,4 @@ export async function getAdminData(token: string) {
 
   return res.json();
 }
+

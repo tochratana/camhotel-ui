@@ -29,17 +29,19 @@ export default function DashboardFrame({
             "--header-height": "calc(var(--spacing) * 12)",
           } as CSSProperties
         }
+        className="min-h-screen"
       >
         <AppSidebar data={config} variant="inset" />
-        <SidebarInset>
+        <SidebarInset className="flex flex-col min-h-screen">
           <SiteHeader
             title={headerTitle ?? config.headerTitle}
             description={headerDescription ?? config.headerDescription}
           />
-          {children}
+          <main className="flex-1 overflow-y-auto bg-background">
+            {children}
+          </main>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>
   );
 }
-
