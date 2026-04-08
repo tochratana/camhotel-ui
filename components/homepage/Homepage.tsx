@@ -7,6 +7,15 @@ import {roomCard} from "@/data/roomCard";
 import { useGetRoomsQuery } from "@/lib/feature/hotelSlice";
 import RoomCard from "@/components/homepage/RoomCard";
 
+function toSafeImage(imageUrl: string | null | undefined, fallback: string) {
+    const value = imageUrl ?? "";
+    const isKnownAllowedHost =
+        value.startsWith("https://images.unsplash.com") ||
+        value.startsWith("https://lh3.googleusercontent.com") ||
+        value.startsWith("https://arystorephone.com");
+    return isKnownAllowedHost ? value : fallback;
+}
+
 export default function Homepage() {
     const { data, isFetching, isError } = useGetRoomsQuery({
         page: 0,
@@ -28,9 +37,10 @@ export default function Homepage() {
             return {
                 title: `${roomType} ${room.roomNumber}`,
                 tag: room.status === "AVAILABLE" ? "Available" : room.status,
-                image: fallback.image,
+                image: toSafeImage(room.imageUrl, fallback.image),
                 description: `${roomType} on floor ${room.floorNumber}. From $${nightlyPrice.toFixed(0)} per night.`,
                 isVip: nightlyPrice >= 350,
+                href: `/rooms/${room.id}`,
             };
         });
     }, [data]);

@@ -60,10 +60,18 @@ export type PaginationQuery = {
 };
 
 export type RoomsQuery = PaginationQuery & {
+  keyword?: string;
   roomTypeId?: number;
+  capacity?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  floorNumber?: number;
   status?: RoomStatus;
+  amenities?: string;
   checkInDate?: string;
   checkOutDate?: string;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
 };
 
 export type BookingsQuery = PaginationQuery & {

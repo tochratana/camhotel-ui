@@ -133,12 +133,12 @@ export const customerDashboardConfig: DashboardShellConfig = {
     },
     {
       title: "My Bookings",
-      url: "/bookings",
+      url: "/customer/mybookings",
       icon: <BookCheckIcon />,
     },
     {
       title: "Profile",
-      url: "/profile",
+      url: "/customer/profile",
       icon: <UserRoundIcon />,
     },
     {

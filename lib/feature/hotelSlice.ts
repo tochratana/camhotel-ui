@@ -31,13 +31,25 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
     getRooms: builder.query<ApiPageResponse<RoomResponse>, RoomsQuery | void>({
       query: (params) =>
         withQuery("/rooms", {
+          keyword: params?.keyword,
           page: params?.page ?? 0,
           size: params?.size ?? 10,
           roomTypeId: params?.roomTypeId,
+          capacity: params?.capacity,
+          minPrice: params?.minPrice,
+          maxPrice: params?.maxPrice,
+          floorNumber: params?.floorNumber,
           status: params?.status,
+          amenities: params?.amenities,
           checkInDate: params?.checkInDate,
           checkOutDate: params?.checkOutDate,
+          sortBy: params?.sortBy,
+          sortDirection: params?.sortDirection,
         }),
+      providesTags: ["Auth"],
+    }),
+    getRoomById: builder.query<ApiResponse<RoomResponse>, number>({
+      query: (id) => `/rooms/${id}`,
       providesTags: ["Auth"],
     }),
     getRoomTypes: builder.query<
@@ -114,6 +126,7 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
 
 export const {
   useGetRoomsQuery,
+  useGetRoomByIdQuery,
   useGetRoomTypesQuery,
   useGetAllBookingsQuery,
   useGetMyBookingsQuery,

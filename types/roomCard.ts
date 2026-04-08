@@ -4,4 +4,5 @@ export type RoomCardType = {
     image: string,
     description: string,
     isVip: boolean,
+    href?: string,
 }
