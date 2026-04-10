@@ -7,7 +7,7 @@ export default function RoomCard({title, tag, image, description, isVip, href = 
         <div
             className="group bg-card-bg rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 shadow-sm border border-card-border">
             <Link href={href} className="block h-64 overflow-hidden relative">
-                <Image src={image} alt={title} width={100} height={100}
+                <Image src={image} alt={title} width={100} height={100} unoptimized={true}
                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
                 <div
                     className={`absolute top-4 right-4 backdrop-blur px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest ${isVip ? 'bg-[#6e2c00]/90 text-[#f39461]' : 'bg-white/90 dark:bg-slate-800/90 text-[#00236f] dark:text-blue-300'}`}>

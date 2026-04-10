@@ -44,6 +44,7 @@ export default function FacilityBlock() {
                   alt="Room"
                   width={100}
                   height={400}
+                  unoptimized={true}
                 />
               </div>
               <div className="md:col-span-5 space-y-6">
@@ -77,11 +78,12 @@ export default function FacilityBlock() {
             {/* 2. Infinity Pool - Full Width Card */}
             <div className="relative rounded-3xl overflow-hidden h-112.5 md:h-137.5 group shadow-2xl">
               <Image
-                src="https://arystorephone.com/wp-content/uploads/2024/09/iphone-16-pink.jpg"
+                src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&q=80&w=1200"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 alt="Pool"
                 width={100}
                 height={400}
+                unoptimized={true}
               />
               <div className="absolute inset-0 bg-linear-to-t md:bg-linear-to-r from-black/80 via-black/40 to-transparent flex items-end md:items-center p-8 md:p-16">
                 <div className="max-w-lg text-white space-y-4">
@@ -121,20 +123,22 @@ export default function FacilityBlock() {
               <div className="md:col-span-8 grid grid-cols-2 gap-4">
                 <div className="rounded-xl overflow-hidden shadow-sm aspect-square">
                   <Image
-                    src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=600"
+                    src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=800"
                     alt="Dish"
                     width={100}
                     height={400}
                     className="w-full h-full object-cover"
+                    unoptimized={true}
                   />
                 </div>
                 <div className="rounded-xl overflow-hidden shadow-sm aspect-square">
                   <Image
-                    src="https://images.unsplash.com/photo-1550966841-3ee5ad60d0d9?auto=format&fit=crop&q=80&w=600"
+                    src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=800"
                     alt="Restaurant"
                     width={100}
                     height={400}
                     className="w-full h-full object-cover"
+                    unoptimized={true}
                   />
                 </div>
               </div>

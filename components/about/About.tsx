@@ -14,6 +14,7 @@ export default function About() {
                             alt="Stunning architectural interior of a luxury hotel lobby"
                             width={100}
                             height={400}
+                            unoptimized={true}
                             src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop"
                         />
                         <div className="absolute inset-0 bg-[#00236f]/30 backdrop-brightness-75 dark:bg-slate-900/50"></div>
@@ -59,6 +60,7 @@ export default function About() {
                                     alt="Vintage hotel facade"
                                     width={100}
                                     height={400}
+                                    unoptimized={true}
                                     src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1964&auto=format&fit=crop"
                                 />
                                 <Image
@@ -66,6 +68,7 @@ export default function About() {
                                     alt="Classical stonework"
                                     width={100}
                                     height={400}
+                                    unoptimized={true}
                                     src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2070&auto=format&fit=crop"
                                 />
                             </div>
@@ -124,6 +127,7 @@ export default function About() {
                                     alt="Artfully arranged table setting"
                                     width={100}
                                     height={400}
+                                    unoptimized={true}
                                     src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2027&auto=format&fit=crop"
                                 />
                                 <h4 className="text-xl font-bold text-[#00236f] dark:text-blue-300 mb-2">Sensory Detail</h4>
@@ -141,6 +145,7 @@ export default function About() {
                                     alt="Lush green interior courtyard"
                                     width={100}
                                     height={400}
+                                    unoptimized={true}
                                     src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=2070&auto=format&fit=crop"
                                 />
                             </div>
@@ -159,6 +164,7 @@ export default function About() {
                                     alt="Portrait of Julian Cambridge"
                                     width={100}
                                     height={400}
+                                    unoptimized={true}
                                     src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop"
                                 />
                                 <div className="absolute -bottom-2 md:-bottom-4 right-4 bg-[#4b1c00] dark:bg-blue-600 text-white p-3 md:p-4 rounded-full shadow-lg flex items-center justify-center">
@@ -231,6 +237,7 @@ export default function About() {
                                         alt="Elena Rossi"
                                         width={100}
                                         height={400}
+                                        unoptimized={true}
                                         src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop"
                                     />
                                     <div className="absolute inset-0 bg-[#00236f]/80 dark:bg-slate-900/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
@@ -249,6 +256,7 @@ export default function About() {
                                         alt="Marcus Vane"
                                         width={100}
                                         height={400}
+                                        unoptimized={true}
                                         src="https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=1984&auto=format&fit=crop"
                                     />
                                     <div className="absolute inset-0 bg-[#00236f]/80 dark:bg-slate-900/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
@@ -267,6 +275,7 @@ export default function About() {
                                         alt="Sarah Chen"
                                         width={100}
                                         height={400}
+                                        unoptimized={true}
                                         src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop"
                                     />
                                     <div className="absolute inset-0 bg-[#00236f]/80 dark:bg-slate-900/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
@@ -285,6 +294,7 @@ export default function About() {
                                         alt="David Thorne"
                                         width={100}
                                         height={400}
+                                        unoptimized={true}
                                         src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=2070&auto=format&fit=crop"
                                     />
                                     <div className="absolute inset-0 bg-[#00236f]/80 dark:bg-slate-900/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
