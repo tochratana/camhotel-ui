@@ -23,6 +23,13 @@ export type RegisterPayload = {
   password: string;
 };
 
+export type UpdateMyProfilePayload = {
+  fullName?: string;
+  email?: string;
+  phoneNumber?: string;
+  profileImage?: string;
+};
+
 export type RoleResponse = {
   id: number;
   name: "ADMIN" | "STAFF" | "CUSTOMER";
@@ -54,4 +61,14 @@ export type ApiResponse<T> = {
   message: string;
   data: T;
   timestamp: string;
+};
+
+export type FileMetadataResponse = {
+  id: number | null;
+  fileName: string;
+  filePath: string;
+  fileType: string;
+  entityType: "USER" | "ROOM" | null;
+  entityId: number | null;
+  createdAt: string;
 };

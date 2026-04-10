@@ -4,6 +4,7 @@ import type {
   DashboardTableRow,
   DashboardUser,
 } from "@/components/dashboard/types";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { AuthResponse, UserResponse } from "@/types/auth";
 import type { BookingResponse, RoomResponse, RoomTypeResponse } from "@/types/hotel";
 
@@ -128,7 +129,7 @@ export function resolveDashboardUser(
   return {
     name: profile?.fullName ?? fallback.name,
     email: profile?.email ?? fallback.email,
-    avatar: profile?.profileImage || fallback.avatar,
+    avatar: resolveMediaUrl(profile?.profileImage) || fallback.avatar,
   };
 }
 

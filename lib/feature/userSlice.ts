@@ -5,11 +5,18 @@ import {
 import {
   ApiResponse,
   AuthResponse,
+  FileMetadataResponse,
   LoginCredentials,
   RegisterPayload,
+  UpdateMyProfilePayload,
   UserResponse,
 } from "@/types/auth";
 import { fakeStoreApi } from "./api";
+
+type UploadProfileImagePayload = {
+  userId: number;
+  file: File;
+};
 
 function getAccessToken(payload: unknown): string | null {
   if (!payload || typeof payload !== "object") {
@@ -106,10 +113,44 @@ export const authApi = fakeStoreApi.injectEndpoints({
       query: () => "/auth/me",
       providesTags: ["Auth"],
     }),
+    updateMyProfile: builder.mutation<
+      ApiResponse<AuthResponse>,
+      UpdateMyProfilePayload
+    >({
+      query: (payload) => ({
+        url: "/auth/me",
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    uploadProfileImage: builder.mutation<
+      ApiResponse<FileMetadataResponse>,
+      UploadProfileImagePayload
+    >({
+      query: ({ userId, file }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        return {
+          url: `/files/upload?entityType=USER&entityId=${encodeURIComponent(
+            String(userId),
+          )}`,
+          method: "POST",
+          body: formData,
+        };
+      },
+      invalidatesTags: ["Auth"],
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useGetCurrentUserQuery } =
-  authApi;
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useGetCurrentUserQuery,
+  useUpdateMyProfileMutation,
+  useUploadProfileImageMutation,
+} = authApi;
 
 export const { useRegisterMutation } = authApi;

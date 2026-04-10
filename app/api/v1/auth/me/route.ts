@@ -5,7 +5,7 @@ const apiBaseUrl = (
   ""
 ).replace(/\/+$/, "");
 
-export async function GET(req: Request) {
+async function proxyMe(req: Request, method: "GET" | "PATCH") {
   try {
     if (!apiBaseUrl) {
       return Response.json(
@@ -18,13 +18,15 @@ export async function GET(req: Request) {
     }
 
     const authorization = req.headers.get("authorization");
+    const requestBody = method === "PATCH" ? await req.text() : undefined;
 
     const res = await fetch(`${apiBaseUrl}/auth/me`, {
-      method: "GET",
+      method,
       headers: {
         "Content-Type": "application/json",
         ...(authorization ? { Authorization: authorization } : {}),
       },
+      body: requestBody,
       cache: "no-store",
     });
 
@@ -43,4 +45,12 @@ export async function GET(req: Request) {
     console.error("Me proxy error:", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
+}
+
+export async function GET(req: Request) {
+  return proxyMe(req, "GET");
+}
+
+export async function PATCH(req: Request) {
+  return proxyMe(req, "PATCH");
 }

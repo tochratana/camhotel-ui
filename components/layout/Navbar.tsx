@@ -31,14 +31,9 @@ export default function Navbar() {
   const token = useAuthToken();
   const hasToken = Boolean(token);
 
-  const { data, error, isFetching } = useGetCurrentUserQuery(undefined, {
+  const { data, error } = useGetCurrentUserQuery(undefined, {
     skip: !hasToken || shouldHideNavbar,
   });
-
-  // Close sidebar when route changes
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!error) return;
@@ -143,6 +138,7 @@ export default function Navbar() {
                   <Link
                       key={index}
                       href={item.link}
+                      onClick={() => setIsOpen(false)}
                       className="text-lg font-medium text-slate-700 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2"
                   >
                     {item.title}
@@ -160,7 +156,13 @@ export default function Navbar() {
                       </div>
                       <div className="flex flex-col">
                         <span className="text-sm font-bold dark:text-white">{user?.fullName ?? "User"}</span>
-                        <Link href={accountHref} className="text-xs text-blue-500">View Dashboard</Link>
+                        <Link
+                          href={accountHref}
+                          onClick={() => setIsOpen(false)}
+                          className="text-xs text-blue-500"
+                        >
+                          View Dashboard
+                        </Link>
                       </div>
                     </div>
                     <button
@@ -176,12 +178,14 @@ export default function Navbar() {
                   <>
                     <Link
                         href="/login"
+                        onClick={() => setIsOpen(false)}
                         className="w-full bg-[#00236f] text-white text-center py-3 rounded-xl font-bold"
                     >
                       Login
                     </Link>
                     <Link
                         href="/register"
+                        onClick={() => setIsOpen(false)}
                         className="w-full border border-[#00236f] text-[#00236f] text-center py-3 rounded-xl font-bold dark:border-blue-400 dark:text-blue-300"
                     >
                       Register
