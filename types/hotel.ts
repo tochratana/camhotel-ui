@@ -87,3 +87,33 @@ export type UpdateRoomStatusPayload = {
   id: number;
   status: RoomStatus;
 };
+
+export type RoomPayload = {
+  floorNumber: number;
+  roomNumber: string;
+  currentPrice: number;
+  imageUrl: string;
+  rating: number;
+  status?: RoomStatus;
+  roomTypeId: number;
+};
+
+export type RoomTypePayload = {
+  name: string;
+  description?: string;
+  amenities?: string;
+  basePrice: number;
+  capacity: number;
+};
+
+export type CreateStaffPayload = {
+  fullName: string;
+  email: string;
+  password: string;
+  phoneNumber?: string;
+};
+
+export type UpdateUserRolePayload = {
+  id: number;
+  role: "ADMIN" | "STAFF" | "CUSTOMER";
+};

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { Loader2, RefreshCcw } from "lucide-react";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
 import { getAdminDashboardConfig } from "@/components/dashboard/role-config";
@@ -13,6 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -30,11 +32,14 @@ import {
 } from "@/components/ui/table";
 import { useGetCurrentUserQuery } from "@/lib/feature/userSlice";
 import {
+  useCreateRoomMutation,
+  useDeleteRoomMutation,
   useGetRoomTypesQuery,
   useGetRoomsQuery,
+  useUpdateRoomMutation,
   useUpdateRoomStatusMutation,
 } from "@/lib/feature/hotelSlice";
-import type { RoomResponse, RoomStatus } from "@/types/hotel";
+import type { RoomPayload, RoomResponse, RoomStatus } from "@/types/hotel";
 
 const ROOM_STATUS_OPTIONS: RoomStatus[] = [
   "AVAILABLE",
@@ -45,6 +50,26 @@ const ROOM_STATUS_OPTIONS: RoomStatus[] = [
 
 type FilterStatus = RoomStatus | "ALL";
 type FilterRoomTypeId = number | "ALL";
+
+type RoomFormState = {
+  floorNumber: string;
+  roomNumber: string;
+  currentPrice: string;
+  imageUrl: string;
+  rating: string;
+  status: RoomStatus;
+  roomTypeId: string;
+};
+
+const EMPTY_ROOM_FORM: RoomFormState = {
+  floorNumber: "",
+  roomNumber: "",
+  currentPrice: "",
+  imageUrl: "",
+  rating: "0",
+  status: "AVAILABLE",
+  roomTypeId: "",
+};
 
 const moneyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -75,17 +100,21 @@ function statusClassName(status: RoomStatus): string {
   }
 }
 
-function parseApiError(error: unknown): string {
-  if (!error || typeof error !== "object") return "Unable to update room status.";
+function parseApiError(error: unknown, fallback: string): string {
+  if (!error || typeof error !== "object") return fallback;
 
   const maybeError = error as {
-    data?: { message?: string };
+    data?: {
+      message?: string;
+      error?: string;
+    };
     error?: string;
   };
 
   if (typeof maybeError.data?.message === "string") return maybeError.data.message;
+  if (typeof maybeError.data?.error === "string") return maybeError.data.error;
   if (typeof maybeError.error === "string") return maybeError.error;
-  return "Unable to update room status.";
+  return fallback;
 }
 
 function statusDraft(
@@ -93,6 +122,18 @@ function statusDraft(
   room: RoomResponse,
 ): RoomStatus {
   return drafts[room.id] ?? room.status;
+}
+
+function toRoomFormState(room: RoomResponse): RoomFormState {
+  return {
+    floorNumber: String(room.floorNumber),
+    roomNumber: room.roomNumber,
+    currentPrice: String(room.currentPrice),
+    imageUrl: room.imageUrl ?? "",
+    rating: String(room.rating ?? 0),
+    status: room.status,
+    roomTypeId: String(room.roomType?.id ?? ""),
+  };
 }
 
 export default function AdminRoomsPage() {
@@ -104,6 +145,8 @@ export default function AdminRoomsPage() {
   const [draftStatusByRoomId, setDraftStatusByRoomId] = useState<
     Record<number, RoomStatus>
   >({});
+  const [roomForm, setRoomForm] = useState<RoomFormState>(EMPTY_ROOM_FORM);
+  const [editingRoomId, setEditingRoomId] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const config = getAdminDashboardConfig(profileQuery.data?.data);
@@ -122,6 +165,9 @@ export default function AdminRoomsPage() {
 
   const roomsQuery = useGetRoomsQuery(queryArgs);
   const [updateRoomStatus, updateRoomStatusState] = useUpdateRoomStatusMutation();
+  const [createRoom, createRoomState] = useCreateRoomMutation();
+  const [updateRoom, updateRoomState] = useUpdateRoomMutation();
+  const [deleteRoom, deleteRoomState] = useDeleteRoomMutation();
 
   const pageData = roomsQuery.data?.data;
   const rooms = pageData?.content ?? [];
@@ -135,6 +181,7 @@ export default function AdminRoomsPage() {
   const maintenanceCount = rooms.filter((room) => room.status === "MAINTENANCE").length;
 
   const isLoading = roomsQuery.isLoading || roomsQuery.isFetching;
+  const isSavingRoom = createRoomState.isLoading || updateRoomState.isLoading;
 
   const handleStatusFilterChange = (value: FilterStatus) => {
     setStatusFilter(value);
@@ -167,7 +214,93 @@ export default function AdminRoomsPage() {
       }).unwrap();
       setFeedback(`Room ${room.roomNumber} updated to ${toTitleCase(nextStatus)}.`);
     } catch (error) {
-      setFeedback(parseApiError(error));
+      setFeedback(parseApiError(error, "Unable to update room status."));
+    }
+  };
+
+  const handleRoomFormChange = (key: keyof RoomFormState, value: string) => {
+    setRoomForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleEditRoom = (room: RoomResponse) => {
+    setEditingRoomId(room.id);
+    setRoomForm(toRoomFormState(room));
+    setFeedback(`Editing room ${room.roomNumber}.`);
+  };
+
+  const handleCancelRoomEdit = () => {
+    setEditingRoomId(null);
+    setRoomForm(EMPTY_ROOM_FORM);
+    setFeedback("Create mode restored.");
+  };
+
+  const handleSaveRoom = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFeedback(null);
+
+    if (!roomForm.roomTypeId) {
+      setFeedback("Room type is required.");
+      return;
+    }
+
+    const payload: RoomPayload = {
+      floorNumber: Number(roomForm.floorNumber),
+      roomNumber: roomForm.roomNumber.trim(),
+      currentPrice: Number(roomForm.currentPrice),
+      imageUrl: roomForm.imageUrl.trim(),
+      rating: Number(roomForm.rating),
+      status: roomForm.status,
+      roomTypeId: Number(roomForm.roomTypeId),
+    };
+
+    if (!payload.roomNumber || !payload.imageUrl) {
+      setFeedback("Room number and image URL are required.");
+      return;
+    }
+
+    if (!Number.isFinite(payload.currentPrice) || payload.currentPrice <= 0) {
+      setFeedback("Current price must be greater than 0.");
+      return;
+    }
+
+    if (!Number.isFinite(payload.floorNumber) || payload.floorNumber < 0) {
+      setFeedback("Floor number must be 0 or greater.");
+      return;
+    }
+
+    if (!Number.isFinite(payload.rating) || payload.rating < 0 || payload.rating > 5) {
+      setFeedback("Rating must be between 0 and 5.");
+      return;
+    }
+
+    try {
+      if (editingRoomId) {
+        await updateRoom({ id: editingRoomId, payload }).unwrap();
+        setFeedback(`Room ${payload.roomNumber} updated successfully.`);
+      } else {
+        await createRoom(payload).unwrap();
+        setFeedback(`Room ${payload.roomNumber} created successfully.`);
+      }
+      setEditingRoomId(null);
+      setRoomForm(EMPTY_ROOM_FORM);
+      setPage(0);
+    } catch (error) {
+      setFeedback(parseApiError(error, "Unable to save room."));
+    }
+  };
+
+  const handleDeleteRoom = async (room: RoomResponse) => {
+    const confirmed = window.confirm(
+      `Delete room ${room.roomNumber}? This will soft-delete the room.`,
+    );
+    if (!confirmed) return;
+
+    setFeedback(null);
+    try {
+      await deleteRoom(room.id).unwrap();
+      setFeedback(`Room ${room.roomNumber} deleted successfully.`);
+    } catch (error) {
+      setFeedback(parseApiError(error, "Unable to delete room."));
     }
   };
 
@@ -182,6 +315,142 @@ export default function AdminRoomsPage() {
     >
       <div className="flex flex-col w-full h-full">
         <div className="flex flex-col gap-6 h-full px-4 py-6 lg:px-6 lg:py-8 pb-20">
+          <Card>
+            <CardHeader>
+              <CardTitle>{editingRoomId ? "Edit Room" : "Create Room"}</CardTitle>
+              <CardDescription>
+                {editingRoomId
+                  ? "Update an existing room configuration."
+                  : "Create a new room in the hotel inventory."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSaveRoom}>
+                <div className="space-y-2">
+                  <Label htmlFor="room-number">Room Number</Label>
+                  <Input
+                    id="room-number"
+                    value={roomForm.roomNumber}
+                    onChange={(event) =>
+                      handleRoomFormChange("roomNumber", event.target.value)
+                    }
+                    placeholder="A-101"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="floor-number">Floor Number</Label>
+                  <Input
+                    id="floor-number"
+                    type="number"
+                    min={0}
+                    value={roomForm.floorNumber}
+                    onChange={(event) =>
+                      handleRoomFormChange("floorNumber", event.target.value)
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="room-price">Current Price</Label>
+                  <Input
+                    id="room-price"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    value={roomForm.currentPrice}
+                    onChange={(event) =>
+                      handleRoomFormChange("currentPrice", event.target.value)
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="room-rating">Rating (0-5)</Label>
+                  <Input
+                    id="room-rating"
+                    type="number"
+                    min={0}
+                    max={5}
+                    value={roomForm.rating}
+                    onChange={(event) => handleRoomFormChange("rating", event.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="room-image-url">Image URL</Label>
+                  <Input
+                    id="room-image-url"
+                    value={roomForm.imageUrl}
+                    onChange={(event) =>
+                      handleRoomFormChange("imageUrl", event.target.value)
+                    }
+                    placeholder="https://..."
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Room Type</Label>
+                  <Select
+                    value={roomForm.roomTypeId || "NONE"}
+                    onValueChange={(value) =>
+                      handleRoomFormChange("roomTypeId", value === "NONE" ? "" : value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select room type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="NONE">Select type</SelectItem>
+                      {roomTypes.map((roomType) => (
+                        <SelectItem key={roomType.id} value={String(roomType.id)}>
+                          {roomType.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <Select
+                    value={roomForm.status}
+                    onValueChange={(value) =>
+                      handleRoomFormChange("status", value as RoomStatus)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ROOM_STATUS_OPTIONS.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {toTitleCase(status)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="md:col-span-2 flex items-center gap-2">
+                  <Button type="submit" disabled={isSavingRoom}>
+                    {isSavingRoom ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : editingRoomId ? (
+                      "Save Changes"
+                    ) : (
+                      "Create Room"
+                    )}
+                  </Button>
+                  {editingRoomId ? (
+                    <Button type="button" variant="outline" onClick={handleCancelRoomEdit}>
+                      Cancel
+                    </Button>
+                  ) : null}
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Admin Room Board</CardTitle>
@@ -298,13 +567,14 @@ export default function AdminRoomsPage() {
                       <TableHead>Price</TableHead>
                       <TableHead>Rating</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Action</TableHead>
+                      <TableHead>Status Control</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="h-28 text-center text-muted-foreground">
+                        <TableCell colSpan={8} className="h-28 text-center text-muted-foreground">
                           <span className="inline-flex items-center gap-2">
                             <Loader2 className="h-4 w-4 animate-spin" />
                             Loading rooms...
@@ -313,16 +583,18 @@ export default function AdminRoomsPage() {
                       </TableRow>
                     ) : rooms.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="h-28 text-center text-muted-foreground">
+                        <TableCell colSpan={8} className="h-28 text-center text-muted-foreground">
                           No rooms found for this filter.
                         </TableCell>
                       </TableRow>
                     ) : (
                       rooms.map((room) => {
                         const selectedStatus = statusDraft(draftStatusByRoomId, room);
-                        const isUpdatingThisRow =
+                        const isUpdatingStatus =
                           updateRoomStatusState.isLoading &&
                           updateRoomStatusState.originalArgs?.id === room.id;
+                        const isDeletingRoom =
+                          deleteRoomState.isLoading && deleteRoomState.originalArgs === room.id;
 
                         return (
                           <TableRow key={room.id}>
@@ -345,8 +617,8 @@ export default function AdminRoomsPage() {
                                 {toTitleCase(room.status)}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-right">
-                              <div className="flex items-center justify-end gap-2">
+                            <TableCell>
+                              <div className="flex items-center gap-2">
                                 <Select
                                   value={selectedStatus}
                                   onValueChange={(value) =>
@@ -367,13 +639,39 @@ export default function AdminRoomsPage() {
                                 <Button
                                   type="button"
                                   size="sm"
+                                  variant="outline"
                                   onClick={() => void handleUpdateStatus(room)}
-                                  disabled={isUpdatingThisRow}
+                                  disabled={isUpdatingStatus}
                                 >
-                                  {isUpdatingThisRow ? (
+                                  {isUpdatingStatus ? (
                                     <Loader2 className="h-4 w-4 animate-spin" />
                                   ) : (
                                     "Save"
+                                  )}
+                                </Button>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleEditRoom(room)}
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => void handleDeleteRoom(room)}
+                                  disabled={isDeletingRoom}
+                                >
+                                  {isDeletingRoom ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    "Delete"
                                   )}
                                 </Button>
                               </div>

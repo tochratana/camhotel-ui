@@ -184,7 +184,7 @@ export default function CustomerProfilePage() {
     }
 
     try {
-      await uploadProfileImage({ userId: profile.id, file: selectedFile }).unwrap();
+      await uploadProfileImage({ file: selectedFile }).unwrap();
       await profileQuery.refetch();
       setSelectedFile(null);
       if (previewUrl.startsWith("blob:")) {

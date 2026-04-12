@@ -14,7 +14,6 @@ import {
 import { fakeStoreApi } from "./api";
 
 type UploadProfileImagePayload = {
-  userId: number;
   file: File;
 };
 
@@ -128,14 +127,12 @@ export const authApi = fakeStoreApi.injectEndpoints({
       ApiResponse<FileMetadataResponse>,
       UploadProfileImagePayload
     >({
-      query: ({ userId, file }) => {
+      query: ({ file }) => {
         const formData = new FormData();
         formData.append("file", file);
 
         return {
-          url: `/files/upload?entityType=USER&entityId=${encodeURIComponent(
-            String(userId),
-          )}`,
+          url: "/files/upload/me",
           method: "POST",
           body: formData,
         };

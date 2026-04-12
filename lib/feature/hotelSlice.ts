@@ -4,13 +4,17 @@ import type {
   ApiPageResponse,
   BookingResponse,
   BookingsQuery,
+  CreateStaffPayload,
   PaginationQuery,
+  RoomPayload,
   RoomResponse,
   RoomStatus,
+  RoomTypePayload,
   RoomTypeResponse,
   RoomsQuery,
   UpdateBookingStatusPayload,
   UpdateRoomStatusPayload,
+  UpdateUserRolePayload,
 } from "@/types/hotel";
 
 function withQuery(path: string, params?: Record<string, unknown>) {
@@ -94,6 +98,80 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
         }),
       providesTags: ["Auth"],
     }),
+    createRoom: builder.mutation<ApiResponse<RoomResponse>, RoomPayload>({
+      query: (payload) => ({
+        url: "/rooms",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    updateRoom: builder.mutation<ApiResponse<RoomResponse>, { id: number; payload: RoomPayload }>(
+      {
+        query: ({ id, payload }) => ({
+          url: `/rooms/${id}`,
+          method: "PUT",
+          body: payload,
+        }),
+        invalidatesTags: ["Auth"],
+      },
+    ),
+    deleteRoom: builder.mutation<ApiResponse<void>, number>({
+      query: (id) => ({
+        url: `/rooms/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    restoreRoom: builder.mutation<ApiResponse<RoomResponse>, number>({
+      query: (id) => ({
+        url: `/rooms/${id}/restore`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    createRoomType: builder.mutation<ApiResponse<RoomTypeResponse>, RoomTypePayload>({
+      query: (payload) => ({
+        url: "/room-types",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    updateRoomType: builder.mutation<
+      ApiResponse<RoomTypeResponse>,
+      { id: number; payload: RoomTypePayload }
+    >({
+      query: ({ id, payload }) => ({
+        url: `/room-types/${id}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    createStaff: builder.mutation<ApiResponse<UserResponse>, CreateStaffPayload>({
+      query: (payload) => ({
+        url: "/users/staff",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    updateUserRole: builder.mutation<ApiResponse<UserResponse>, UpdateUserRolePayload>({
+      query: ({ id, role }) => ({
+        url: `/users/${id}/role`,
+        method: "PATCH",
+        body: { role },
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    deleteUser: builder.mutation<ApiResponse<void>, number>({
+      query: (id) => ({
+        url: `/users/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
     updateBookingStatus: builder.mutation<
       ApiResponse<BookingResponse>,
       UpdateBookingStatusPayload
@@ -131,6 +209,15 @@ export const {
   useGetAllBookingsQuery,
   useGetMyBookingsQuery,
   useGetUsersQuery,
+  useCreateRoomMutation,
+  useUpdateRoomMutation,
+  useDeleteRoomMutation,
+  useRestoreRoomMutation,
+  useCreateRoomTypeMutation,
+  useUpdateRoomTypeMutation,
+  useCreateStaffMutation,
+  useUpdateUserRoleMutation,
+  useDeleteUserMutation,
   useUpdateBookingStatusMutation,
   useUpdateRoomStatusMutation,
   useGetBookingPolicyQuery,
