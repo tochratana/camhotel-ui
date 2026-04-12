@@ -19,6 +19,15 @@ export function resolveMediaUrl(value: string | null | undefined): string {
     return normalized;
   }
 
+  // For relative media paths from backend (e.g. uploads/file.png),
+  // use the frontend /uploads proxy so host/protocol stay correct in all envs.
+  const relativePath = normalized.startsWith("/")
+    ? normalized.slice(1)
+    : normalized;
+  if (relativePath.startsWith("uploads/")) {
+    return `/${relativePath}`;
+  }
+
   if (!publicApiOrigin) {
     return normalized.startsWith("/") ? normalized : `/${normalized}`;
   }

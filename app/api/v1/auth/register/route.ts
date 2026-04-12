@@ -1,23 +1,14 @@
-const apiBaseUrl = (
-  process.env.API_BASE_URL ??
-  process.env.NEXT_PUBLIC_BASE_URL ??
-  process.env.NEXT_PUBLIC_API ??
-  ""
-).replace(/\/+$/, "");
+// const apiBaseUrl = (
+//   process.env.API_BASE_URL ??
+//   process.env.NEXT_PUBLIC_BASE_URL ??
+//   process.env.NEXT_PUBLIC_API ??
+//   ""
+// ).replace(/\/+$/, "");
 
 export async function POST(req: Request) {
   try {
-    if (!apiBaseUrl) {
-      return Response.json(
-        {
-          error:
-            "Missing API base URL. Set API_BASE_URL, NEXT_PUBLIC_BASE_URL, or NEXT_PUBLIC_API.",
-        },
-        { status: 500 },
-      );
-    }
 
-    const res = await fetch(`${apiBaseUrl}/auth/register`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

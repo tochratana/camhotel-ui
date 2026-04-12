@@ -1,26 +1,10 @@
-const apiBaseUrl = (
-  process.env.API_BASE_URL ??
-  process.env.NEXT_PUBLIC_BASE_URL ??
-  process.env.NEXT_PUBLIC_API ??
-  ""
-).replace(/\/+$/, "");
-
 async function proxyMe(req: Request, method: "GET" | "PATCH") {
   try {
-    if (!apiBaseUrl) {
-      return Response.json(
-        {
-          error:
-            "Missing API base URL. Set API_BASE_URL, NEXT_PUBLIC_BASE_URL, or NEXT_PUBLIC_API.",
-        },
-        { status: 500 },
-      );
-    }
 
     const authorization = req.headers.get("authorization");
     const requestBody = method === "PATCH" ? await req.text() : undefined;
 
-    const res = await fetch(`${apiBaseUrl}/auth/me`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
       method,
       headers: {
         "Content-Type": "application/json",
