@@ -1,3 +1,5 @@
+import { buildApiUrl } from "@/lib/api-base-url";
+
 type RouteContext = {
   params: Promise<{
     path: string[];
@@ -15,7 +17,7 @@ function buildForwardHeaders(req: Request): Headers {
 function buildTargetUrl(path: string[], requestUrl: string): string {
   const sourceUrl = new URL(requestUrl);
   const targetPath = path.join("/");
-  return `${process.env.NEXT_PUBLIC_API}/${targetPath}${sourceUrl.search}`;
+  return buildApiUrl(targetPath, sourceUrl.search);
 }
 
 async function proxyMedia(

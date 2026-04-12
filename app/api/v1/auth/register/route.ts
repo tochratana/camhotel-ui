@@ -1,14 +1,9 @@
-// const apiBaseUrl = (
-//   process.env.API_BASE_URL ??
-//   process.env.NEXT_PUBLIC_BASE_URL ??
-//   process.env.NEXT_PUBLIC_API ??
-//   ""
-// ).replace(/\/+$/, "");
+import { buildApiUrl } from "@/lib/api-base-url";
 
 export async function POST(req: Request) {
   try {
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/register`, {
+    const res = await fetch(buildApiUrl("auth/register"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

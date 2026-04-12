@@ -1,9 +1,4 @@
-const apiBaseUrl = (
-  process.env.API_BASE_URL ??
-  process.env.NEXT_PUBLIC_BASE_URL ??
-  process.env.NEXT_PUBLIC_API ??
-  ""
-).replace(/\/+$/, "");
+import { buildApiUrl } from "@/lib/api-base-url";
 
 type RouteContext = {
   params: Promise<{
@@ -14,8 +9,7 @@ type RouteContext = {
 function buildTargetUrl(path: string[], requestUrl: string): string {
   const sourceUrl = new URL(requestUrl);
   const targetPath = path.join("/");
-  const separator = targetPath ? "/" : "";
-  return `${apiBaseUrl}${separator}${targetPath}${sourceUrl.search}`;
+  return buildApiUrl(targetPath, sourceUrl.search);
 }
 
 function buildForwardHeaders(req: Request): Headers {
@@ -28,16 +22,6 @@ function buildForwardHeaders(req: Request): Headers {
 
 async function handleProxy(req: Request, context: RouteContext): Promise<Response> {
   try {
-    if (!apiBaseUrl) {
-      return Response.json(
-        {
-          error:
-            "Missing API base URL. Set API_BASE_URL, NEXT_PUBLIC_BASE_URL, or NEXT_PUBLIC_API.",
-        },
-        { status: 500 },
-      );
-    }
-
     const { path } = await context.params;
     const targetUrl = buildTargetUrl(path, req.url);
     const headers = buildForwardHeaders(req);
