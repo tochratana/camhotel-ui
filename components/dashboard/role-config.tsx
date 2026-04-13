@@ -14,7 +14,7 @@ import {
 
 export const adminDashboardConfig: DashboardShellConfig = {
   appName: "CamHotel Admin",
-  appUrl: "/admin",
+  appUrl: "/",
   appIcon: <CommandIcon className="size-5!" />,
   headerTitle: "Admin Overview",
   headerDescription: "Full operations dashboard for management and controls",
@@ -26,6 +26,7 @@ export const adminDashboardConfig: DashboardShellConfig = {
   quickAction: {
     title: "Manage Bookings",
     url: "/admin/bookings",
+    showEmailIcon: false,
   },
   navMain: [
     {
@@ -112,7 +113,7 @@ export const staffDashboardConfig: DashboardShellConfig = {
 
 export const customerDashboardConfig: DashboardShellConfig = {
   appName: "CamHotel Guest",
-  appUrl: "/customer",
+  appUrl: "/",
   appIcon: <CommandIcon className="size-5!" />,
   headerTitle: "My Dashboard",
   headerDescription: "Track your stays and manage your account quickly",

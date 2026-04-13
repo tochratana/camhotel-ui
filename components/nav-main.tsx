@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -10,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { CirclePlusIcon, MailIcon } from "lucide-react"
+import { CirclePlusIcon } from "lucide-react"
 
 export function NavMain({
   items,
@@ -56,16 +55,6 @@ export function NavMain({
                   <span>{quickAction.title}</span>
                 </Link>
               </SidebarMenuButton>
-              {quickAction.showEmailIcon !== false ? (
-                <Button
-                  size="icon"
-                  className="size-8 group-data-[collapsible=icon]:opacity-0"
-                  variant="outline"
-                >
-                  <MailIcon />
-                  <span className="sr-only">Inbox</span>
-                </Button>
-              ) : null}
             </SidebarMenuItem>
           </SidebarMenu>
         ) : null}

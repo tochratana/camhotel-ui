@@ -16,6 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -30,6 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useGetCurrentUserQuery } from "@/lib/feature/userSlice";
 import {
   useCreateStaffMutation,
@@ -104,10 +112,12 @@ function parseApiError(error: unknown, fallback: string): string {
 }
 
 export default function AdminUsersPage() {
+  const isMobile = useIsMobile();
   const profileQuery = useGetCurrentUserQuery();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [staffForm, setStaffForm] = useState<StaffFormState>(EMPTY_STAFF_FORM);
+  const [isStaffFormOpen, setIsStaffFormOpen] = useState(false);
   const [roleDraftByUserId, setRoleDraftByUserId] = useState<Record<number, RoleName>>(
     {},
   );
@@ -162,11 +172,31 @@ export default function AdminUsersPage() {
     try {
       await createStaff(payload).unwrap();
       setStaffForm(EMPTY_STAFF_FORM);
+      setIsStaffFormOpen(false);
       setPage(0);
       setFeedback(`Staff account created for ${payload.fullName}.`);
     } catch (error) {
       setFeedback(parseApiError(error, "Unable to create staff account."));
     }
+  };
+
+  const handleStartCreateStaff = () => {
+    setStaffForm(EMPTY_STAFF_FORM);
+    setFeedback(null);
+    setIsStaffFormOpen(true);
+  };
+
+  const handleStaffFormOpenChange = (open: boolean) => {
+    setIsStaffFormOpen(open);
+    if (!open) {
+      setStaffForm(EMPTY_STAFF_FORM);
+    }
+  };
+
+  const handleCancelStaffCreate = () => {
+    setStaffForm(EMPTY_STAFF_FORM);
+    setIsStaffFormOpen(false);
+    setFeedback("Form closed.");
   };
 
   const handleRoleDraftChange = (userId: number, role: RoleName) => {
@@ -215,77 +245,6 @@ export default function AdminUsersPage() {
         <div className="flex flex-col gap-6 h-full px-4 py-6 lg:px-6 lg:py-8 pb-20">
           <Card>
             <CardHeader>
-              <CardTitle>Create Staff Account</CardTitle>
-              <CardDescription>
-                Create staff users directly from admin panel.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form className="grid gap-4 md:grid-cols-2" onSubmit={handleCreateStaff}>
-                <div className="space-y-2">
-                  <Label htmlFor="staff-full-name">Full Name</Label>
-                  <Input
-                    id="staff-full-name"
-                    value={staffForm.fullName}
-                    onChange={(event) =>
-                      setStaffForm((prev) => ({ ...prev, fullName: event.target.value }))
-                    }
-                    placeholder="Staff name"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="staff-email">Email</Label>
-                  <Input
-                    id="staff-email"
-                    type="email"
-                    value={staffForm.email}
-                    onChange={(event) =>
-                      setStaffForm((prev) => ({ ...prev, email: event.target.value }))
-                    }
-                    placeholder="staff@camhotel.com"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="staff-password">Password</Label>
-                  <Input
-                    id="staff-password"
-                    type="password"
-                    value={staffForm.password}
-                    onChange={(event) =>
-                      setStaffForm((prev) => ({ ...prev, password: event.target.value }))
-                    }
-                    placeholder="Minimum 6 characters"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="staff-phone">Phone Number</Label>
-                  <Input
-                    id="staff-phone"
-                    value={staffForm.phoneNumber}
-                    onChange={(event) =>
-                      setStaffForm((prev) => ({ ...prev, phoneNumber: event.target.value }))
-                    }
-                    placeholder="+855..."
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <Button type="submit" disabled={createStaffState.isLoading}>
-                    {createStaffState.isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      "Create Staff"
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
               <CardTitle>Users Directory</CardTitle>
               <CardDescription>
                 Admin overview of all users across roles.
@@ -327,19 +286,24 @@ export default function AdminUsersPage() {
                   </SelectContent>
                 </Select>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => usersQuery.refetch()}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <RefreshCcw className="mr-2 h-4 w-4" />
-                  )}
-                  Refresh
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => usersQuery.refetch()}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCcw className="mr-2 h-4 w-4" />
+                    )}
+                    Refresh
+                  </Button>
+                  <Button type="button" onClick={handleStartCreateStaff}>
+                    Create Staff
+                  </Button>
+                </div>
               </div>
 
               {feedback ? (
@@ -500,6 +464,85 @@ export default function AdminUsersPage() {
           </Card>
         </div>
       </div>
+      <Drawer
+        open={isStaffFormOpen}
+        onOpenChange={handleStaffFormOpenChange}
+        direction={isMobile ? "bottom" : "right"}
+      >
+        <DrawerContent>
+          <DrawerHeader className="gap-1">
+            <DrawerTitle>Create Staff Account</DrawerTitle>
+            <DrawerDescription>
+              Create staff users directly from admin panel.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="overflow-y-auto px-4 pb-4">
+            <form className="grid gap-4 md:grid-cols-2" onSubmit={handleCreateStaff}>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-staff-full-name">Full Name</Label>
+                <Input
+                  id="drawer-staff-full-name"
+                  value={staffForm.fullName}
+                  onChange={(event) =>
+                    setStaffForm((prev) => ({ ...prev, fullName: event.target.value }))
+                  }
+                  placeholder="Staff name"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-staff-email">Email</Label>
+                <Input
+                  id="drawer-staff-email"
+                  type="email"
+                  value={staffForm.email}
+                  onChange={(event) =>
+                    setStaffForm((prev) => ({ ...prev, email: event.target.value }))
+                  }
+                  placeholder="staff@camhotel.com"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-staff-password">Password</Label>
+                <Input
+                  id="drawer-staff-password"
+                  type="password"
+                  value={staffForm.password}
+                  onChange={(event) =>
+                    setStaffForm((prev) => ({ ...prev, password: event.target.value }))
+                  }
+                  placeholder="Minimum 6 characters"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-staff-phone">Phone Number</Label>
+                <Input
+                  id="drawer-staff-phone"
+                  value={staffForm.phoneNumber}
+                  onChange={(event) =>
+                    setStaffForm((prev) => ({ ...prev, phoneNumber: event.target.value }))
+                  }
+                  placeholder="+855..."
+                />
+              </div>
+              <div className="md:col-span-2 flex items-center gap-2">
+                <Button type="submit" disabled={createStaffState.isLoading}>
+                  {createStaffState.isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Create Staff"
+                  )}
+                </Button>
+                <Button type="button" variant="outline" onClick={handleCancelStaffCreate}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </DashboardFrame>
   );
 }

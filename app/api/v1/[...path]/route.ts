@@ -1,5 +1,13 @@
 import { RouteContext } from "@/types/routeType";
 
+function getApiBaseUrl(): string {
+  const rawValue =
+    process.env.API_BASE_URL ??
+    process.env.NEXT_PUBLIC_API ??
+    "";
+  return rawValue.replace(/\/+$/, "");
+}
+
 function buildForwardHeaders(req: Request): Headers {
   const headers = new Headers(req.headers);
   headers.delete("host");
@@ -15,7 +23,15 @@ async function handleProxy(
   try {
     const { path } = await context.params;
     const sourceUrl = new URL(req.url);
-    const targetUrl = `${process.env.NEXT_PUBLIC_API}/${path.join("/")}${sourceUrl.search}`;
+    const apiBaseUrl = getApiBaseUrl();
+    if (!apiBaseUrl) {
+      return Response.json(
+        { error: "API base URL is not configured. Set API_BASE_URL or NEXT_PUBLIC_API." },
+        { status: 500 },
+      );
+    }
+
+    const targetUrl = `${apiBaseUrl}/${path.join("/")}${sourceUrl.search}`;
     const headers = buildForwardHeaders(req);
 
     const method = req.method.toUpperCase();
@@ -36,7 +52,10 @@ async function handleProxy(
     });
   } catch (error) {
     console.error("API proxy error:", error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return Response.json(
+      { error: "API proxy request failed. Please verify backend server is reachable." },
+      { status: 500 },
+    );
   }
 }
 

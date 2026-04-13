@@ -24,9 +24,24 @@ function SheetClose({
 }
 
 function SheetPortal({
+  container,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Portal>) {
-  return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
+  const [resolvedContainer, setResolvedContainer] =
+    React.useState<HTMLElement | null>(null)
+
+  React.useEffect(() => {
+    if (container) return
+    setResolvedContainer(document.querySelector<HTMLElement>(".dashboard-theme"))
+  }, [container])
+
+  return (
+    <SheetPrimitive.Portal
+      data-slot="sheet-portal"
+      container={container ?? resolvedContainer ?? undefined}
+      {...props}
+    />
+  )
 }
 
 function SheetOverlay({

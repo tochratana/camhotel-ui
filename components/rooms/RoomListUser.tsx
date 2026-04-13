@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetRoomTypesQuery, useGetRoomsQuery } from "@/lib/feature/hotelSlice";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { RoomResponse, RoomStatus } from "@/types/hotel";
 
 type SortOption = "price_asc" | "price_desc" | "rating_desc" | "room_asc";
@@ -29,7 +30,7 @@ type RoomFilters = {
 
 const AVAILABLE_STATUS: RoomStatus = "AVAILABLE";
 
-const initialFilters: RoomFilters = {
+const baseFilters: RoomFilters = {
   keyword: "",
   roomTypeId: "ALL",
   maxPrice: "",
@@ -52,6 +53,41 @@ const moneyFormatter = new Intl.NumberFormat("en-US", {
   currency: "USD",
   maximumFractionDigits: 0,
 });
+
+function toDateInputValue(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function addDays(date: Date, days: number): Date {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function getDefaultDateRange() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = addDays(today, 1);
+  return {
+    todayString: toDateInputValue(today),
+    defaultCheckOutDate: toDateInputValue(tomorrow),
+  };
+}
+
+function buildRoomDetailsHref(
+  roomId: number,
+  checkInDate: string,
+  checkOutDate: string,
+): string {
+  const searchParams = new URLSearchParams();
+  if (checkInDate) searchParams.set("checkInDate", checkInDate);
+  if (checkOutDate) searchParams.set("checkOutDate", checkOutDate);
+  const query = searchParams.toString();
+  return query ? `/rooms/${roomId}?${query}` : `/rooms/${roomId}`;
+}
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -86,18 +122,19 @@ function getSortQuery(sort: SortOption): { sortBy: string; sortDirection: "asc" 
   }
 }
 
-function getSafeImageUrl(room: RoomResponse, index: number): string {
-  const imageUrl = room.imageUrl ?? "";
-  const isKnownAllowedHost =
-    imageUrl.startsWith("https://images.unsplash.com") ||
-    imageUrl.startsWith("https://lh3.googleusercontent.com") ||
-    imageUrl.startsWith("https://arystorephone.com");
-
-  if (isKnownAllowedHost) return imageUrl;
+function getRoomImageUrl(room: RoomResponse, index: number): string {
+  const resolvedImage = resolveMediaUrl(room.imageUrl);
+  if (resolvedImage) {
+    return resolvedImage;
+  }
   return fallbackRoomImages[index % fallbackRoomImages.length];
 }
 
-function getDateRangeError(checkInDate: string, checkOutDate: string): string | null {
+function getDateRangeError(
+  checkInDate: string,
+  checkOutDate: string,
+  todayString: string,
+): string | null {
   if (!checkInDate && !checkOutDate) return null;
   if (!checkInDate || !checkOutDate) {
     return "Please provide both check-in and check-out dates.";
@@ -105,6 +142,12 @@ function getDateRangeError(checkInDate: string, checkOutDate: string): string | 
 
   const checkIn = new Date(checkInDate);
   const checkOut = new Date(checkOutDate);
+  const today = new Date(todayString);
+
+  if (checkIn < today) {
+    return "Check-in date cannot be in the past.";
+  }
+
   if (checkOut <= checkIn) {
     return "Check-out date must be after check-in date.";
   }
@@ -113,14 +156,25 @@ function getDateRangeError(checkInDate: string, checkOutDate: string): string | 
 }
 
 export default function RoomListUser() {
+  const { todayString, defaultCheckOutDate } = useMemo(() => getDefaultDateRange(), []);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(9);
-  const [filters, setFilters] = useState<RoomFilters>(initialFilters);
+  const [filters, setFilters] = useState<RoomFilters>(() => ({
+    ...baseFilters,
+    checkInDate: todayString,
+    checkOutDate: defaultCheckOutDate,
+  }));
 
   const debouncedKeyword = useDebouncedValue(filters.keyword, 350);
   const sortQuery = getSortQuery(filters.sort);
-  const dateRangeError = getDateRangeError(filters.checkInDate, filters.checkOutDate);
+  const dateRangeError = getDateRangeError(filters.checkInDate, filters.checkOutDate, todayString);
   const hasValidDateRange = !dateRangeError && filters.checkInDate && filters.checkOutDate;
+  const minCheckOutDate = useMemo(() => {
+    if (!filters.checkInDate) return defaultCheckOutDate;
+    const checkInDate = new Date(filters.checkInDate);
+    if (Number.isNaN(checkInDate.getTime())) return defaultCheckOutDate;
+    return toDateInputValue(addDays(checkInDate, 1));
+  }, [defaultCheckOutDate, filters.checkInDate]);
 
   const queryArgs = useMemo(
     () => ({
@@ -167,7 +221,11 @@ export default function RoomListUser() {
   };
 
   const handleClearFilters = () => {
-    setFilters(initialFilters);
+    setFilters({
+      ...baseFilters,
+      checkInDate: todayString,
+      checkOutDate: defaultCheckOutDate,
+    });
     setPage(0);
   };
 
@@ -182,7 +240,7 @@ export default function RoomListUser() {
             Our Sanctuaries
           </h1>
           <p className="max-w-2xl text-[#444651] dark:text-slate-300 text-lg leading-relaxed">
-            Live backend data with instant filtering. Only currently available rooms are shown.
+            Live backend data with instant filtering. Results update for your selected stay dates.
           </p>
         </section>
 
@@ -250,11 +308,13 @@ export default function RoomListUser() {
                 type="date"
                 value={filters.checkInDate}
                 onChange={(event) => updateFilters({ checkInDate: event.target.value })}
+                min={todayString}
               />
               <Input
                 type="date"
                 value={filters.checkOutDate}
                 onChange={(event) => updateFilters({ checkOutDate: event.target.value })}
+                min={minCheckOutDate}
               />
               <Button type="button" variant="outline" onClick={handleClearFilters}>
                 Clear Filters
@@ -262,7 +322,7 @@ export default function RoomListUser() {
             </div>
 
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Filters update automatically while you type.
+              Set check-in and check-out to find rooms free for that exact date range.
             </p>
             {dateRangeError ? (
               <p className="text-sm text-rose-600 dark:text-rose-400">{dateRangeError}</p>
@@ -299,22 +359,28 @@ export default function RoomListUser() {
 
         <section className="max-w-7xl mx-auto px-6">
           {isLoading ? (
-            <div className="min-h-[300px] flex items-center justify-center text-slate-500">
+            <div className="min-h-75 flex items-center justify-center text-slate-500">
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
               Loading rooms...
             </div>
           ) : roomsQuery.isError ? (
-            <div className="min-h-[300px] rounded-xl border border-rose-300 bg-rose-50 text-rose-700 flex items-center justify-center text-sm">
+            <div className="min-h-75 rounded-xl border border-rose-300 bg-rose-50 text-rose-700 flex items-center justify-center text-sm">
               Failed to load rooms from backend.
             </div>
           ) : rooms.length === 0 ? (
-            <div className="min-h-[300px] rounded-xl border border-slate-300 bg-white dark:bg-slate-900 flex items-center justify-center text-sm text-slate-500 dark:text-slate-400">
+            <div className="min-h-75 rounded-xl border border-slate-300 bg-white dark:bg-slate-900 flex items-center justify-center text-sm text-slate-500 dark:text-slate-400">
               No available rooms found for the current filters.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {rooms.map((room, index) => {
-                const imageUrl = getSafeImageUrl(room, index);
+                const imageUrl = getRoomImageUrl(room, index);
+                const detailsHref = buildRoomDetailsHref(
+                  room.id,
+                  filters.checkInDate,
+                  filters.checkOutDate,
+                );
+                const roomBadgeLabel = hasValidDateRange ? "Bookable" : toTitleCase(room.status);
                 const amenities = (room.roomType?.amenities ?? "")
                   .split(",")
                   .map((item) => item.trim())
@@ -326,13 +392,14 @@ export default function RoomListUser() {
                     key={room.id}
                     className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:border dark:border-slate-800 transition-all duration-500"
                   >
-                    <Link href={`/rooms/${room.id}`} className="block relative h-72 overflow-hidden">
+                    <Link href={detailsHref} className="block relative h-72 overflow-hidden">
                       <Image
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         alt={`Room ${room.roomNumber}`}
                         width={1000}
                         height={700}
                         src={imageUrl}
+                        unoptimized
                       />
                       <div className="absolute top-4 left-4">
                         <span className="px-3 py-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[#00236f] dark:text-blue-400 font-bold text-[10px] uppercase tracking-widest rounded-full shadow-sm">
@@ -341,14 +408,14 @@ export default function RoomListUser() {
                       </div>
                       <div className="absolute top-4 right-4">
                         <span className="px-3 py-1 bg-emerald-600/90 text-white text-[10px] uppercase tracking-widest rounded-full">
-                          {toTitleCase(room.status)}
+                          {roomBadgeLabel}
                         </span>
                       </div>
                     </Link>
                     <div className="p-6">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="text-xl font-bold text-[#1a1b21] dark:text-white group-hover:text-[#00236f] dark:group-hover:text-blue-400 transition-colors">
-                          <Link href={`/rooms/${room.id}`}>Room {room.roomNumber}</Link>
+                          <Link href={detailsHref}>Room {room.roomNumber}</Link>
                         </h3>
                         <div className="flex items-center text-[#6e2c00] dark:text-amber-400">
                           <Star className="h-4 w-4 fill-current" />
@@ -387,7 +454,7 @@ export default function RoomListUser() {
                           </span>
                         </div>
                         <Button asChild className="px-4 py-2 text-sm">
-                          <Link href={`/rooms/${room.id}`}>
+                          <Link href={detailsHref}>
                             View Details
                             <ArrowRight className="ml-1 h-4 w-4" />
                           </Link>

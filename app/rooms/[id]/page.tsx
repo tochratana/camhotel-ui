@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
@@ -21,7 +21,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAuthTokenState } from "@/lib/hooks/useAuthToken";
 import { useGetRoomByIdQuery, useGetRoomsQuery } from "@/lib/feature/hotelSlice";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { RoomResponse } from "@/types/hotel";
 
 const fallbackRoomImages = [
@@ -48,20 +50,38 @@ function toTitleCase(text: string): string {
 }
 
 function getSafeImageUrl(room: RoomResponse, index: number): string {
-  const imageUrl = room.imageUrl ?? "";
-  const isKnownAllowedHost =
-    imageUrl.startsWith("https://images.unsplash.com") ||
-    imageUrl.startsWith("https://lh3.googleusercontent.com") ||
-    imageUrl.startsWith("https://arystorephone.com");
-
-  if (isKnownAllowedHost) return imageUrl;
+  const resolvedImage = resolveMediaUrl(room.imageUrl);
+  if (resolvedImage) return resolvedImage;
   return fallbackRoomImages[index % fallbackRoomImages.length];
+}
+
+function isDateInput(value: string | null): value is string {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function buildBookingHref(roomId: number, checkInDate: string | null, checkOutDate: string | null): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("roomId", String(roomId));
+  if (isDateInput(checkInDate)) {
+    searchParams.set("checkInDate", checkInDate);
+  }
+  if (isDateInput(checkOutDate)) {
+    searchParams.set("checkOutDate", checkOutDate);
+  }
+  return `/customer/book?${searchParams.toString()}`;
 }
 
 export default function RoomDetailPage() {
   const params = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const roomId = Number(params.id);
   const isValidRoomId = Number.isFinite(roomId);
+  const { token, isHydrated } = useAuthTokenState();
+  const hasToken = Boolean(token);
+  const selectedCheckInDate = searchParams.get("checkInDate");
+  const selectedCheckOutDate = searchParams.get("checkOutDate");
+  const hasDateRange =
+    isDateInput(selectedCheckInDate) && isDateInput(selectedCheckOutDate);
 
   const roomQuery = useGetRoomByIdQuery(roomId, { skip: !isValidRoomId });
   const room = roomQuery.data?.data;
@@ -72,10 +92,12 @@ export default function RoomDetailPage() {
       size: 4,
       status: "AVAILABLE" as const,
       roomTypeId: room?.roomType?.id,
+      checkInDate: hasDateRange ? selectedCheckInDate : undefined,
+      checkOutDate: hasDateRange ? selectedCheckOutDate : undefined,
       sortBy: "rating",
       sortDirection: "desc" as const,
     }),
-    [room?.roomType?.id],
+    [hasDateRange, room?.roomType?.id, selectedCheckInDate, selectedCheckOutDate],
   );
 
   const relatedRoomsQuery = useGetRoomsQuery(relatedQueryArgs, {
@@ -142,6 +164,10 @@ export default function RoomDetailPage() {
     .filter(Boolean);
 
   const imageUrl = getSafeImageUrl(room, 0);
+  const bookingHref = buildBookingHref(room.id, selectedCheckInDate, selectedCheckOutDate);
+  const bookingCtaHref = hasToken
+    ? bookingHref
+    : `/login?redirect=${encodeURIComponent(bookingHref)}`;
 
   return (
     <main className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 px-6 py-12">
@@ -162,6 +188,7 @@ export default function RoomDetailPage() {
                 fill
                 className="object-cover"
                 priority
+                unoptimized
               />
             </div>
           </Card>
@@ -209,9 +236,17 @@ export default function RoomDetailPage() {
                 </div>
               </div>
 
-              <Button asChild className="w-full">
-                <Link href="/login">Login To Book This Room</Link>
-              </Button>
+              {!isHydrated ? (
+                <Button className="w-full" disabled>
+                  Checking Session...
+                </Button>
+              ) : (
+                <Button asChild className="w-full">
+                  <Link href={bookingCtaHref}>
+                    {hasToken ? "Continue To Booking" : "Login To Book This Room"}
+                  </Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -258,7 +293,7 @@ export default function RoomDetailPage() {
 
         <Card className="border-border/70">
           <CardHeader>
-            <CardTitle>Similar Available Rooms</CardTitle>
+            <CardTitle>{hasDateRange ? "Similar Bookable Rooms" : "Similar Available Rooms"}</CardTitle>
             <CardDescription>
               More options from the same room type.
             </CardDescription>
@@ -273,14 +308,20 @@ export default function RoomDetailPage() {
               <p className="text-sm text-muted-foreground">No additional rooms available right now.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {relatedRooms.map((relatedRoom, index) => (
-                  <article key={relatedRoom.id} className="rounded-lg border overflow-hidden bg-card">
+                {relatedRooms.map((relatedRoom, index) => {
+                  const relatedRoomHref = hasDateRange
+                    ? `/rooms/${relatedRoom.id}?checkInDate=${selectedCheckInDate}&checkOutDate=${selectedCheckOutDate}`
+                    : `/rooms/${relatedRoom.id}`;
+
+                  return (
+                    <article key={relatedRoom.id} className="rounded-lg border overflow-hidden bg-card">
                     <div className="relative h-40">
                       <Image
                         src={getSafeImageUrl(relatedRoom, index + 1)}
                         alt={`Room ${relatedRoom.roomNumber}`}
                         fill
                         className="object-cover"
+                        unoptimized
                       />
                     </div>
                     <div className="p-4 space-y-2">
@@ -289,14 +330,15 @@ export default function RoomDetailPage() {
                         {moneyFormatter.format(Number(relatedRoom.currentPrice ?? 0))} / night
                       </p>
                       <Button asChild variant="outline" size="sm" className="w-full">
-                        <Link href={`/rooms/${relatedRoom.id}`}>
+                        <Link href={relatedRoomHref}>
                           View Details
                           <ArrowRight className="ml-1 h-4 w-4" />
                         </Link>
                       </Button>
                     </div>
-                  </article>
-                ))}
+                    </article>
+                  );
+                })}
               </div>
             )}
           </CardContent>

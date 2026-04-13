@@ -11,12 +11,24 @@ export function resolveMediaUrl(value: string | null | undefined): string {
   if (!normalized) return "";
 
   if (
-    normalized.startsWith("http://") ||
-    normalized.startsWith("https://") ||
     normalized.startsWith("data:") ||
     normalized.startsWith("blob:")
   ) {
     return normalized;
+  }
+
+  if (normalized.startsWith("http://") || normalized.startsWith("https://")) {
+    try {
+      const absoluteUrl = new URL(normalized);
+      // If backend stored a full uploads URL, rewrite it through frontend /uploads proxy
+      // so it works across environments and avoids remote image host restrictions.
+      if (absoluteUrl.pathname.startsWith("/uploads/")) {
+        return `${absoluteUrl.pathname}${absoluteUrl.search}`;
+      }
+      return normalized;
+    } catch {
+      return normalized;
+    }
   }
 
   // For relative media paths from backend (e.g. uploads/file.png),

@@ -16,6 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -30,6 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useGetCurrentUserQuery } from "@/lib/feature/userSlice";
 import {
   useCreateRoomMutation,
@@ -137,6 +145,7 @@ function toRoomFormState(room: RoomResponse): RoomFormState {
 }
 
 export default function AdminRoomsPage() {
+  const isMobile = useIsMobile();
   const profileQuery = useGetCurrentUserQuery();
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("ALL");
   const [roomTypeFilter, setRoomTypeFilter] = useState<FilterRoomTypeId>("ALL");
@@ -147,6 +156,7 @@ export default function AdminRoomsPage() {
   >({});
   const [roomForm, setRoomForm] = useState<RoomFormState>(EMPTY_ROOM_FORM);
   const [editingRoomId, setEditingRoomId] = useState<number | null>(null);
+  const [isRoomFormOpen, setIsRoomFormOpen] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const config = getAdminDashboardConfig(profileQuery.data?.data);
@@ -225,13 +235,30 @@ export default function AdminRoomsPage() {
   const handleEditRoom = (room: RoomResponse) => {
     setEditingRoomId(room.id);
     setRoomForm(toRoomFormState(room));
+    setIsRoomFormOpen(true);
     setFeedback(`Editing room ${room.roomNumber}.`);
+  };
+
+  const handleStartCreateRoom = () => {
+    setEditingRoomId(null);
+    setRoomForm(EMPTY_ROOM_FORM);
+    setFeedback(null);
+    setIsRoomFormOpen(true);
+  };
+
+  const handleRoomFormOpenChange = (open: boolean) => {
+    setIsRoomFormOpen(open);
+    if (!open) {
+      setEditingRoomId(null);
+      setRoomForm(EMPTY_ROOM_FORM);
+    }
   };
 
   const handleCancelRoomEdit = () => {
     setEditingRoomId(null);
     setRoomForm(EMPTY_ROOM_FORM);
-    setFeedback("Create mode restored.");
+    setIsRoomFormOpen(false);
+    setFeedback("Form closed.");
   };
 
   const handleSaveRoom = async (event: FormEvent<HTMLFormElement>) => {
@@ -283,6 +310,7 @@ export default function AdminRoomsPage() {
       }
       setEditingRoomId(null);
       setRoomForm(EMPTY_ROOM_FORM);
+      setIsRoomFormOpen(false);
       setPage(0);
     } catch (error) {
       setFeedback(parseApiError(error, "Unable to save room."));
@@ -315,142 +343,6 @@ export default function AdminRoomsPage() {
     >
       <div className="flex flex-col w-full h-full">
         <div className="flex flex-col gap-6 h-full px-4 py-6 lg:px-6 lg:py-8 pb-20">
-          <Card>
-            <CardHeader>
-              <CardTitle>{editingRoomId ? "Edit Room" : "Create Room"}</CardTitle>
-              <CardDescription>
-                {editingRoomId
-                  ? "Update an existing room configuration."
-                  : "Create a new room in the hotel inventory."}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSaveRoom}>
-                <div className="space-y-2">
-                  <Label htmlFor="room-number">Room Number</Label>
-                  <Input
-                    id="room-number"
-                    value={roomForm.roomNumber}
-                    onChange={(event) =>
-                      handleRoomFormChange("roomNumber", event.target.value)
-                    }
-                    placeholder="A-101"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="floor-number">Floor Number</Label>
-                  <Input
-                    id="floor-number"
-                    type="number"
-                    min={0}
-                    value={roomForm.floorNumber}
-                    onChange={(event) =>
-                      handleRoomFormChange("floorNumber", event.target.value)
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="room-price">Current Price</Label>
-                  <Input
-                    id="room-price"
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={roomForm.currentPrice}
-                    onChange={(event) =>
-                      handleRoomFormChange("currentPrice", event.target.value)
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="room-rating">Rating (0-5)</Label>
-                  <Input
-                    id="room-rating"
-                    type="number"
-                    min={0}
-                    max={5}
-                    value={roomForm.rating}
-                    onChange={(event) => handleRoomFormChange("rating", event.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="room-image-url">Image URL</Label>
-                  <Input
-                    id="room-image-url"
-                    value={roomForm.imageUrl}
-                    onChange={(event) =>
-                      handleRoomFormChange("imageUrl", event.target.value)
-                    }
-                    placeholder="https://..."
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Room Type</Label>
-                  <Select
-                    value={roomForm.roomTypeId || "NONE"}
-                    onValueChange={(value) =>
-                      handleRoomFormChange("roomTypeId", value === "NONE" ? "" : value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select room type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="NONE">Select type</SelectItem>
-                      {roomTypes.map((roomType) => (
-                        <SelectItem key={roomType.id} value={String(roomType.id)}>
-                          {roomType.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Status</Label>
-                  <Select
-                    value={roomForm.status}
-                    onValueChange={(value) =>
-                      handleRoomFormChange("status", value as RoomStatus)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ROOM_STATUS_OPTIONS.map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {toTitleCase(status)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="md:col-span-2 flex items-center gap-2">
-                  <Button type="submit" disabled={isSavingRoom}>
-                    {isSavingRoom ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : editingRoomId ? (
-                      "Save Changes"
-                    ) : (
-                      "Create Room"
-                    )}
-                  </Button>
-                  {editingRoomId ? (
-                    <Button type="button" variant="outline" onClick={handleCancelRoomEdit}>
-                      Cancel
-                    </Button>
-                  ) : null}
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>Admin Room Board</CardTitle>
@@ -536,19 +428,24 @@ export default function AdminRoomsPage() {
                   </Select>
                 </div>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => roomsQuery.refetch()}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <RefreshCcw className="mr-2 h-4 w-4" />
-                  )}
-                  Refresh
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => roomsQuery.refetch()}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCcw className="mr-2 h-4 w-4" />
+                    )}
+                    Refresh
+                  </Button>
+                  <Button type="button" onClick={handleStartCreateRoom}>
+                    Create Room
+                  </Button>
+                </div>
               </div>
 
               {feedback ? (
@@ -722,6 +619,145 @@ export default function AdminRoomsPage() {
           </Card>
         </div>
       </div>
+      <Drawer
+        open={isRoomFormOpen}
+        onOpenChange={handleRoomFormOpenChange}
+        direction={isMobile ? "bottom" : "right"}
+      >
+        <DrawerContent>
+          <DrawerHeader className="gap-1">
+            <DrawerTitle>{editingRoomId ? "Edit Room" : "Create Room"}</DrawerTitle>
+            <DrawerDescription>
+              {editingRoomId
+                ? "Update an existing room configuration."
+                : "Create a new room in the hotel inventory."}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="overflow-y-auto px-4 pb-4">
+            <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSaveRoom}>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-room-number">Room Number</Label>
+                <Input
+                  id="drawer-room-number"
+                  value={roomForm.roomNumber}
+                  onChange={(event) =>
+                    handleRoomFormChange("roomNumber", event.target.value)
+                  }
+                  placeholder="A-101"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-floor-number">Floor Number</Label>
+                <Input
+                  id="drawer-floor-number"
+                  type="number"
+                  min={0}
+                  value={roomForm.floorNumber}
+                  onChange={(event) =>
+                    handleRoomFormChange("floorNumber", event.target.value)
+                  }
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-room-price">Current Price</Label>
+                <Input
+                  id="drawer-room-price"
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={roomForm.currentPrice}
+                  onChange={(event) =>
+                    handleRoomFormChange("currentPrice", event.target.value)
+                  }
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-room-rating">Rating (0-5)</Label>
+                <Input
+                  id="drawer-room-rating"
+                  type="number"
+                  min={0}
+                  max={5}
+                  value={roomForm.rating}
+                  onChange={(event) => handleRoomFormChange("rating", event.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="drawer-room-image-url">Image URL</Label>
+                <Input
+                  id="drawer-room-image-url"
+                  value={roomForm.imageUrl}
+                  onChange={(event) =>
+                    handleRoomFormChange("imageUrl", event.target.value)
+                  }
+                  placeholder="https://..."
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Room Type</Label>
+                <Select
+                  value={roomForm.roomTypeId || "NONE"}
+                  onValueChange={(value) =>
+                    handleRoomFormChange("roomTypeId", value === "NONE" ? "" : value)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select room type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="NONE">Select type</SelectItem>
+                    {roomTypes.map((roomType) => (
+                      <SelectItem key={roomType.id} value={String(roomType.id)}>
+                        {roomType.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select
+                  value={roomForm.status}
+                  onValueChange={(value) =>
+                    handleRoomFormChange("status", value as RoomStatus)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ROOM_STATUS_OPTIONS.map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {toTitleCase(status)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="md:col-span-2 flex items-center gap-2">
+                <Button type="submit" disabled={isSavingRoom}>
+                  {isSavingRoom ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : editingRoomId ? (
+                    "Save Changes"
+                  ) : (
+                    "Create Room"
+                  )}
+                </Button>
+                <Button type="button" variant="outline" onClick={handleCancelRoomEdit}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </DashboardFrame>
   );
 }

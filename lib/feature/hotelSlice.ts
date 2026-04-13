@@ -4,6 +4,7 @@ import type {
   ApiPageResponse,
   BookingResponse,
   BookingsQuery,
+  CreateBookingPayload,
   CreateStaffPayload,
   PaginationQuery,
   RoomPayload,
@@ -87,8 +88,16 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
         withQuery("/bookings/me", {
           page: params?.page ?? 0,
           size: params?.size ?? 10,
-        }),
+      }),
       providesTags: ["Auth"],
+    }),
+    createBooking: builder.mutation<ApiResponse<BookingResponse>, CreateBookingPayload>({
+      query: (payload) => ({
+        url: "/bookings",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
     }),
     getUsers: builder.query<ApiPageResponse<UserResponse>, PaginationQuery | void>({
       query: (params) =>
@@ -208,6 +217,7 @@ export const {
   useGetRoomTypesQuery,
   useGetAllBookingsQuery,
   useGetMyBookingsQuery,
+  useCreateBookingMutation,
   useGetUsersQuery,
   useCreateRoomMutation,
   useUpdateRoomMutation,

@@ -5,22 +5,44 @@ import {useMemo} from "react";
 import {ChevronDown, ConciergeBell, Mail, MapPin, Phone, Utensils} from "lucide-react";
 import {roomCard} from "@/data/roomCard";
 import {useGetRoomsQuery} from "@/lib/feature/hotelSlice";
+import {resolveMediaUrl} from "@/lib/media-url";
 import RoomCard from "@/components/homepage/RoomCard";
 
 function toSafeImage(imageUrl: string | null | undefined, fallback: string) {
-    const value = imageUrl ?? "";
-    const isKnownAllowedHost =
-        value.startsWith("https://images.unsplash.com") ||
-        value.startsWith("https://lh3.googleusercontent.com") ||
-        value.startsWith("https://arystorephone.com");
-    return isKnownAllowedHost ? value : fallback;
+    const resolvedImage = resolveMediaUrl(imageUrl);
+    return resolvedImage || fallback;
+}
+
+function toDateInputValue(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function addDays(date: Date, days: number): Date {
+    const next = new Date(date);
+    next.setDate(next.getDate() + days);
+    return next;
 }
 
 export default function Homepage() {
+    const defaultDateRange = useMemo(() => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = addDays(today, 1);
+        return {
+            checkInDate: toDateInputValue(today),
+            checkOutDate: toDateInputValue(tomorrow),
+        };
+    }, []);
+
     const {data, isFetching, isError} = useGetRoomsQuery({
         page: 0,
         size: 4,
         status: "AVAILABLE",
+        checkInDate: defaultDateRange.checkInDate,
+        checkOutDate: defaultDateRange.checkOutDate,
     });
 
     const featuredRooms = useMemo(() => {
@@ -36,14 +58,14 @@ export default function Homepage() {
 
             return {
                 title: `${roomType} ${room.roomNumber}`,
-                tag: room.status === "AVAILABLE" ? "Available" : room.status,
+                tag: "Bookable",
                 image: toSafeImage(room.imageUrl, fallback.image),
                 description: `${roomType} on floor ${room.floorNumber}. From $${nightlyPrice.toFixed(0)} per night.`,
                 isVip: nightlyPrice >= 350,
-                href: `/rooms/${room.id}`,
+                href: `/rooms/${room.id}?checkInDate=${defaultDateRange.checkInDate}&checkOutDate=${defaultDateRange.checkOutDate}`,
             };
         });
-    }, [data]);
+    }, [data, defaultDateRange.checkInDate, defaultDateRange.checkOutDate]);
 
     return (
         <main className="bg-background min-h-screen font-sans selection:bg-[#dce1ff] dark:selection:bg-blue-900/50">

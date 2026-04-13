@@ -104,7 +104,16 @@ export default function LoginForm() {
         return;
       }
 
-      router.replace(getDashboardPathByRole(role));
+      const redirect =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("redirect")
+          : null;
+      const hasSafeRedirect =
+        typeof redirect === "string" &&
+        redirect.startsWith("/") &&
+        !redirect.startsWith("//");
+
+      router.replace(hasSafeRedirect ? redirect : getDashboardPathByRole(role));
     } catch (error) {
       setServerError(getErrorMessage(error));
     } finally {

@@ -78,6 +78,12 @@ export type BookingsQuery = PaginationQuery & {
   status?: BookingStatus;
 };
 
+export type CreateBookingPayload = {
+  roomId: number;
+  checkInDate: string;
+  checkOutDate: string;
+};
+
 export type UpdateBookingStatusPayload = {
   id: number;
   status: BookingStatus;

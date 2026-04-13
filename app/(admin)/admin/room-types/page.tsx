@@ -15,6 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -29,6 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useGetCurrentUserQuery } from "@/lib/feature/userSlice";
 import {
   useCreateRoomTypeMutation,
@@ -87,12 +95,14 @@ function toRoomTypeFormState(roomType: RoomTypeResponse): RoomTypeFormState {
 }
 
 export default function AdminRoomTypesPage() {
+  const isMobile = useIsMobile();
   const profileQuery = useGetCurrentUserQuery();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [roomTypeForm, setRoomTypeForm] =
     useState<RoomTypeFormState>(EMPTY_ROOM_TYPE_FORM);
   const [editingRoomTypeId, setEditingRoomTypeId] = useState<number | null>(null);
+  const [isRoomTypeFormOpen, setIsRoomTypeFormOpen] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const config = getAdminDashboardConfig(profileQuery.data?.data);
@@ -123,13 +133,30 @@ export default function AdminRoomTypesPage() {
   const handleEdit = (roomType: RoomTypeResponse) => {
     setEditingRoomTypeId(roomType.id);
     setRoomTypeForm(toRoomTypeFormState(roomType));
+    setIsRoomTypeFormOpen(true);
     setFeedback(`Editing room type ${roomType.name}.`);
+  };
+
+  const handleStartCreate = () => {
+    setEditingRoomTypeId(null);
+    setRoomTypeForm(EMPTY_ROOM_TYPE_FORM);
+    setFeedback(null);
+    setIsRoomTypeFormOpen(true);
+  };
+
+  const handleRoomTypeFormOpenChange = (open: boolean) => {
+    setIsRoomTypeFormOpen(open);
+    if (!open) {
+      setEditingRoomTypeId(null);
+      setRoomTypeForm(EMPTY_ROOM_TYPE_FORM);
+    }
   };
 
   const handleCancelEdit = () => {
     setEditingRoomTypeId(null);
     setRoomTypeForm(EMPTY_ROOM_TYPE_FORM);
-    setFeedback("Create mode restored.");
+    setIsRoomTypeFormOpen(false);
+    setFeedback("Form closed.");
   };
 
   const handleSaveRoomType = async (event: FormEvent<HTMLFormElement>) => {
@@ -169,6 +196,7 @@ export default function AdminRoomTypesPage() {
       }
       setEditingRoomTypeId(null);
       setRoomTypeForm(EMPTY_ROOM_TYPE_FORM);
+      setIsRoomTypeFormOpen(false);
       setPage(0);
     } catch (error) {
       setFeedback(parseApiError(error, "Unable to save room type."));
@@ -183,99 +211,6 @@ export default function AdminRoomTypesPage() {
     >
       <div className="flex flex-col w-full h-full">
         <div className="flex flex-col gap-6 h-full px-4 py-6 lg:px-6 lg:py-8 pb-20">
-          <Card>
-            <CardHeader>
-              <CardTitle>{editingRoomTypeId ? "Edit Room Type" : "Create Room Type"}</CardTitle>
-              <CardDescription>
-                {editingRoomTypeId
-                  ? "Update an existing room category."
-                  : "Create a new room category for your hotel."}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSaveRoomType}>
-                <div className="space-y-2">
-                  <Label htmlFor="room-type-name">Name</Label>
-                  <Input
-                    id="room-type-name"
-                    value={roomTypeForm.name}
-                    onChange={(event) =>
-                      handleRoomTypeFormChange("name", event.target.value)
-                    }
-                    placeholder="Deluxe Room"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="room-type-capacity">Capacity</Label>
-                  <Input
-                    id="room-type-capacity"
-                    type="number"
-                    min={1}
-                    value={roomTypeForm.capacity}
-                    onChange={(event) =>
-                      handleRoomTypeFormChange("capacity", event.target.value)
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="room-type-price">Base Price</Label>
-                  <Input
-                    id="room-type-price"
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={roomTypeForm.basePrice}
-                    onChange={(event) =>
-                      handleRoomTypeFormChange("basePrice", event.target.value)
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="room-type-description">Description</Label>
-                  <Input
-                    id="room-type-description"
-                    value={roomTypeForm.description}
-                    onChange={(event) =>
-                      handleRoomTypeFormChange("description", event.target.value)
-                    }
-                    placeholder="Spacious room with city view"
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="room-type-amenities">Amenities</Label>
-                  <Input
-                    id="room-type-amenities"
-                    value={roomTypeForm.amenities}
-                    onChange={(event) =>
-                      handleRoomTypeFormChange("amenities", event.target.value)
-                    }
-                    placeholder="WiFi, TV, AC, Mini Bar"
-                  />
-                </div>
-
-                <div className="md:col-span-2 flex items-center gap-2">
-                  <Button type="submit" disabled={isSaving}>
-                    {isSaving ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : editingRoomTypeId ? (
-                      "Save Changes"
-                    ) : (
-                      "Create Room Type"
-                    )}
-                  </Button>
-                  {editingRoomTypeId ? (
-                    <Button type="button" variant="outline" onClick={handleCancelEdit}>
-                      Cancel
-                    </Button>
-                  ) : null}
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>Room Types</CardTitle>
@@ -321,19 +256,24 @@ export default function AdminRoomTypesPage() {
                   </SelectContent>
                 </Select>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => roomTypesQuery.refetch()}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <RefreshCcw className="mr-2 h-4 w-4" />
-                  )}
-                  Refresh
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => roomTypesQuery.refetch()}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCcw className="mr-2 h-4 w-4" />
+                    )}
+                    Refresh
+                  </Button>
+                  <Button type="button" onClick={handleStartCreate}>
+                    Create Room Type
+                  </Button>
+                </div>
               </div>
 
               {feedback ? (
@@ -437,6 +377,94 @@ export default function AdminRoomTypesPage() {
           </Card>
         </div>
       </div>
+      <Drawer
+        open={isRoomTypeFormOpen}
+        onOpenChange={handleRoomTypeFormOpenChange}
+        direction={isMobile ? "bottom" : "right"}
+      >
+        <DrawerContent>
+          <DrawerHeader className="gap-1">
+            <DrawerTitle>{editingRoomTypeId ? "Edit Room Type" : "Create Room Type"}</DrawerTitle>
+            <DrawerDescription>
+              {editingRoomTypeId
+                ? "Update an existing room category."
+                : "Create a new room category for your hotel."}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="overflow-y-auto px-4 pb-4">
+            <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSaveRoomType}>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-room-type-name">Name</Label>
+                <Input
+                  id="drawer-room-type-name"
+                  value={roomTypeForm.name}
+                  onChange={(event) => handleRoomTypeFormChange("name", event.target.value)}
+                  placeholder="Deluxe Room"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-room-type-capacity">Capacity</Label>
+                <Input
+                  id="drawer-room-type-capacity"
+                  type="number"
+                  min={1}
+                  value={roomTypeForm.capacity}
+                  onChange={(event) => handleRoomTypeFormChange("capacity", event.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-room-type-price">Base Price</Label>
+                <Input
+                  id="drawer-room-type-price"
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={roomTypeForm.basePrice}
+                  onChange={(event) => handleRoomTypeFormChange("basePrice", event.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="drawer-room-type-description">Description</Label>
+                <Input
+                  id="drawer-room-type-description"
+                  value={roomTypeForm.description}
+                  onChange={(event) =>
+                    handleRoomTypeFormChange("description", event.target.value)
+                  }
+                  placeholder="Spacious room with city view"
+                />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="drawer-room-type-amenities">Amenities</Label>
+                <Input
+                  id="drawer-room-type-amenities"
+                  value={roomTypeForm.amenities}
+                  onChange={(event) => handleRoomTypeFormChange("amenities", event.target.value)}
+                  placeholder="WiFi, TV, AC, Mini Bar"
+                />
+              </div>
+
+              <div className="md:col-span-2 flex items-center gap-2">
+                <Button type="submit" disabled={isSaving}>
+                  {isSaving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : editingRoomTypeId ? (
+                    "Save Changes"
+                  ) : (
+                    "Create Room Type"
+                  )}
+                </Button>
+                <Button type="button" variant="outline" onClick={handleCancelEdit}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </DashboardFrame>
   );
 }
