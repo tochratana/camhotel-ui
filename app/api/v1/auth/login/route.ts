@@ -1,11 +1,11 @@
 import { LoginResponse } from "@/types/auth";
-import { buildApiUrl } from "@/lib/api-base-url";
+
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
 
-    const res = await fetch(buildApiUrl("auth/login"), {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

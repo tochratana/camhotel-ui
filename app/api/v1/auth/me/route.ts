@@ -1,12 +1,9 @@
-import { buildApiUrl } from "@/lib/api-base-url";
-
 async function proxyMe(req: Request, method: "GET" | "PATCH") {
   try {
-
     const authorization = req.headers.get("authorization");
     const requestBody = method === "PATCH" ? await req.text() : undefined;
 
-    const res = await fetch(buildApiUrl("auth/me"), {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
       method,
       headers: {
         "Content-Type": "application/json",

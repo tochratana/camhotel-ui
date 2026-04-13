@@ -1,10 +1,4 @@
-import { buildApiUrl } from "@/lib/api-base-url";
-
-type RouteContext = {
-  params: Promise<{
-    path: string[];
-  }>;
-};
+import { RouteContext } from "@/types/routeType";
 
 function buildForwardHeaders(req: Request): Headers {
   const headers = new Headers(req.headers);
@@ -14,27 +8,24 @@ function buildForwardHeaders(req: Request): Headers {
   return headers;
 }
 
-function buildTargetUrl(path: string[], requestUrl: string): string {
-  const sourceUrl = new URL(requestUrl);
-  const targetPath = path.join("/");
-  return buildApiUrl(targetPath, sourceUrl.search);
-}
-
 async function proxyMedia(
   req: Request,
   context: RouteContext,
 ): Promise<Response> {
   try {
     const { path } = await context.params;
-    const targetUrl = buildTargetUrl(path, req.url);
+    // const targetUrl = buildTargetUrl(path, req.url);
     const headers = buildForwardHeaders(req);
 
-    const upstreamResponse = await fetch(targetUrl, {
-      method: req.method,
-      headers,
-      cache: "no-store",
-      redirect: "manual",
-    });
+    const upstreamResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/${path.join("/")}`,
+      {
+        method: req.method,
+        headers,
+        cache: "no-store",
+        redirect: "manual",
+      },
+    );
 
     return new Response(upstreamResponse.body, {
       status: upstreamResponse.status,

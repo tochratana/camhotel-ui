@@ -1,16 +1,4 @@
-import { buildApiUrl } from "@/lib/api-base-url";
-
-type RouteContext = {
-  params: Promise<{
-    path: string[];
-  }>;
-};
-
-function buildTargetUrl(path: string[], requestUrl: string): string {
-  const sourceUrl = new URL(requestUrl);
-  const targetPath = path.join("/");
-  return buildApiUrl(targetPath, sourceUrl.search);
-}
+import { RouteContext } from "@/types/routeType";
 
 function buildForwardHeaders(req: Request): Headers {
   const headers = new Headers(req.headers);
@@ -20,14 +8,19 @@ function buildForwardHeaders(req: Request): Headers {
   return headers;
 }
 
-async function handleProxy(req: Request, context: RouteContext): Promise<Response> {
+async function handleProxy(
+  req: Request,
+  context: RouteContext,
+): Promise<Response> {
   try {
     const { path } = await context.params;
-    const targetUrl = buildTargetUrl(path, req.url);
+    const sourceUrl = new URL(req.url);
+    const targetUrl = `${process.env.NEXT_PUBLIC_API}/${path.join("/")}${sourceUrl.search}`;
     const headers = buildForwardHeaders(req);
 
     const method = req.method.toUpperCase();
-    const hasBody = method !== "GET" && method !== "HEAD" && method !== "OPTIONS";
+    const hasBody =
+      method !== "GET" && method !== "HEAD" && method !== "OPTIONS";
 
     const upstreamResponse = await fetch(targetUrl, {
       method,
