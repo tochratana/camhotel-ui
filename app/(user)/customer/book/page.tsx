@@ -18,8 +18,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateBookingMutation, useGetRoomByIdQuery } from "@/lib/feature/hotelSlice";
+import { useCreateBookingMutation, useGetBookingPolicyQuery, useGetRoomByIdQuery } from "@/lib/feature/hotelSlice";
 import { useGetCurrentUserQuery, useUpdateMyProfileMutation } from "@/lib/feature/userSlice";
+
+const DEFAULT_MAX_BOOKING_DAYS = 30;
+const DEFAULT_LEAD_TIME_HOURS = 24;
+const HOTEL_CHECK_IN_HOUR = 14;
 
 const moneyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -40,25 +44,72 @@ function addDays(date: Date, days: number): Date {
   return next;
 }
 
-function getDateRangeError(checkInDate: string, checkOutDate: string, todayString: string): string | null {
+function addDaysToDateInputValue(dateInput: string, days: number): string {
+  const baseDate = new Date(`${dateInput}T00:00:00`);
+  if (Number.isNaN(baseDate.getTime())) {
+    const fallback = new Date();
+    fallback.setHours(0, 0, 0, 0);
+    return toDateInputValue(addDays(fallback, days));
+  }
+  return toDateInputValue(addDays(baseDate, days));
+}
+
+function getMinimumCheckInDateByLeadTime(leadTimeHours: number): string {
+  const normalizedLeadTime =
+    Number.isFinite(leadTimeHours) && leadTimeHours > 0
+      ? Math.floor(leadTimeHours)
+      : 0;
+
+  if (normalizedLeadTime <= 0) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return toDateInputValue(today);
+  }
+
+  const minimumAllowedCheckInTime = new Date(Date.now() + normalizedLeadTime * 60 * 60 * 1000);
+  const candidate = new Date(minimumAllowedCheckInTime);
+  candidate.setHours(HOTEL_CHECK_IN_HOUR, 0, 0, 0);
+
+  if (candidate.getTime() < minimumAllowedCheckInTime.getTime()) {
+    candidate.setDate(candidate.getDate() + 1);
+  }
+
+  return toDateInputValue(candidate);
+}
+
+function getDateRangeError(
+  checkInDate: string,
+  checkOutDate: string,
+  minimumCheckInDate: string,
+  maxBookingDays: number,
+): string | null {
   if (!checkInDate || !checkOutDate) {
     return "Please select both check-in and check-out dates.";
   }
 
   const checkIn = new Date(checkInDate);
   const checkOut = new Date(checkOutDate);
-  const today = new Date(todayString);
+  const minimumCheckIn = new Date(minimumCheckInDate);
 
-  if (Number.isNaN(checkIn.getTime()) || Number.isNaN(checkOut.getTime())) {
+  if (
+    Number.isNaN(checkIn.getTime()) ||
+    Number.isNaN(checkOut.getTime()) ||
+    Number.isNaN(minimumCheckIn.getTime())
+  ) {
     return "Please select valid dates.";
   }
 
-  if (checkIn < today) {
-    return "Check-in date cannot be in the past.";
+  if (checkIn < minimumCheckIn) {
+    return `Check-in date must be on or after ${minimumCheckInDate}.`;
   }
 
   if (checkOut <= checkIn) {
     return "Check-out date must be after check-in date.";
+  }
+
+  const nights = getNights(checkInDate, checkOutDate);
+  if (maxBookingDays > 0 && nights > maxBookingDays) {
+    return `Stay cannot exceed ${maxBookingDays} night(s).`;
   }
 
   return null;
@@ -76,11 +127,23 @@ function parseApiError(error: unknown): string {
   if (!error || typeof error !== "object") return "Unable to complete booking.";
 
   const maybeError = error as {
-    data?: { message?: string };
+    data?: {
+      message?: string;
+      error?: string;
+      validationErrors?: Record<string, string>;
+    };
     error?: string;
   };
 
+  if (maybeError.data?.validationErrors) {
+    const firstValidationError = Object.values(maybeError.data.validationErrors).find(
+      (value) => typeof value === "string" && value.trim().length > 0,
+    );
+    if (firstValidationError) return firstValidationError;
+  }
+
   if (typeof maybeError.data?.message === "string") return maybeError.data.message;
+  if (typeof maybeError.data?.error === "string") return maybeError.data.error;
   if (typeof maybeError.error === "string") return maybeError.error;
   return "Unable to complete booking.";
 }
@@ -121,6 +184,7 @@ export default function CustomerBookRoomPage() {
 
   const profileQuery = useGetCurrentUserQuery();
   const roomQuery = useGetRoomByIdQuery(roomId, { skip: !isValidRoomId });
+  const bookingPolicyQuery = useGetBookingPolicyQuery();
   const [createBooking, createBookingState] = useCreateBookingMutation();
   const [updateMyProfile, updateMyProfileState] = useUpdateMyProfileMutation();
 
@@ -130,17 +194,44 @@ export default function CustomerBookRoomPage() {
   const fullName = fullNameDraft ?? profile?.fullName ?? "";
   const email = emailDraft ?? profile?.email ?? "";
   const phoneNumber = phoneNumberDraft ?? profile?.phoneNumber ?? "";
+  const leadTimeHours = bookingPolicyQuery.data?.data?.leadTimeHours ?? DEFAULT_LEAD_TIME_HOURS;
+  const maxBookingDays = bookingPolicyQuery.data?.data?.maxBookingDays ?? DEFAULT_MAX_BOOKING_DAYS;
+  const minimumCheckInDate = useMemo(
+    () => getMinimumCheckInDateByLeadTime(leadTimeHours),
+    [leadTimeHours],
+  );
+  const normalizedCheckInDate = checkInDate >= minimumCheckInDate ? checkInDate : minimumCheckInDate;
 
   const minCheckOutDate = useMemo(() => {
-    const checkIn = new Date(checkInDate);
+    const checkIn = new Date(normalizedCheckInDate);
     if (Number.isNaN(checkIn.getTime())) {
-      return defaultDateRange.checkOutDate;
+      return addDaysToDateInputValue(minimumCheckInDate, 1);
     }
     return toDateInputValue(addDays(checkIn, 1));
-  }, [checkInDate, defaultDateRange.checkOutDate]);
+  }, [minimumCheckInDate, normalizedCheckInDate]);
 
-  const dateRangeError = getDateRangeError(checkInDate, checkOutDate, defaultDateRange.todayString);
-  const nights = dateRangeError ? 0 : getNights(checkInDate, checkOutDate);
+  const maxCheckOutDate = useMemo(
+    () => addDaysToDateInputValue(normalizedCheckInDate, maxBookingDays),
+    [normalizedCheckInDate, maxBookingDays],
+  );
+  const normalizedCheckOutDate = useMemo(() => {
+    const safeCheckOutDate = checkOutDate || minCheckOutDate;
+    if (safeCheckOutDate < minCheckOutDate) {
+      return minCheckOutDate;
+    }
+    if (maxBookingDays > 0 && safeCheckOutDate > maxCheckOutDate) {
+      return maxCheckOutDate;
+    }
+    return safeCheckOutDate;
+  }, [checkOutDate, minCheckOutDate, maxBookingDays, maxCheckOutDate]);
+
+  const dateRangeError = getDateRangeError(
+    normalizedCheckInDate,
+    normalizedCheckOutDate,
+    minimumCheckInDate,
+    maxBookingDays,
+  );
+  const nights = dateRangeError ? 0 : getNights(normalizedCheckInDate, normalizedCheckOutDate);
   const totalPrice = room ? Number(room.currentPrice ?? 0) * nights : 0;
 
   const guestError = useMemo(() => {
@@ -206,8 +297,8 @@ export default function CustomerBookRoomPage() {
 
       const response = await createBooking({
         roomId: room.id,
-        checkInDate,
-        checkOutDate,
+        checkInDate: normalizedCheckInDate,
+        checkOutDate: normalizedCheckOutDate,
       }).unwrap();
 
       const bookingId = response.data?.id ?? null;
@@ -273,8 +364,8 @@ export default function CustomerBookRoomPage() {
                         <Input
                           id="check-in"
                           type="date"
-                          min={defaultDateRange.todayString}
-                          value={checkInDate}
+                          min={minimumCheckInDate}
+                          value={normalizedCheckInDate}
                           onChange={(event) => setCheckInDate(event.target.value)}
                           className="pl-9"
                         />
@@ -289,13 +380,19 @@ export default function CustomerBookRoomPage() {
                           id="check-out"
                           type="date"
                           min={minCheckOutDate}
-                          value={checkOutDate}
+                          max={maxBookingDays > 0 ? maxCheckOutDate : undefined}
+                          value={normalizedCheckOutDate}
                           onChange={(event) => setCheckOutDate(event.target.value)}
                           className="pl-9"
                         />
                       </div>
                     </div>
                   </div>
+
+                  <p className="text-xs text-slate-500">
+                    Booking policy: check-in requires at least {leadTimeHours} hour(s) lead time and maximum stay is{" "}
+                    {maxBookingDays} night(s).
+                  </p>
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">

@@ -40,6 +40,14 @@ export type BookingResponse = {
   createdAt: string;
 };
 
+export type BookingPolicy = {
+  id: number;
+  cancellationWindowHours: number;
+  maxBookingDays: number;
+  leadTimeHours: number;
+  updatedAt: string;
+};
+
 export type SpringPage<T> = {
   content: T[];
   totalElements: number;

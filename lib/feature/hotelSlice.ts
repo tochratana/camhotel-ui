@@ -2,6 +2,7 @@ import { fakeStoreApi } from "@/lib/feature/api";
 import type { ApiResponse, UserResponse } from "@/types/auth";
 import type {
   ApiPageResponse,
+  BookingPolicy,
   BookingResponse,
   BookingsQuery,
   CreateBookingPayload,
@@ -202,7 +203,7 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
         invalidatesTags: ["Auth"],
       },
     ),
-    getBookingPolicy: builder.query<ApiResponse<{ cancellationWindowHours: number }>, void>(
+    getBookingPolicy: builder.query<ApiResponse<BookingPolicy>, void>(
       {
         query: () => "/booking-policy",
         providesTags: ["Auth"],
