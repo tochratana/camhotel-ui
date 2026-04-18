@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
-import { DashboardShellConfig } from "@/components/dashboard/types";
+import { DashboardShellConfig } from "@/types/dashboardTypes";
 import { Theme, useTheme } from "@/components/theme/ThemeProvider";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import { Badge } from "@/components/ui/badge";

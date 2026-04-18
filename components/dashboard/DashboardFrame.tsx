@@ -2,7 +2,7 @@
 
 import { CSSProperties, ReactNode } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
-import { DashboardShellConfig } from "@/components/dashboard/types";
+import { DashboardShellConfig } from "@/types/dashboardTypes";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";

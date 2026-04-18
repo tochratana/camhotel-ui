@@ -8,7 +8,7 @@ import type {
   DashboardMetricCard,
   DashboardShellConfig,
   DashboardTableRow,
-} from "@/components/dashboard/types";
+} from "@/types/dashboardTypes";
 import { SectionCards } from "@/components/section-cards";
 
 type DashboardShellProps = {

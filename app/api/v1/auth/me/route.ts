@@ -1,14 +1,29 @@
+function getApiBaseUrl(): string {
+  const rawValue = process.env.NEXT_PUBLIC_API ?? "";
+  return rawValue.replace(/\/+$/, "");
+}
+
 async function proxyMe(req: Request, method: "GET" | "PATCH") {
   try {
-    const authorization = req.headers.get("authorization");
+    const apiBaseUrl = getApiBaseUrl();
+    const targetUrl = `${apiBaseUrl}/auth/me`;
+
+    // Forward all headers from the client to the backend
+    const headers = new Headers(req.headers);
+    headers.delete("host");
+    headers.delete("connection");
+    headers.delete("content-length");
+
+    // Ensure Content-Type is set for PATCH
+    if (method === "PATCH") {
+      headers.set("Content-Type", "application/json");
+    }
+
     const requestBody = method === "PATCH" ? await req.text() : undefined;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/me`, {
+    const res = await fetch(targetUrl, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-        ...(authorization ? { Authorization: authorization } : {}),
-      },
+      headers,
       body: requestBody,
       cache: "no-store",
     });

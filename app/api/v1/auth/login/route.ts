@@ -2,19 +2,31 @@ import { LoginResponse } from "@/types/auth";
 
 import { cookies } from "next/headers";
 
+function getApiBaseUrl(): string {
+  const rawValue = process.env.NEXT_PUBLIC_API ?? "";
+  return rawValue.replace(/\/+$/, "");
+}
+
 export async function POST(req: Request) {
   try {
+    const apiBaseUrl = getApiBaseUrl();
+    const targetUrl = `${apiBaseUrl}/auth/login`;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/login`, {
+    // Forward headers (especially important if there are specific client headers)
+    const headers = new Headers(req.headers);
+    headers.delete("host");
+    headers.delete("connection");
+    headers.delete("content-length");
+    headers.set("Content-Type", "application/json");
+
+    const res = await fetch(targetUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: await req.text(),
       cache: "no-store",
     });
 
-    const payload = (await res.json().catch(() => null)) as LoginResponse;
+    const payload = (await res.json().catch(() => null)) as any;
 
     if (!res.ok) {
       const message =
@@ -24,12 +36,17 @@ export async function POST(req: Request) {
       return Response.json({ error: message }, { status: res.status });
     }
 
+    // Comprehensive token extraction
     const accessToken =
       typeof payload?.accessToken === "string"
         ? payload.accessToken
         : typeof payload?.data?.accessToken === "string"
           ? payload.data.accessToken
-          : null;
+          : typeof payload?.token === "string"
+            ? payload.token
+            : typeof payload?.data?.token === "string"
+              ? payload.data.token
+              : null;
 
     if (accessToken) {
       const cookieStore = await cookies();

@@ -1,10 +1,22 @@
+function getApiBaseUrl(): string {
+  const rawValue = process.env.NEXT_PUBLIC_API ?? "";
+  return rawValue.replace(/\/+$/, "");
+}
+
 export async function POST(req: Request) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/register`, {
+    const apiBaseUrl = getApiBaseUrl();
+    const targetUrl = `${apiBaseUrl}/auth/register`;
+
+    const headers = new Headers(req.headers);
+    headers.delete("host");
+    headers.delete("connection");
+    headers.delete("content-length");
+    headers.set("Content-Type", "application/json");
+
+    const res = await fetch(targetUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: await req.text(),
       cache: "no-store",
     });

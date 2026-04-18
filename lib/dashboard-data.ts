@@ -3,7 +3,7 @@ import type {
   DashboardMetricCard,
   DashboardTableRow,
   DashboardUser,
-} from "@/components/dashboard/types";
+} from "@/types/dashboardTypes";
 import { resolveMediaUrl } from "@/lib/media-url";
 import type { AuthResponse, UserResponse } from "@/types/auth";
 import type { BookingResponse, RoomResponse, RoomTypeResponse } from "@/types/hotel";

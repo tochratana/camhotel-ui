@@ -5,10 +5,18 @@ import React from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import StoreProvider from "@/components/provider/StoreProvider";
-import { Geist } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({
+    subsets: ['latin'],
+    variable: '--font-inter',
+});
+const manrope = Manrope({
+    subsets: ['latin'],
+    variable: '--font-manrope',
+});
 
 export const metadata: Metadata = {
     title: "CamHotel — Premium Hospitality",
@@ -23,15 +31,21 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={cn("h-full antialiased", "font-sans", geist.variable)}
+            className={cn(
+                "h-full antialiased",
+                "font-sans",
+                inter.variable,
+                manrope.variable
+            )}
             suppressHydrationWarning
         >
-        <body className="min-h-full flex flex-col bg-background text-foreground">
+        <body className={cn("min-h-full flex flex-col bg-background text-foreground font-sans")}>
         <StoreProvider>
             <ThemeProvider>
                 <Navbar/>
                 {children}
                 <Footer/>
+                <Toaster richColors position="top-right" />
             </ThemeProvider>
         </StoreProvider>
         </body>

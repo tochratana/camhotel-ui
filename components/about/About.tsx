@@ -54,7 +54,7 @@ const mentors: TeamProfile[] = [
 const members: TeamProfile[] = [
   {
     name: "Keo Menglong",
-    role: "Fullsatck",
+    role: "Fullstack",
     intro:
       "Nita builds user-facing pages with strong responsiveness and smooth interaction details.",
     quote:
@@ -128,8 +128,7 @@ function StoryRow({
           {typeLabel}
         </p>
         <h3
-          className="text-3xl font-bold text-[#102d74] dark:text-blue-200"
-          style={{ fontFamily: '"Merriweather", Georgia, serif' }}
+          className="text-3xl font-bold text-[#102d74] dark:text-blue-200 font-heading"
         >
           {profile.name}
         </h3>
@@ -163,8 +162,7 @@ function StoryRow({
 export default function About() {
   return (
     <main
-      className="relative min-h-screen overflow-hidden bg-[#f5f8ff] text-slate-900 dark:bg-[#070f22] dark:text-slate-100"
-      style={{ fontFamily: '"Plus Jakarta Sans", "Segoe UI", sans-serif' }}
+      className="relative min-h-screen overflow-hidden bg-[#f5f8ff] text-slate-900 dark:bg-[#070f22] dark:text-slate-100 font-sans"
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-24 top-20 h-72 w-72 rounded-full bg-[#96bcff]/40 blur-3xl dark:bg-blue-900/35" />
@@ -177,8 +175,7 @@ export default function About() {
           About CamHotel Team
         </p>
         <h1
-          className="mt-4 max-w-3xl text-4xl font-bold leading-tight text-[#0f2f76] md:text-6xl dark:text-blue-100"
-          style={{ fontFamily: '"Merriweather", Georgia, serif' }}
+          className="mt-4 max-w-3xl text-4xl font-bold leading-tight text-[#0f2f76] md:text-6xl dark:text-blue-100 font-heading"
         >
           Mission-led team, mentor-guided growth, member-driven execution.
         </h1>
@@ -197,8 +194,7 @@ export default function About() {
               Mission
             </p>
             <h2
-              className="text-3xl font-bold text-[#102f77] dark:text-blue-200"
-              style={{ fontFamily: '"Merriweather", Georgia, serif' }}
+              className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-heading"
             >
               Build dependable digital hospitality experiences.
             </h2>
@@ -215,8 +211,7 @@ export default function About() {
               Vision
             </p>
             <h2
-              className="text-3xl font-bold text-[#102f77] dark:text-blue-200"
-              style={{ fontFamily: '"Merriweather", Georgia, serif' }}
+              className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-heading"
             >
               Become the trusted platform behind modern hotel workflows.
             </h2>
@@ -233,8 +228,7 @@ export default function About() {
         <div className="mb-6 flex items-center gap-3">
           <UserRound className="h-5 w-5 text-[#3558aa] dark:text-blue-300" />
           <h2
-            className="text-3xl font-bold text-[#102f77] dark:text-blue-200"
-            style={{ fontFamily: '"Merriweather", Georgia, serif' }}
+            className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-heading"
           >
             Mentors
           </h2>
@@ -254,8 +248,7 @@ export default function About() {
         <div className="mb-6 flex items-center gap-3">
           <UsersRound className="h-5 w-5 text-[#3558aa] dark:text-blue-300" />
           <h2
-            className="text-3xl font-bold text-[#102f77] dark:text-blue-200"
-            style={{ fontFamily: '"Merriweather", Georgia, serif' }}
+            className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-heading"
           >
             Members
           </h2>
