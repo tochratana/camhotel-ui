@@ -93,12 +93,17 @@ export default function Contact() {
                                 className="bg-[#1e3a8a] dark:bg-[#1e3a8a] text-white rounded-xl p-8 relative overflow-hidden group">
                                 <div className="relative z-10">
                                     <div className="mb-4 opacity-80 text-3xl">📍</div>
-                                    <h3 className="text-xl font-bold mb-2">The Azure District</h3>
-                                    <p className="text-blue-200 dark:text-[#b6c4ff] font-light leading-relaxed">
-                                        442 Sapphire Avenue, Suite 100<br/>
-                                        Azure Hospitality Quarter<br/>
-                                        Metropolitan City, AZ 88210
-                                    </p>
+                                    <a href="https://maps.app.goo.gl/LZzbpBTiZct84tsE7" target="_blank">
+                                        <h3 className="text-xl font-bold mb-2">Institute of Science and Technology
+                                            Advanced Development</h3>
+                                        <p className="text-blue-200 dark:text-[#b6c4ff] font-light leading-relaxed">
+                                            No. 40, Street 273,
+                                            Sangkat Boeung Kak I,
+                                            <br/>
+                                            Khan Toul Kork,
+                                            Phnom Penh, Cambodia
+                                        </p>
+                                    </a>
                                 </div>
                                 <div
                                     className="absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-500 text-[10rem]">
@@ -113,35 +118,39 @@ export default function Contact() {
                                     <div className="text-[#1e3a8a] dark:text-[#b6c4ff] mb-3 text-xl">📞</div>
                                     <span
                                         className="text-[0.6rem] font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Phone</span>
-                                    <p className="text-sm font-bold dark:text-white">+1 (800) CAM-HTL</p>
+                                    <a href="tel:093-990-910" target="_blank">
+                                        <p className="text-sm font-bold dark:text-white">+(855) 93-990-910</p>
+                                    </a>
                                 </div>
                                 <div
                                     className="bg-[#f4f3fa] dark:bg-input-bg rounded-xl p-6 flex flex-col items-center justify-center text-center">
                                     <div className="text-[#1e3a8a] dark:text-[#b6c4ff] mb-3 text-xl">✉️</div>
                                     <span
                                         className="text-[0.6rem] font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Email</span>
-                                    <p className="text-sm font-bold dark:text-white">stay@camhotel.com</p>
+                                    <a href="mailto:info.istad@gmail.com">
+                                        <p className="text-sm font-bold dark:text-white">info.istad@gmail.com</p>
+                                    </a>
                                 </div>
                             </div>
 
-                            {/* Map Placeholder */}
+                            {/* Live Google Map */}
                             <div
-                                className="bg-slate-200 dark:bg-input-bg rounded-xl overflow-hidden grow min-h-60 relative border dark:border-white/5">
-                                {/*<Image*/}
-                                {/*    src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=1000"*/}
-                                {/*    alt="Location Map"*/}
-                                {/*    className="w-full h-full object-cover grayscale opacity-60 hover:grayscale-0 transition-all duration-700"*/}
-                                {/*/>*/}
-                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <div
-                                        className="bg-white dark:bg-input-bg p-3 rounded-full shadow-lg border-2 border-[#1e3a8a] dark:border-[#b6c4ff]">
-                                        <span className="text-[#1e3a8a] dark:text-[#b6c4ff]">📌</span>
-                                    </div>
-                                </div>
+                                className="bg-slate-200 dark:bg-input-bg rounded-xl overflow-hidden grow min-h-60 relative border dark:border-white/5 shadow-inner">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3908.5335482521355!2d104.89974919987002!3d11.585259369306556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310951e96d257a6f%3A0x6b66703c5fc0c7cc!2sScience%20and%20Technology%20Advanced%20Development%20Co.%2C%20Ltd.!5e0!3m2!1sen!2skh!4v1776542810074!5m2!1sen!2skh"
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0 }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    title="ISTAD Location"
+                                    className="absolute inset-0"
+                                ></iframe>
                                 <div
-                                    className="absolute bottom-4 left-4 bg-white/70 dark:bg-input-bg/70 backdrop-blur-md px-4 py-2 rounded-lg">
-                                    <p className="text-[0.65rem] font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                        <span>🧭</span> Get Directions
+                                    className="absolute bottom-4 left-4 bg-white/90 dark:bg-input-bg/90 backdrop-blur-md px-4 py-2 rounded-lg shadow-lg pointer-events-none">
+                                    <p className="text-[0.65rem] font-extrabold text-[#1e3a8a] dark:text-[#b6c4ff] flex items-center gap-2 uppercase tracking-wider">
+                                        <span>🧭</span> Real-time Direction Enabled
                                     </p>
                                 </div>
                             </div>

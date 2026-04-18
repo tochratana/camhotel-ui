@@ -194,21 +194,22 @@ export default function Homepage() {
                                     <MapPin className="text-[#dce1ff] dark:text-blue-300"/>
                                     <div>
                                         <h4 className="font-bold text-sm tracking-widest uppercase mb-1">Location</h4>
-                                        <p className="text-sm text-white/80">1224 Hospitality Lane, CA 90210</p>
+                                        <p className="text-sm text-white/80">07000 Preaek Tuek Chhu, Krong Kampot,
+                                            Kampot Province, Cambodia</p>
                                     </div>
                                 </li>
                                 <li className="flex items-start gap-4">
                                     <Phone className="text-[#dce1ff] dark:text-blue-300"/>
                                     <div>
                                         <h4 className="font-bold text-sm tracking-widest uppercase mb-1">Reservations</h4>
-                                        <p className="text-sm text-white/80">+1 (555) 800-HOTEL</p>
+                                        <p className="text-sm text-white/80">+(855) 93-990-910</p>
                                     </div>
                                 </li>
                                 <li className="flex items-start gap-4">
                                     <Mail className="text-[#dce1ff] dark:text-blue-300"/>
                                     <div>
                                         <h4 className="font-bold text-sm tracking-widest uppercase mb-1">Email</h4>
-                                        <p className="text-sm text-white/80">concierge@camhotel.premium</p>
+                                        <p className="text-sm text-white/80">info.istad@gmail.com</p>
                                     </div>
                                 </li>
                             </ul>
