@@ -5,24 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5e933579-1eb3-4cc3-8bcb-84b65307408d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/components/facilities/FacilityAdmin.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/mt-mb/mb_menglong.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/mt-mb/mb_ratana.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/mt-mb/mt_chhaya.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/mt-mb/mt_tara.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/auth/login/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/auth/login/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/auth/me/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/auth/me/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/auth/register/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/auth/register/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/about/About.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/about/About.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/app-sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/app-sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/chart-area-interactive.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/chart-area-interactive.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/DashboardFrame.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/DashboardFrame.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/DashboardSettings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/DashboardSettings.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/dashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/role-config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/role-config.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/dashboardTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/section-cards.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/section-cards.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/dashboard-data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/dashboard-data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/hotel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/hotel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/mt-mb/mb_menglong.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/mt-mb/mb_ratana.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/mt-mb/mt_chhaya.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/mt-mb/mt_tara.jpg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +74,7 @@
     "javascript.preferred.runtime.type.id": "node",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "C:/Users/Injae/Desktop/Code/ibooking-frontend/public",
+    "last_opened_file_path": "/Users/menglongkeo/Documents/ISTAD-Associate/YearII/SemesterI/Reaksmy/cam-hotel/public/mt-mb",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -95,9 +87,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/mt-mb" />
       <recent name="C:\Users\Injae\Desktop\Code\ibooking-frontend\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/types" />
       <recent name="C:\Users\Injae\Desktop\Code\ibooking-frontend\app" />
     </key>
   </component>
