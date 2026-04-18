@@ -27,7 +27,7 @@ const mentors: TeamProfile[] = [
         quote:
             "A product is not complete when it ships. It is complete when users trust it naturally.",
         strengths: ["Roadmap Coaching", "Product Strategy", "Team Direction"],
-        image: "/mt-mb/mt_chhaya.png",
+        image: "/mt-mb/mt_chhaya.jpg",
     },
     {
         name: "Mom Reksmey",
@@ -37,7 +37,7 @@ const mentors: TeamProfile[] = [
         quote:
             "Clean structure is kindness to your future team. Build it once, scale it calmly.",
         strengths: ["Architecture", "Code Quality", "Performance"],
-        image: "/mt-mb/mt_reksmey.png",
+        image: "/mt-mb/mt_reksmey.jpg",
     },
     {
         name: "Kit Tara",
@@ -47,7 +47,7 @@ const mentors: TeamProfile[] = [
         quote:
             "When design is right, users do not notice the UI. They notice their confidence.",
         strengths: ["UX Guidance", "Design Systems", "Brand Consistency"],
-        image: "/mt-mb/mt_tara.png",
+        image: "/mt-mb/mt_tara.jpg",
     },
 ];
 
@@ -71,7 +71,7 @@ const members: TeamProfile[] = [
             "Reliability is invisible when it works, but unforgettable when it fails.",
         strengths: ["UI Development", "Testing"],
         image:
-            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",
+            "/mt-mb/mb_vibol.jpg",
     },
     {
         name: "Saroeun Sothearith",
@@ -82,7 +82,7 @@ const members: TeamProfile[] = [
             "Quality is a habit. We protect users by questioning every assumption.",
         strengths: ["UI Development", "Testing"],
         image:
-            "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop",
+            "/mt-mb/mb_sothearith.png",
     },
     {
         name: "Toch Ratana",
@@ -112,15 +112,12 @@ function StoryRow({
             className="grid grid-cols-1 items-center gap-8 border-t border-slate-200 py-10 first:border-t-0 dark:border-slate-700 md:grid-cols-12">
             <div className={`relative md:col-span-4 ${imageOrderClass}`}>
                 <div
-                    className="absolute -inset-3 rounded-3xl bg-linear-to-br from-[#8bb6ff]/45 to-[#ffe5bd]/40 blur-xl dark:from-blue-900/45 dark:to-cyan-900/40"/>
-                <div
-                    className="relative overflow-hidden rounded-2xl border border-white/50 shadow-lg shadow-[#12367e]/20 dark:border-slate-700/60">
+                    className="relative aspect-3/4 overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800">
                     <Image
                         src={profile.image}
                         alt={profile.name}
-                        width={640}
-                        height={760}
-                        className="h-72 w-full object-cover md:h-80"
+                        fill
+                        className="object-cover"
                         unoptimized
                     />
                 </div>
@@ -168,15 +165,6 @@ export default function About() {
         <main
             className="relative min-h-screen overflow-hidden bg-[#f5f8ff] text-slate-900 dark:bg-[#070f22] dark:text-slate-100 font-sans"
         >
-            <div className="pointer-events-none absolute inset-0">
-                <div
-                    className="absolute -left-24 top-20 h-72 w-72 rounded-full bg-[#96bcff]/40 blur-3xl dark:bg-blue-900/35"/>
-                <div
-                    className="absolute right-0 top-0 h-104 w-104 rounded-full bg-[#ffddb0]/45 blur-3xl dark:bg-cyan-900/30"/>
-                <div
-                    className="absolute bottom-10 left-1/3 h-72 w-72 rounded-full bg-[#c4d6ff]/40 blur-3xl dark:bg-indigo-900/30"/>
-            </div>
-
             <section className="relative mx-auto max-w-6xl px-6 pb-14 pt-24 md:px-10">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f63b3] dark:text-blue-300">
                     About CamHotel Team
