@@ -61,6 +61,7 @@ export default function PaymentManagement() {
   const [statusFilter, setStatusFilter] = useState<PaymentStatus | "ALL">("ALL");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [draftStatuses, setDraftStatuses] = useState<Record<number, PaymentStatus>>({});
   
   // Form State
   const [bookingId, setBookingId] = useState("");
@@ -76,7 +77,8 @@ export default function PaymentManagement() {
 
   const { data: statsResponse } = useGetPaymentStatsQuery();
 
-  const [updateStatus, { isLoading: isUpdating }] = useUpdatePaymentStatusMutation();
+  const [updateStatus, updateStatusState] = useUpdatePaymentStatusMutation();
+  const isUpdating = updateStatusState.isLoading;
   const [createPayment, { isLoading: isCreating }] = useCreatePaymentMutation();
 
   const payments = apiResponse?.data?.content ?? [];
@@ -111,10 +113,19 @@ export default function PaymentManagement() {
     }
   };
 
-  const handleStatusUpdate = async (id: number, newStatus: PaymentStatus) => {
+  const handleStatusUpdate = async (id: number) => {
+    const newStatus = draftStatuses[id];
+    if (!newStatus) return;
+
     try {
       await updateStatus({ id, paymentStatus: newStatus }).unwrap();
       toast.success(`Payment status updated to ${newStatus}`);
+      // Clear draft after success
+      setDraftStatuses(prev => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
     } catch (error) {
       toast.error("Failed to update payment status");
       console.error(error);
@@ -357,21 +368,36 @@ export default function PaymentManagement() {
                         {payment.paidAt ? formatDate(payment.paidAt) : <span className="opacity-50">—</span>}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Select 
-                          defaultValue={payment.paymentStatus}
-                          onValueChange={(val) => handleStatusUpdate(payment.id, val as PaymentStatus)}
-                          disabled={isUpdating}
-                        >
-                          <SelectTrigger className="h-8 w-27.5 ml-auto text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent align="end">
-                            <SelectItem value="PENDING">Mark Pending</SelectItem>
-                            <SelectItem value="PAID">Mark Paid</SelectItem>
-                            <SelectItem value="FAILED">Mark Failed</SelectItem>
-                            <SelectItem value="REFUNDED">Mark Refunded</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <div className="flex items-center justify-end gap-2">
+                          <Select 
+                            value={draftStatuses[payment.id] ?? payment.paymentStatus}
+                            onValueChange={(val) => setDraftStatuses(prev => ({ ...prev, [payment.id]: val as PaymentStatus }))}
+                            disabled={isUpdating}
+                          >
+                            <SelectTrigger className="h-8 w-27.5 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent align="end">
+                              <SelectItem value="PENDING">Mark Pending</SelectItem>
+                              <SelectItem value="PAID">Mark Paid</SelectItem>
+                              <SelectItem value="FAILED">Mark Failed</SelectItem>
+                              <SelectItem value="REFUNDED">Mark Refunded</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 px-3 text-xs font-semibold"
+                            disabled={!draftStatuses[payment.id] || isUpdating}
+                            onClick={() => handleStatusUpdate(payment.id)}
+                          >
+                            {isUpdating && updateStatusState.originalArgs?.id === payment.id ? (
+                              <Loader2 className="size-3 animate-spin" />
+                            ) : (
+                              "Save"
+                            )}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
