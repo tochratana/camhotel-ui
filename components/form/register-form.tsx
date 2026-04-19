@@ -15,6 +15,7 @@ import {
   Mail,
   User,
   UserPlus,
+  X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -47,10 +48,15 @@ const registerSchema = z
       .string()
       .min(1, "Please confirm your password")
       .min(8, "Password must be at least 8 characters"),
+    acceptPrivacy: z.boolean(),
   })
   .refine((value) => value.password === value.confirmPassword, {
     path: ["confirmPassword"],
     message: "Passwords do not match",
+  })
+  .refine((value) => value.acceptPrivacy, {
+    path: ["acceptPrivacy"],
+    message: "You must agree to the Privacy Policy before registering.",
   });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -85,6 +91,7 @@ export default function RegisterForm() {
   const [registerUser] = useRegisterMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -95,14 +102,17 @@ export default function RegisterForm() {
       email: "",
       password: "",
       confirmPassword: "",
+      acceptPrivacy: false,
     },
   });
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = form;
+  const isPrivacyAccepted = watch("acceptPrivacy");
 
   async function onSubmit(data: RegisterFormValues) {
     setIsLoading(true);
@@ -261,10 +271,40 @@ export default function RegisterForm() {
             ) : null}
           </div>
 
+          <div className="space-y-1.5">
+            <div className="flex items-start gap-2.5 rounded-md bg-slate-50/70 py-2 dark:border-slate-700 dark:bg-slate-800/60">
+              <input
+                id="acceptPrivacy"
+                type="checkbox"
+                disabled={isLoading}
+                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#1f3b93] focus:ring-[#1f3b93] dark:border-slate-600 dark:bg-slate-900 dark:checked:bg-blue-600 dark:focus:ring-blue-400"
+                {...register("acceptPrivacy")}
+              />
+              <Label
+                htmlFor="acceptPrivacy"
+                className="cursor-pointer text-sm font-medium leading-relaxed text-slate-700 dark:text-slate-300"
+              >
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={() => setIsPrivacyOpen(true)}
+                  className="font-semibold text-[#1f3b93] underline underline-offset-2 hover:text-[#18317b] dark:text-blue-300 dark:hover:text-blue-200"
+                >
+                  Privacy Policy
+                </button>
+              </Label>
+            </div>
+            {errors.acceptPrivacy ? (
+              <p className="text-sm text-rose-600 dark:text-rose-400">
+                {errors.acceptPrivacy.message}
+              </p>
+            ) : null}
+          </div>
+
           <Button
             type="submit"
             className="mt-2 h-11 w-full bg-[#1f3b93] text-base font-semibold text-white shadow-lg shadow-[#1f3b93]/30 hover:bg-[#18317b] dark:bg-blue-600 dark:shadow-blue-950/50 dark:hover:bg-blue-500"
-            disabled={isLoading}
+            disabled={isLoading || !isPrivacyAccepted}
           >
             {isLoading ? (
               <>
@@ -287,6 +327,64 @@ export default function RegisterForm() {
           </p>
         </form>
       </CardContent>
+
+      {isPrivacyOpen ? (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/55 backdrop-blur-[1px]"
+            onClick={() => setIsPrivacyOpen(false)}
+            aria-label="Close privacy policy dialog"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="privacy-title"
+            className="relative z-[71] w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-900"
+          >
+            <button
+              type="button"
+              onClick={() => setIsPrivacyOpen(false)}
+              className="absolute right-4 top-4 rounded-md p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              aria-label="Close privacy policy"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <h3
+              id="privacy-title"
+              className="text-xl font-bold text-[#1f3b93] dark:text-blue-300"
+            >
+              Privacy Policy
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              We collect your registration details only for account creation,
+              authentication, and service communication. Your personal data is
+              not sold to third parties.
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              By continuing registration, you agree to responsible data handling
+              for account security, booking operations, and support requests.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <Link
+                href="/privacy-policy"
+                className="text-sm font-semibold text-[#1f3b93] underline underline-offset-2 hover:text-[#18317b] dark:text-blue-300 dark:hover:text-blue-200"
+              >
+                Read full Privacy Policy page
+              </Link>
+              <Button
+                type="button"
+                onClick={() => setIsPrivacyOpen(false)}
+                className="h-9 bg-[#1f3b93] px-4 text-white hover:bg-[#18317b] dark:bg-blue-600 dark:hover:bg-blue-500"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </Card>
   );
 }

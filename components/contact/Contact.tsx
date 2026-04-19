@@ -236,7 +236,7 @@ export default function Contact() {
                   disabled={isSubmitting}
                   className="bg-linear-to-br from-[#00236f] to-[#1e3a8a] dark:from-[#b6c4ff] dark:to-[#90a8ff] text-white dark:text-[#00164e] px-8 py-4 rounded-xl font-bold w-full md:w-auto hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? "Sending..." : "Submit Request"}
+                  {isSubmitting ? "Sending..." : "Submit"}
                 </button>
 
                 {submitMessage.type !== "idle" && (
