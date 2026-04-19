@@ -176,6 +176,20 @@ export default function PaymentManagement() {
     <div className="p-4 lg:p-8 space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100 fill-mode-both">
+        {/* Total Transactions Count */}
+        <Card className="border-border/60 shadow-sm bg-indigo-50/50 dark:bg-indigo-500/5 border-indigo-100 dark:border-indigo-900/30">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-bold font-heading text-indigo-600 dark:text-indigo-400 uppercase tracking-tight">Total Count</CardTitle>
+            <CreditCard className="h-4 w-4 text-indigo-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">
+              {totalElements.toLocaleString()}
+            </div>
+            <p className="text-[10px] font-medium text-slate-500 uppercase">All transactions</p>
+          </CardContent>
+        </Card>
+
         {/* Gross Revenue (All Statuses) */}
         <Card className="border-border/60 shadow-lg bg-slate-900 dark:bg-slate-100 dark:border-slate-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -189,19 +203,6 @@ export default function PaymentManagement() {
               ${pageTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </div>
             <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase">Sum of all statuses</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/60 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-heading text-slate-500">Total Revenue</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">
-              ${grandTotalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-            </div>
-            <p className="text-xs text-muted-foreground font-medium">Lifetime (Paid Only)</p>
           </CardContent>
         </Card>
 

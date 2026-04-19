@@ -6,33 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5e933579-1eb3-4cc3-8bcb-84b65307408d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(admin)/admin/bookings/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(admin)/admin/bookings/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(admin)/admin/room-types/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(admin)/admin/room-types/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(admin)/admin/rooms/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(admin)/admin/rooms/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(admin)/admin/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(admin)/admin/users/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(staff)/staff/bookings/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(staff)/staff/bookings/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(staff)/staff/rooms/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(staff)/staff/rooms/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(user)/customer/book/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(user)/customer/book/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(user)/customer/profile/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(user)/customer/profile/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/rooms/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/rooms/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/about/About.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/about/About.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/app-sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/app-sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/contact/Contact.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/contact/Contact.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/DashboardSettings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/DashboardSettings.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/dashboard/PaymentManagement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/PaymentManagement.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/dashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/facilities/FacilityAdmin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/facilities/FacilityAdmin.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/facilities/FacilityBlock.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/facilities/FacilityBlock.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/form/login-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/login-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/form/register-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/register-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/homepage/Homepage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/homepage/Homepage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/layout/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/layout/Navbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/nav-user.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/nav-user.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/rooms/RoomListUser.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/rooms/RoomListUser.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/feature/facilitySlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/feature/facilitySlice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/hotel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/hotel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/dashboard/role-config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/role-config.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +128,7 @@
       <workItem from="1775627395979" duration="6447000" />
       <workItem from="1775656810563" duration="313000" />
       <workItem from="1775657130291" duration="4557000" />
-      <workItem from="1776586433127" duration="12871000" />
+      <workItem from="1776586433127" duration="15117000" />
     </task>
     <servers />
   </component>
