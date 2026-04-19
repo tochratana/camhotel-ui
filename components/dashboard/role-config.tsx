@@ -107,11 +107,11 @@ export const staffDashboardConfig: DashboardShellConfig = {
             url: "/staff/rooms",
             icon: <BedDoubleIcon/>,
         },
-        // {
-        //   title: "Support",
-        //   url: "/contact",
-        //   icon: <ContactIcon />,
-        // },
+        {
+            title: "Payments",
+            url: "/staff/payments",
+            icon: <CreditCardIcon/>,
+        },
         {
             title: "Settings",
             url: "/staff/settings",
