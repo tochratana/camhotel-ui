@@ -127,10 +127,7 @@ function StoryRow({
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#3a5fae] dark:text-blue-300">
           {typeLabel}
         </p>
-        <h3
-          className="text-3xl font-bold text-[#102d74] dark:text-blue-200"
-          style={{ fontFamily: '"Merriweather", Georgia, serif' }}
-        >
+        <h3 className="text-3xl font-bold text-[#102d74] dark:text-blue-200">
           {profile.name}
         </h3>
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#4467b4] dark:text-blue-400">
@@ -162,24 +159,18 @@ function StoryRow({
 
 export default function About() {
   return (
-    <main
-      className="relative min-h-screen overflow-hidden bg-[#f5f8ff] text-slate-900 dark:bg-[#070f22] dark:text-slate-100"
-      style={{ fontFamily: '"Plus Jakarta Sans", "Segoe UI", sans-serif' }}
-    >
+    <main className="relative min-h-screen overflow-hidden bg-[#f5f8ff] text-slate-900 dark:bg-[#070f22] dark:text-slate-100">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-24 top-20 h-72 w-72 rounded-full bg-[#96bcff]/40 blur-3xl dark:bg-blue-900/35" />
         <div className="absolute right-0 top-0 h-[26rem] w-[26rem] rounded-full bg-[#ffddb0]/45 blur-3xl dark:bg-cyan-900/30" />
         <div className="absolute bottom-10 left-1/3 h-72 w-72 rounded-full bg-[#c4d6ff]/40 blur-3xl dark:bg-indigo-900/30" />
       </div>
 
-      <section className="relative mx-auto max-w-6xl px-6 pb-14 pt-24 md:px-10">
+      <section className="relative mx-auto max-w-7xl px-8 pb-14 pt-24">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f63b3] dark:text-blue-300">
           About CamHotel Team
         </p>
-        <h1
-          className="mt-4 max-w-3xl text-4xl font-bold leading-tight text-[#0f2f76] md:text-6xl dark:text-blue-100"
-          style={{ fontFamily: '"Merriweather", Georgia, serif' }}
-        >
+        <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-tight text-[#0f2f76] md:text-6xl dark:text-blue-100">
           Mission-led team, mentor-guided growth, member-driven execution.
         </h1>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg dark:text-slate-300">
@@ -189,17 +180,14 @@ export default function About() {
         </p>
       </section>
 
-      <section className="relative mx-auto max-w-6xl border-y border-slate-200 px-6 py-14 dark:border-slate-700 md:px-10">
+      <section className="relative mx-auto max-w-7xl border-y border-slate-200 px-8 py-14 dark:border-slate-700">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           <article className="space-y-4">
             <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#3659a9] dark:text-blue-300">
               <Compass className="h-4 w-4" />
               Mission
             </p>
-            <h2
-              className="text-3xl font-bold text-[#102f77] dark:text-blue-200"
-              style={{ fontFamily: '"Merriweather", Georgia, serif' }}
-            >
+            <h2 className="text-3xl font-bold text-[#102f77] dark:text-blue-200">
               Build dependable digital hospitality experiences.
             </h2>
             <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
@@ -214,10 +202,7 @@ export default function About() {
               <Eye className="h-4 w-4" />
               Vision
             </p>
-            <h2
-              className="text-3xl font-bold text-[#102f77] dark:text-blue-200"
-              style={{ fontFamily: '"Merriweather", Georgia, serif' }}
-            >
+            <h2 className="text-3xl font-bold text-[#102f77] dark:text-blue-200">
               Become the trusted platform behind modern hotel workflows.
             </h2>
             <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
@@ -229,13 +214,10 @@ export default function About() {
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <section className="relative mx-auto max-w-7xl px-8 py-14">
         <div className="mb-6 flex items-center gap-3">
           <UserRound className="h-5 w-5 text-[#3558aa] dark:text-blue-300" />
-          <h2
-            className="text-3xl font-bold text-[#102f77] dark:text-blue-200"
-            style={{ fontFamily: '"Merriweather", Georgia, serif' }}
-          >
+          <h2 className="text-3xl font-bold text-[#102f77] dark:text-blue-200">
             Mentors
           </h2>
         </div>
@@ -250,13 +232,10 @@ export default function About() {
         ))}
       </section>
 
-      <section className="relative mx-auto max-w-6xl border-t border-slate-200 px-6 py-14 dark:border-slate-700 md:px-10">
+      <section className="relative mx-auto max-w-7xl border-t border-slate-200 px-8 py-14 dark:border-slate-700">
         <div className="mb-6 flex items-center gap-3">
           <UsersRound className="h-5 w-5 text-[#3558aa] dark:text-blue-300" />
-          <h2
-            className="text-3xl font-bold text-[#102f77] dark:text-blue-200"
-            style={{ fontFamily: '"Merriweather", Georgia, serif' }}
-          >
+          <h2 className="text-3xl font-bold text-[#102f77] dark:text-blue-200">
             Members
           </h2>
         </div>

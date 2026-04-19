@@ -8,10 +8,11 @@ import {
   Mail,
   MapPin,
   Phone,
+  Star,
   Utensils,
 } from "lucide-react";
 import { roomCard } from "@/data/roomCard";
-import { useGetRoomsQuery } from "@/lib/feature/hotelSlice";
+import { useGetRatingsQuery, useGetRoomsQuery } from "@/lib/feature/hotelSlice";
 import { resolveMediaUrl } from "@/lib/media-url";
 import RoomCard from "@/components/homepage/RoomCard";
 
@@ -32,6 +33,37 @@ function addDays(date: Date, days: number): Date {
   next.setDate(next.getDate() + days);
   return next;
 }
+
+type HomepageStatsPlaceholder = {
+  totalUsers: string;
+  totalRooms: string;
+  totalRoomTypes: string;
+  totalBookings: string;
+  totalStaff: string;
+  totalRatings: string;
+};
+
+const statsPlaceholder: HomepageStatsPlaceholder = {
+  totalUsers: "--",
+  totalRooms: "--",
+  totalRoomTypes: "--",
+  totalBookings: "--",
+  totalStaff: "--",
+  totalRatings: "--",
+};
+
+const statsCards: Array<{
+  key: keyof HomepageStatsPlaceholder;
+  label: string;
+  hint: string;
+}> = [
+  { key: "totalUsers", label: "Total Users", hint: "Guests & accounts" },
+  { key: "totalRooms", label: "Total Rooms", hint: "All room inventory" },
+  { key: "totalRoomTypes", label: "Room Types", hint: "Available categories" },
+  { key: "totalBookings", label: "Total Bookings", hint: "Reservation records" },
+  { key: "totalStaff", label: "Staff Members", hint: "Ops team members" },
+  { key: "totalRatings", label: "Guest Ratings", hint: "Published reviews" },
+];
 
 export default function Homepage() {
   const defaultDateRange = useMemo(() => {
@@ -73,6 +105,16 @@ export default function Homepage() {
       };
     });
   }, [data, defaultDateRange.checkInDate, defaultDateRange.checkOutDate]);
+
+  const { data: ratingData, isFetching: isRatingsFetching } = useGetRatingsQuery({
+    page: 0,
+    size: 6,
+  });
+
+  const featuredRatings = useMemo(() => {
+    const ratings = ratingData?.data?.content ?? [];
+    return ratings.slice(0, 3);
+  }, [ratingData]);
 
   return (
     <main className="bg-background min-h-screen font-sans selection:bg-[#dce1ff] dark:selection:bg-blue-900/50">
@@ -174,6 +216,44 @@ export default function Homepage() {
         </div>
       </section>
 
+      {/* Stats Placeholder Section */}
+      <section id="stats" className="py-20 px-8 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-5">
+            <div className="max-w-2xl">
+              <span className="text-[#00236f] dark:text-blue-400 text-xs font-bold tracking-[0.2em] uppercase">
+                Platform Snapshot
+              </span>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mt-2">
+                System Totals
+              </h2>
+            </div>
+            <p className="text-slate-500 dark:text-slate-400 text-sm italic">
+              Placeholder values • replace with API counts
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            {statsCards.map((item) => (
+              <article
+                key={item.key}
+                className="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-5 shadow-sm"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                  {item.label}
+                </p>
+                <p className="mt-3 text-4xl font-extrabold text-[#00236f] dark:text-blue-300 leading-none">
+                  {statsPlaceholder[item.key]}
+                </p>
+                <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                  {item.hint}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Rooms Section */}
       <section id="rooms" className="py-24 px-8 bg-section-alt-bg">
         <div className="max-w-7xl mx-auto">
@@ -206,6 +286,203 @@ export default function Homepage() {
           </div>
         </div>
       </section>
+
+      {/* Signature Experience Section */}
+      <section id="experience" className="relative overflow-hidden py-24 px-8 bg-background">
+        <div className="pointer-events-none absolute -top-16 right-0 h-72 w-72 rounded-full bg-[#dce1ff]/50 dark:bg-blue-900/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 left-0 h-72 w-72 rounded-full bg-amber-100/60 dark:bg-amber-900/20 blur-3xl" />
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-stretch relative z-10">
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <span className="text-[#00236f] dark:text-blue-400 text-xs font-bold tracking-[0.2em] uppercase">
+                Signature Experience
+              </span>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                Designed Around the
+                <br />
+                Way You Travel
+              </h2>
+              <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed max-w-2xl">
+                From arrival to checkout, every step is curated to feel smooth,
+                private, and memorable. We pair thoughtful service with premium
+                comfort so your stay feels effortless.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700 bg-white/90 dark:bg-slate-900/60 p-5 shadow-sm">
+                <p className="text-3xl font-extrabold text-[#00236f] dark:text-blue-300">
+                  24/7
+                </p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  Concierge support
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700 bg-white/90 dark:bg-slate-900/60 p-5 shadow-sm">
+                <p className="text-3xl font-extrabold text-[#00236f] dark:text-blue-300">
+                  15 min
+                </p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  To city center
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700 bg-white/90 dark:bg-slate-900/60 p-5 shadow-sm">
+                <p className="text-3xl font-extrabold text-[#00236f] dark:text-blue-300">
+                  98%
+                </p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  Returning guests
+                </p>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-4 pt-2">
+              <a
+                href="tel:+85523888000"
+                className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/60 px-4 py-3 text-sm text-slate-700 dark:text-slate-200 hover:border-[#00236f]/40 dark:hover:border-blue-400/60 transition-colors"
+              >
+                <Phone className="w-4 h-4 text-[#00236f] dark:text-blue-400" />
+                <span>+855 23 888 000</span>
+              </a>
+              <a
+                href="mailto:stay@camhotel.com"
+                className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/60 px-4 py-3 text-sm text-slate-700 dark:text-slate-200 hover:border-[#00236f]/40 dark:hover:border-blue-400/60 transition-colors"
+              >
+                <Mail className="w-4 h-4 text-[#00236f] dark:text-blue-400" />
+                <span>stay@camhotel.com</span>
+              </a>
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/60 px-4 py-3 text-sm text-slate-700 dark:text-slate-200">
+                <MapPin className="w-4 h-4 text-[#00236f] dark:text-blue-400" />
+                <span>Phnom Penh Riverside</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative rounded-3xl overflow-hidden min-h-[460px] shadow-2xl border border-white/40 dark:border-slate-700/70">
+            <Image
+              src="https://images.unsplash.com/photo-1563911302283-d2bc129e7570?auto=format&fit=crop&w=1200&q=80"
+              alt="CamHotel suite experience"
+              fill
+              className="object-cover"
+              unoptimized={true}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-8 space-y-5">
+              <div className="flex items-start gap-3">
+                <ConciergeBell className="w-5 h-5 text-blue-200 mt-0.5" />
+                <div>
+                  <h3 className="text-white font-bold">Private Check-in</h3>
+                  <p className="text-white/80 text-sm">
+                    Fast, discreet arrival support tailored to your schedule.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Utensils className="w-5 h-5 text-amber-200 mt-0.5" />
+                <div>
+                  <h3 className="text-white font-bold">Chef-Curated Dining</h3>
+                  <p className="text-white/80 text-sm">
+                    Seasonal menus and in-room options crafted for comfort.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-emerald-200 mt-0.5" />
+                <div>
+                  <h3 className="text-white font-bold">Prime Location</h3>
+                  <p className="text-white/80 text-sm">
+                    Minutes from business hubs, dining, and riverside walks.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Booking CTA */}
+      <section className="py-24 px-8 bg-section-alt-bg">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-14 gap-5">
+            <div className="max-w-xl">
+              <span className="text-[#00236f] dark:text-blue-400 text-xs font-bold tracking-[0.2em] uppercase">
+                Guest Ratings
+              </span>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mt-2">
+                What Our Guests Say
+              </h2>
+            </div>
+            <p className="text-slate-500 dark:text-slate-400 text-sm italic">
+              {isRatingsFetching ? "Loading recent ratings..." : "Real feedback from verified customers"}
+            </p>
+          </div>
+
+          {featuredRatings.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {featuredRatings.map((rating) => {
+                const imageUrl = resolveMediaUrl(rating.profileImage);
+                const initials = (rating.name || "G")
+                  .trim()
+                  .split(/\s+/)
+                  .slice(0, 2)
+                  .map((part) => part.charAt(0).toUpperCase())
+                  .join("");
+
+                return (
+                  <article
+                    key={rating.id}
+                    className="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-6 shadow-sm"
+                  >
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="flex items-center gap-3">
+                        {imageUrl ? (
+                          <Image
+                            src={imageUrl}
+                            alt={rating.name}
+                            width={48}
+                            height={48}
+                            className="h-12 w-12 rounded-full object-cover"
+                            unoptimized={true}
+                          />
+                        ) : (
+                          <div className="h-12 w-12 rounded-full bg-[#dce1ff] dark:bg-blue-900/70 text-[#00236f] dark:text-blue-200 font-bold flex items-center justify-center">
+                            {initials || "G"}
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-semibold text-slate-900 dark:text-white">{rating.name}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {rating.jobTitle || "Guest"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-amber-500">
+                        {Array.from({ length: 5 }).map((_, index) => (
+                          <Star
+                            key={index}
+                            className={`h-4 w-4 ${
+                              index < rating.stars ? "fill-current" : "text-slate-300 dark:text-slate-600"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                      {rating.description}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-10 text-center text-slate-500 dark:text-slate-400">
+              No public ratings yet. Be the first guest to leave feedback.
+            </div>
+          )}
+        </div>
+      </section>
+
+      
     </main>
   );
 }

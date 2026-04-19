@@ -1,0 +1,9 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="#EEF4FF"/>
+  <rect x="16" y="16" width="480" height="480" rx="96" stroke="#9DB5E8" stroke-width="20"/>
+  <path d="M256 105L387 169V268C387 334 331 392 256 407C181 392 125 334 125 268V169L256 105Z" fill="#1E3A8A"/>
+  <path d="M256 145L344 188V259C344 307 307 349 256 364C205 349 168 307 168 259V188L256 145Z" fill="#E2ECFF"/>
+  <path d="M190 229L256 198L322 229L256 260L190 229Z" fill="#1E3A8A"/>
+  <path d="M220 254V287C220 305 236 320 256 320C276 320 292 305 292 287V254L256 271L220 254Z" fill="#1E3A8A"/>
+  <text x="256" y="446" text-anchor="middle" fill="#1E3A8A" font-size="40" font-weight="700" font-family="Arial, Helvetica, sans-serif">SCHOOL</text>
+</svg>

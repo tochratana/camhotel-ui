@@ -48,6 +48,17 @@ export type BookingPolicy = {
   updatedAt: string;
 };
 
+export type RatingResponse = {
+  id: number;
+  stars: number;
+  description: string;
+  name: string;
+  jobTitle?: string | null;
+  profileImage?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type SpringPage<T> = {
   content: T[];
   totalElements: number;
@@ -130,4 +141,18 @@ export type CreateStaffPayload = {
 export type UpdateUserRolePayload = {
   id: number;
   role: "ADMIN" | "STAFF" | "CUSTOMER";
+};
+
+export type MyRatingPayload = {
+  stars: number;
+  description: string;
+  jobTitle?: string;
+};
+
+export type AdminRatingPayload = {
+  stars: number;
+  description: string;
+  name: string;
+  jobTitle?: string;
+  profileImage?: string;
 };

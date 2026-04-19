@@ -1,13 +1,16 @@
 import { fakeStoreApi } from "@/lib/feature/api";
 import type { ApiResponse, UserResponse } from "@/types/auth";
 import type {
+  AdminRatingPayload,
   ApiPageResponse,
   BookingPolicy,
   BookingResponse,
   BookingsQuery,
   CreateBookingPayload,
   CreateStaffPayload,
+  MyRatingPayload,
   PaginationQuery,
+  RatingResponse,
   RoomPayload,
   RoomResponse,
   RoomStatus,
@@ -209,6 +212,67 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
         providesTags: ["Auth"],
       },
     ),
+    getRatings: builder.query<ApiPageResponse<RatingResponse>, PaginationQuery | void>({
+      query: (params) =>
+        withQuery("/ratings", {
+          pageNumber: params?.page ?? 0,
+          pageSize: params?.size ?? 10,
+        }),
+      providesTags: ["Auth"],
+    }),
+    getMyRating: builder.query<ApiResponse<RatingResponse>, void>({
+      query: () => "/ratings/me",
+      providesTags: ["Auth"],
+    }),
+    createMyRating: builder.mutation<ApiResponse<RatingResponse>, MyRatingPayload>({
+      query: (payload) => ({
+        url: "/ratings/me",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    updateMyRating: builder.mutation<ApiResponse<RatingResponse>, MyRatingPayload>({
+      query: (payload) => ({
+        url: "/ratings/me",
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    deleteMyRating: builder.mutation<ApiResponse<void>, void>({
+      query: () => ({
+        url: "/ratings/me",
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    createRatingByAdmin: builder.mutation<ApiResponse<RatingResponse>, AdminRatingPayload>({
+      query: (payload) => ({
+        url: "/ratings",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    updateRatingByAdmin: builder.mutation<
+      ApiResponse<RatingResponse>,
+      { id: number; payload: AdminRatingPayload }
+    >({
+      query: ({ id, payload }) => ({
+        url: `/ratings/${id}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    deleteRatingByAdmin: builder.mutation<ApiResponse<void>, number>({
+      query: (id) => ({
+        url: `/ratings/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
   }),
 });
 
@@ -232,4 +296,12 @@ export const {
   useUpdateBookingStatusMutation,
   useUpdateRoomStatusMutation,
   useGetBookingPolicyQuery,
+  useGetRatingsQuery,
+  useGetMyRatingQuery,
+  useCreateMyRatingMutation,
+  useUpdateMyRatingMutation,
+  useDeleteMyRatingMutation,
+  useCreateRatingByAdminMutation,
+  useUpdateRatingByAdminMutation,
+  useDeleteRatingByAdminMutation,
 } = hotelApi;
