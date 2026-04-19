@@ -1,7 +1,109 @@
-"use client"
+"use client";
+
+import { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
+import emailjs from "@emailjs/browser";
+import { Mail, MapPin, Phone } from "lucide-react";
+
+type InquiryForm = {
+  fullName: string;
+  email: string;
+  subject: string;
+  message: string;
+};
+
+const initialInquiryForm: InquiryForm = {
+  fullName: "",
+  email: "",
+  subject: "General Inquiry",
+  message: "",
+};
+
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+const EMAILJS_TO_NAME = process.env.NEXT_PUBLIC_EMAILJS_TO_NAME || "CamHotel Team";
 
 export default function Contact() {
+    const [form, setForm] = useState<InquiryForm>(initialInquiryForm);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitMessage, setSubmitMessage] = useState<{
+        type: "idle" | "success" | "error";
+        message: string;
+    }>({
+        type: "idle",
+        message: "",
+    });
+
+    const handleChange = (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    ) => {
+        const { name, value } = event.target;
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setSubmitMessage({ type: "idle", message: "" });
+
+        if (!form.fullName.trim() || !form.email.trim() || !form.message.trim()) {
+            setSubmitMessage({
+                type: "error",
+                message: "Please fill in your full name, email, and message.",
+            });
+            return;
+        }
+
+        if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+            setSubmitMessage({
+                type: "error",
+                message:
+                    "Email service is not configured yet. Please set EmailJS keys in environment variables.",
+            });
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                {
+                    to_name: EMAILJS_TO_NAME,
+                    from_name: form.fullName,
+                    user_name: form.fullName,
+                    from_email: form.email,
+                    reply_to: form.email,
+                    subject: form.subject,
+                    inquiry_subject: form.subject,
+                    message: form.message,
+                    inquiry_message: form.message,
+                    sent_at: new Date().toISOString(),
+                },
+                {
+                    publicKey: EMAILJS_PUBLIC_KEY,
+                },
+            );
+
+            setForm(initialInquiryForm);
+            setSubmitMessage({
+                type: "success",
+                message: "Inquiry sent successfully. Our team will contact you soon.",
+            });
+        } catch (error) {
+            console.error("EmailJS send failed:", error);
+            setSubmitMessage({
+                type: "error",
+                message: "Failed to send inquiry. Please try again in a moment.",
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div
             className="min-h-screen  font-sans text-[#1a1b21] dark:text-[#f1f0f7] transition-colors duration-300">
@@ -36,7 +138,7 @@ export default function Contact() {
                         <div
                             className="lg:col-span-7 bg-white dark:bg-input-bg rounded-xl p-10 shadow-sm border border-slate-100 dark:border-white/5">
                             <h2 className="text-2xl font-bold mb-8 dark:text-white">Send an Inquiry</h2>
-                            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                            <form className="space-y-6" onSubmit={handleSubmit}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label
@@ -44,7 +146,11 @@ export default function Contact() {
                                             Name</label>
                                         <input
                                             type="text"
-                                            placeholder="John Doe"
+                                            name="fullName"
+                                            placeholder="Keo Menglong"
+                                            value={form.fullName}
+                                            onChange={handleChange}
+                                            required
                                             className="w-full bg-slate-50 dark:bg-[#6D7698]/10 border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4059aa] dark:focus:ring-[#b6c4ff] transition-all outline-none dark:text-white placeholder:dark:text-slate-500"
                                         />
                                     </div>
@@ -54,7 +160,11 @@ export default function Contact() {
                                             Address</label>
                                         <input
                                             type="email"
-                                            placeholder="john@example.com"
+                                            name="email"
+                                            placeholder="keomenglong@gmail.com"
+                                            value={form.email}
+                                            onChange={handleChange}
+                                            required
                                             className="w-full bg-slate-50 dark:bg-[#6D7698]/10 border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4059aa] dark:focus:ring-[#b6c4ff] transition-all outline-none dark:text-white placeholder:dark:text-slate-500"
                                         />
                                     </div>
@@ -63,6 +173,9 @@ export default function Contact() {
                                     <label
                                         className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Subject</label>
                                     <select
+                                        name="subject"
+                                        value={form.subject}
+                                        onChange={handleChange}
                                         className="w-full bg-slate-50 dark:bg-[#6D7698]/10 border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4059aa] dark:focus:ring-[#b6c4ff] transition-all outline-none appearance-none">
                                         <option className="dark:bg-[#6D7698]">General Inquiry</option>
                                         <option className="dark:bg-[#6D7698]">Reservation Assistance</option>
@@ -75,14 +188,32 @@ export default function Contact() {
                                         className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Message</label>
                                     <textarea
                                         rows={5}
+                                        name="message"
                                         placeholder="How can we assist you today?"
+                                        value={form.message}
+                                        onChange={handleChange}
+                                        required
                                         className="w-full bg-slate-50 dark:bg-[#6D7698]/10 border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4059aa] dark:focus:ring-[#b6c4ff] transition-all outline-none resize-none text-slate-400 placeholder:dark:text-slate-400 dark:text-white"
                                     ></textarea>
                                 </div>
                                 <button
-                                    className="bg-linear-to-br from-[#00236f] to-[#1e3a8a] dark:from-[#b6c4ff] dark:to-[#90a8ff] text-white dark:text-[#00164e] px-8 py-4 rounded-xl font-bold w-full md:w-auto hover:opacity-90 transition-opacity">
-                                    Submit Request
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="bg-linear-to-br from-[#00236f] to-[#1e3a8a] dark:from-[#b6c4ff] dark:to-[#90a8ff] text-white dark:text-[#00164e] px-8 py-4 rounded-xl font-bold w-full md:w-auto hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed">
+                                    {isSubmitting ? "Sending..." : "Submit Request"}
                                 </button>
+
+                                {submitMessage.type !== "idle" && (
+                                    <p
+                                        className={`text-sm ${
+                                            submitMessage.type === "success"
+                                                ? "text-emerald-600 dark:text-emerald-400"
+                                                : "text-red-600 dark:text-red-400"
+                                        }`}
+                                    >
+                                        {submitMessage.message}
+                                    </p>
+                                )}
                             </form>
                         </div>
 
@@ -92,7 +223,7 @@ export default function Contact() {
                             <div
                                 className="bg-[#1e3a8a] dark:bg-[#1e3a8a] text-white rounded-xl p-8 relative overflow-hidden group">
                                 <div className="relative z-10">
-                                    <div className="mb-4 opacity-80 text-3xl">📍</div>
+                                    <div className="mb-4 opacity-80 text-3xl"><MapPin/></div>
                                     <h3 className="text-xl font-bold mb-2">The Azure District</h3>
                                     <p className="text-blue-200 dark:text-[#b6c4ff] font-light leading-relaxed">
                                         442 Sapphire Avenue, Suite 100<br/>
@@ -110,40 +241,33 @@ export default function Contact() {
                             <div className="grid grid-cols-2 gap-6">
                                 <div
                                     className="bg-[#f4f3fa] dark:bg-input-bg rounded-xl p-6 flex flex-col items-center justify-center text-center">
-                                    <div className="text-[#1e3a8a] dark:text-[#b6c4ff] mb-3 text-xl">📞</div>
+                                    <div className="text-[#1e3a8a] dark:text-[#b6c4ff] mb-3 text-xl"><Phone/></div>
                                     <span
                                         className="text-[0.6rem] font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Phone</span>
                                     <p className="text-sm font-bold dark:text-white">+1 (800) CAM-HTL</p>
                                 </div>
                                 <div
                                     className="bg-[#f4f3fa] dark:bg-input-bg rounded-xl p-6 flex flex-col items-center justify-center text-center">
-                                    <div className="text-[#1e3a8a] dark:text-[#b6c4ff] mb-3 text-xl">✉️</div>
+                                    <div className="text-[#1e3a8a] dark:text-[#b6c4ff] mb-3 text-xl"><Mail/></div>
                                     <span
                                         className="text-[0.6rem] font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Email</span>
                                     <p className="text-sm font-bold dark:text-white">stay@camhotel.com</p>
                                 </div>
                             </div>
 
-                            {/* Map Placeholder */}
-                            <div
-                                className="bg-slate-200 dark:bg-input-bg rounded-xl overflow-hidden grow min-h-60 relative border dark:border-white/5">
-                                {/*<Image*/}
-                                {/*    src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=1000"*/}
-                                {/*    alt="Location Map"*/}
-                                {/*    className="w-full h-full object-cover grayscale opacity-60 hover:grayscale-0 transition-all duration-700"*/}
-                                {/*/>*/}
-                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <div
-                                        className="bg-white dark:bg-input-bg p-3 rounded-full shadow-lg border-2 border-[#1e3a8a] dark:border-[#b6c4ff]">
-                                        <span className="text-[#1e3a8a] dark:text-[#b6c4ff]">📌</span>
-                                    </div>
-                                </div>
-                                <div
-                                    className="absolute bottom-4 left-4 bg-white/70 dark:bg-input-bg/70 backdrop-blur-md px-4 py-2 rounded-lg">
-                                    <p className="text-[0.65rem] font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                        <span>🧭</span> Get Directions
-                                    </p>
-                                </div>
+                            {/* Embedded Map */}
+                            <div className="rounded-xl overflow-hidden grow min-h-60 relative border dark:border-white/5 bg-slate-200 dark:bg-input-bg">
+                                <iframe
+                                    title="CamHotel Location Map"
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3908.5335955304004!2d104.89882211247486!3d11.585255988569518!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310951e96d257a6f%3A0x6b66703c5fc0c7cc!2sScience%20and%20Technology%20Advanced%20Development%20Co.%2C%20Ltd.!5e0!3m2!1sen!2skh!4v1776573010380!5m2!1sen!2skh"
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0 }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    className="absolute inset-0 h-full w-full"
+                                />
                             </div>
                         </div>
                     </div>
