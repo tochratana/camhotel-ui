@@ -128,7 +128,7 @@ function StoryRow({
                     {typeLabel}
                 </p>
                 <h3
-                    className="text-3xl font-bold text-[#102d74] dark:text-blue-200 font-heading"
+                    className="text-3xl font-bold text-[#102d74] dark:text-blue-200 font-sans"
                 >
                     {profile.name}
                 </h3>
@@ -170,7 +170,7 @@ export default function About() {
                     About CamHotel Team
                 </p>
                 <h1
-                    className="mt-4 max-w-3xl text-4xl font-bold leading-tight text-[#0f2f76] md:text-6xl dark:text-blue-100 font-heading"
+                    className="mt-4 max-w-3xl text-4xl font-bold leading-tight text-[#0f2f76] md:text-6xl dark:text-blue-100 font-sans"
                 >
                     Mission-led team, mentor-guided growth, member-driven execution.
                 </h1>
@@ -190,7 +190,7 @@ export default function About() {
                             Mission
                         </p>
                         <h2
-                            className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-heading"
+                            className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-sans"
                         >
                             Build dependable digital hospitality experiences.
                         </h2>
@@ -207,7 +207,7 @@ export default function About() {
                             Vision
                         </p>
                         <h2
-                            className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-heading"
+                            className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-sans"
                         >
                             Become the trusted platform behind modern hotel workflows.
                         </h2>
@@ -224,7 +224,7 @@ export default function About() {
                 <div className="mb-6 flex items-center gap-3">
                     <UserRound className="h-5 w-5 text-[#3558aa] dark:text-blue-300"/>
                     <h2
-                        className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-heading"
+                        className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-sans"
                     >
                         Mentors
                     </h2>
@@ -245,7 +245,7 @@ export default function About() {
                 <div className="mb-6 flex items-center gap-3">
                     <UsersRound className="h-5 w-5 text-[#3558aa] dark:text-blue-300"/>
                     <h2
-                        className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-heading"
+                        className="text-3xl font-bold text-[#102f77] dark:text-blue-200 font-sans"
                     >
                         Members
                     </h2>
