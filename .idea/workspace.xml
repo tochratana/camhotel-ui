@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="5e933579-1eb3-4cc3-8bcb-84b65307408d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/homepage/Homepage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/homepage/Homepage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/layout/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/layout/Navbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/section-cards.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/section-cards.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/dashboard/PaymentManagement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/PaymentManagement.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +20,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -35,6 +39,10 @@
     &quot;accountId&quot;: &quot;2b300ed6-1f7d-45db-b678-8ca5291f6439&quot;
   }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0,
   &quot;fromUser&quot;: false
@@ -57,9 +65,10 @@
     "javascript.preferred.runtime.type.id": "node",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "C:/Users/Injae/Desktop/Code/ibooking-frontend/public",
+    "last_opened_file_path": "/Users/menglongkeo/Documents/ISTAD-Associate/YearII/SemesterI/Reaksmy/cam-hotel/public/mt-mb",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "npm.Next.js: server-side.executor": "Run",
     "settings.editor.selected.configurable": "preferences.editor",
@@ -69,9 +78,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/mt-mb" />
       <recent name="C:\Users\Injae\Desktop\Code\ibooking-frontend\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/types" />
       <recent name="C:\Users\Injae\Desktop\Code\ibooking-frontend\app" />
     </key>
   </component>

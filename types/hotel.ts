@@ -156,3 +156,47 @@ export type AdminRatingPayload = {
   jobTitle?: string;
   profileImage?: string;
 };
+
+export type FacilitiesData = {
+  exquisiteHeader: string;
+  exquisiteBody: string;
+  accommodationsHeader: string;
+  accommodationsBody: string;
+  accommodationsType: string[];
+  accommodationsImage: string;
+  leisureHeader: string;
+  leisureBody: string;
+  leisureImage: string;
+  gastronomyHeader: string;
+  gastronomyBody: string;
+  gastronomyImage: string[];
+};
+
+export type PaymentStatus = "PENDING" | "PAID" | "FAILED" | "REFUNDED";
+export type PaymentMethod = "CASH" | "KHQR" | "STRIPE" | "PAYPAL" | "BANK_TRANSFER";
+
+export type PaymentResponse = {
+  id: number;
+  booking: BookingResponse;
+  amount: number;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
+  releaseAt: string;
+  paidAt: string | null;
+};
+
+export type PaymentsQuery = PaginationQuery & {
+  status?: PaymentStatus;
+  keyword?: string;
+};
+
+export type UpdatePaymentPayload = {
+  bookingId: number;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
+};
+
+export type UpdatePaymentStatusPayload = {
+  id: number;
+  paymentStatus: PaymentStatus;
+};

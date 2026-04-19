@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
-import { DashboardShellConfig } from "@/components/dashboard/types";
+import { DashboardShellConfig } from "@/types/dashboardTypes";
 import {
   Sidebar,
   SidebarContent,

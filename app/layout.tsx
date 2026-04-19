@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import StoreProvider from "@/components/provider/StoreProvider";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
     subsets:['latin'],
@@ -30,12 +31,13 @@ export default function RootLayout({
             className={cn("h-full antialiased", "font-sans", poppins.variable)}
             suppressHydrationWarning
         >
-        <body className="min-h-full flex flex-col bg-background text-foreground">
+        <body className={cn("min-h-full flex flex-col bg-background text-foreground font-sans")}>
         <StoreProvider>
             <ThemeProvider>
                 <Navbar/>
                 {children}
                 <Footer/>
+                <Toaster richColors position="top-right" />
             </ThemeProvider>
         </StoreProvider>
         </body>

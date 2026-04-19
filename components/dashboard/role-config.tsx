@@ -1,4 +1,4 @@
-import type { DashboardShellConfig } from "@/components/dashboard/types";
+import type { DashboardShellConfig } from "@/types/dashboardTypes";
 import { resolveDashboardUser } from "@/lib/dashboard-data";
 import type { AuthResponse } from "@/types/auth";
 import {
@@ -7,6 +7,7 @@ import {
   CalendarCheck2Icon,
   ClipboardListIcon,
   CommandIcon,
+  CreditCardIcon,
   LayoutDashboardIcon,
   Settings2Icon,
   UserRoundIcon,
@@ -48,6 +49,16 @@ export const adminDashboardConfig: DashboardShellConfig = {
       title: "Bookings",
       url: "/admin/bookings",
       icon: <CalendarCheck2Icon />,
+    },
+    {
+      title: "Payments",
+      url: "/admin/payments",
+      icon: <CreditCardIcon />,
+    },
+    {
+      title: "Facilities",
+      url: "/admin/facilities",
+      icon: <CommandIcon />,
     },
     {
       title: "Users",

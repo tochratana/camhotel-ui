@@ -1,6 +1,6 @@
 "use client"
 
-import type { DashboardMetricCard } from "@/components/dashboard/types"
+import type { DashboardMetricCard } from "@/types/dashboardTypes"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
