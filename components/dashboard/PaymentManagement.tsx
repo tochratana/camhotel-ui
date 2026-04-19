@@ -54,7 +54,7 @@ import { toast } from "sonner";
 import { PaymentStatus, PaymentMethod } from "@/types/hotel";
 import { cn } from "@/lib/utils";
 
-export default function PaymentManagement() {
+export default function PaymentManagement({ isStaff = false }: { isStaff?: boolean }) {
   const [page, setPage] = useState(0);
   const [statusFilter, setStatusFilter] = useState<PaymentStatus | "ALL">("ALL");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -66,14 +66,14 @@ export default function PaymentManagement() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH");
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("PENDING");
 
-  const { data: apiResponse, isLoading, isFetching, refetch } = useGetPaymentsQuery({
+  const { data: apiResponse, error: queryError, isLoading, isFetching, refetch } = useGetPaymentsQuery({
     page,
     size: 10,
     status: statusFilter === "ALL" ? undefined : statusFilter as PaymentStatus,
     keyword: searchKeyword || undefined,
   });
 
-  const { data: statsResponse } = useGetPaymentStatsQuery();
+  const { data: statsResponse } = useGetPaymentStatsQuery(undefined, { skip: isStaff });
   const grandTotalRevenue = statsResponse?.data?.totalAmount ?? 0;
 
   const [updateStatus, updateStatusState] = useUpdatePaymentStatusMutation();
@@ -106,6 +106,12 @@ export default function PaymentManagement() {
   const pageRefundedTotal = payments
     .filter(p => p.paymentStatus === "REFUNDED")
     .reduce((sum, payment) => sum + (payment.amount || 0), 0);
+
+  // Status Counts for Staff view
+  const paidCount = payments.filter(p => p.paymentStatus === "PAID").length;
+  const pendingCount = payments.filter(p => p.paymentStatus === "PENDING").length;
+  const failedCount = payments.filter(p => p.paymentStatus === "FAILED").length;
+  const refundedCount = payments.filter(p => p.paymentStatus === "REFUNDED").length;
 
   const handleCreatePayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,83 +196,113 @@ export default function PaymentManagement() {
           </CardContent>
         </Card>
 
-        {/* Gross Revenue (All Statuses) */}
+        {/* Gross Revenue / Page Total */}
         <Card className="border-border/60 shadow-lg bg-slate-900 dark:bg-slate-100 dark:border-slate-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-bold font-heading text-slate-100 dark:text-slate-900 uppercase tracking-tight">Gross Revenue</CardTitle>
+            <CardTitle className="text-sm font-bold font-heading text-slate-100 dark:text-slate-900 uppercase tracking-tight">
+              {isStaff ? "Page Total" : "Gross Revenue"}
+            </CardTitle>
             <div className="h-4 w-4 rounded-full bg-slate-700 dark:bg-slate-300 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-slate-100 dark:text-slate-900">$</span>
+              <span className="text-[10px] font-bold text-slate-100 dark:text-slate-900">
+                {isStaff ? "#" : "$"}
+              </span>
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-black text-slate-100 dark:text-slate-900">
-              ${pageTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {isStaff ? payments.length : `$${pageTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
             </div>
-            <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase">Sum of all statuses</p>
+            <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase">
+              {isStaff ? "Payments on this page" : "Sum of all statuses"}
+            </p>
           </CardContent>
         </Card>
 
-        {/* Paid Revenue */}
+        {/* Paid Card */}
         <Card className="border-border/60 shadow-sm bg-emerald-50/50 dark:bg-emerald-500/5">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-heading text-emerald-600 dark:text-emerald-400">Page Paid</CardTitle>
+            <CardTitle className="text-sm font-medium font-heading text-emerald-600 dark:text-emerald-400">
+              {isStaff ? "Paid Count" : "Page Paid"}
+            </CardTitle>
             <div className="h-4 w-4 rounded-full bg-emerald-500/20 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">$</span>
+              <span className="text-[10px] font-bold text-emerald-600">
+                {isStaff ? "#" : "$"}
+              </span>
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-              ${pagePaidTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {isStaff ? paidCount : `$${pagePaidTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
             </div>
-            <p className="text-xs text-muted-foreground">Current view sum</p>
+            <p className="text-xs text-muted-foreground">
+              {isStaff ? "Successful payments" : "Current view sum"}
+            </p>
           </CardContent>
         </Card>
 
-        {/* Pending Revenue */}
+        {/* Pending Card */}
         <Card className="border-border/60 shadow-sm bg-amber-50/50 dark:bg-amber-500/5">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-heading text-amber-600 dark:text-amber-400">Page Pending</CardTitle>
+            <CardTitle className="text-sm font-medium font-heading text-amber-600 dark:text-amber-400">
+              {isStaff ? "Pending Count" : "Page Pending"}
+            </CardTitle>
             <div className="h-4 w-4 rounded-full bg-amber-500/20 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">$</span>
+              <span className="text-[10px] font-bold text-amber-600">
+                {isStaff ? "#" : "$"}
+              </span>
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-              ${pagePendingTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {isStaff ? pendingCount : `$${pagePendingTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
             </div>
-            <p className="text-xs text-muted-foreground">Awaiting payment</p>
+            <p className="text-xs text-muted-foreground">
+              {isStaff ? "Awaiting confirmation" : "Awaiting payment"}
+            </p>
           </CardContent>
         </Card>
 
-        {/* Failed Revenue */}
+        {/* Failed Card */}
         <Card className="border-border/60 shadow-sm bg-rose-50/50 dark:bg-rose-500/5">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-heading text-rose-600 dark:text-rose-400">Page Failed</CardTitle>
+            <CardTitle className="text-sm font-medium font-heading text-rose-600 dark:text-rose-400">
+              {isStaff ? "Failed Count" : "Page Failed"}
+            </CardTitle>
             <div className="h-4 w-4 rounded-full bg-rose-500/20 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400">$</span>
+              <span className="text-[10px] font-bold text-rose-600">
+                {isStaff ? "#" : "$"}
+              </span>
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-rose-600 dark:text-rose-400">
-              ${pageFailedTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {isStaff ? failedCount : `$${pageFailedTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
             </div>
-            <p className="text-xs text-muted-foreground">Unsuccessful</p>
+            <p className="text-xs text-muted-foreground">
+              {isStaff ? "Unsuccessful attempts" : "Unsuccessful"}
+            </p>
           </CardContent>
         </Card>
 
-        {/* Refunded Revenue */}
+        {/* Refunded Card */}
         <Card className="border-border/60 shadow-sm bg-slate-50/50 dark:bg-slate-500/5">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-heading text-slate-600 dark:text-slate-400">Page Refunded</CardTitle>
+            <CardTitle className="text-sm font-medium font-heading text-slate-600 dark:text-slate-400">
+              {isStaff ? "Refunded Count" : "Page Refunded"}
+            </CardTitle>
             <div className="h-4 w-4 rounded-full bg-slate-500/20 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">$</span>
+              <span className="text-[10px] font-bold text-slate-600">
+                {isStaff ? "#" : "$"}
+              </span>
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-slate-600 dark:text-slate-400">
-              ${pageRefundedTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {isStaff ? refundedCount : `$${pageRefundedTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
             </div>
-            <p className="text-xs text-muted-foreground">Returned</p>
+            <p className="text-xs text-muted-foreground">
+              {isStaff ? "Returned to guests" : "Returned"}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -405,10 +441,18 @@ export default function PaymentManagement() {
               <Loader2 className="size-8 animate-spin text-primary" />
               <p>Loading transactions...</p>
             </div>
+          ) : (queryError as any)?.status === 403 ? (
+            <div className="h-64 flex flex-col items-center justify-center gap-3 text-muted-foreground p-6 text-center">
+              <div className="p-3 rounded-full bg-rose-50 dark:bg-rose-950/30 text-rose-500">
+                <Filter className="size-8" />
+              </div>
+              <h3 className="font-bold text-foreground">Access Restricted</h3>
+              <p className="max-w-xs text-sm">Your account does not have permission to view the full payments list. Please contact an administrator.</p>
+            </div>
           ) : payments.length === 0 ? (
             <div className="h-64 flex flex-col items-center justify-center gap-3 text-muted-foreground">
               <CreditCard className="size-10 opacity-20" />
-              <p>No transactions found</p>
+              <p>{isStaff ? "No visible transactions for your role" : "No transactions found"}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
