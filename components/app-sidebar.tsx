@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { CommandIcon, LogOutIcon } from "lucide-react";
-import { clearStoredBasicToken } from "@/lib/admin-auth";
+import { useLogoutMutation } from "@/lib/feature/userSlice";
 
 export function AppSidebar({
   data,
@@ -27,10 +27,14 @@ export function AppSidebar({
   data: DashboardShellConfig;
 }) {
   const router = useRouter();
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
-  const handleLogout = () => {
-    clearStoredBasicToken();
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+    } finally {
+      router.push("/login");
+    }
   };
 
   return (
@@ -57,11 +61,12 @@ export function AppSidebar({
       <SidebarFooter>
         <Button
           onClick={handleLogout}
+          disabled={isLoggingOut}
           variant="destructive"
           className="w-full justify-start gap-2"
         >
           <LogOutIcon className="h-4 w-4" />
-          Logout
+          {isLoggingOut ? "Logging out..." : "Logout"}
         </Button>
       </SidebarFooter>
     </Sidebar>

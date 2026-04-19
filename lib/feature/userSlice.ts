@@ -102,8 +102,25 @@ export const authApi = fakeStoreApi.injectEndpoints({
       invalidatesTags: ["Auth"],
     }),
     logout: builder.mutation<void, void>({
-      queryFn: async () => {
+      queryFn: async (_arg, _api, _extraOptions, baseQuery) => {
+        const logoutResult = await baseQuery({
+          url: "/auth/logout",
+          method: "POST",
+        });
+
         clearStoredBasicToken();
+
+        if (logoutResult.error) {
+          const status =
+            typeof logoutResult.error.status === "number"
+              ? logoutResult.error.status
+              : null;
+
+          if (status !== 401 && status !== 403) {
+            return { error: logoutResult.error };
+          }
+        }
+
         return { data: undefined };
       },
       invalidatesTags: ["Auth"],

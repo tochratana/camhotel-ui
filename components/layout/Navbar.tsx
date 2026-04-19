@@ -50,8 +50,11 @@ export default function Navbar() {
   const accountHref = userRole ? getDashboardPathByRole(userRole) : "/profile";
 
   const handleLogout = async () => {
-    await logout().unwrap();
-    router.push("/login");
+    try {
+      await logout().unwrap();
+    } finally {
+      router.push("/login");
+    }
   };
 
   return (
