@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,10 +101,14 @@ export default function LoginForm() {
 
       const role = normalizeRole(result?.data?.role?.name);
       if (!role) {
-        setServerError("Role is missing in login response.");
+        const errorMsg = "Role is missing in login response.";
+        setServerError(errorMsg);
+        toast.error(errorMsg);
         return;
       }
 
+      toast.success("Welcome back! Login successful.");
+      
       const redirect =
         typeof window !== "undefined"
           ? new URLSearchParams(window.location.search).get("redirect")
@@ -115,7 +120,9 @@ export default function LoginForm() {
 
       router.replace(hasSafeRedirect ? redirect : getDashboardPathByRole(role));
     } catch (error) {
-      setServerError(getErrorMessage(error));
+      const errorMsg = getErrorMessage(error);
+      setServerError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Loader2, RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
 import { getStaffDashboardConfig } from "@/components/dashboard/role-config";
 import { Badge } from "@/components/ui/badge";
@@ -151,9 +152,13 @@ export default function StaffRoomsPage() {
         id: room.id,
         status: nextStatus,
       }).unwrap();
-      setFeedback(`Room ${room.roomNumber} updated to ${toTitleCase(nextStatus)}.`);
+      const msg = `Room ${room.roomNumber} updated to ${toTitleCase(nextStatus)}.`;
+      setFeedback(msg);
+      toast.success(msg);
     } catch (error) {
-      setFeedback(parseApiError(error));
+      const errorMsg = parseApiError(error);
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

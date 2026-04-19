@@ -170,7 +170,7 @@ export default function RoomDetailPage() {
     : `/login?redirect=${encodeURIComponent(bookingHref)}`;
 
   return (
-    <main className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 px-6 py-12">
+    <main className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 px-6 py-24">
       <div className="max-w-7xl mx-auto space-y-6">
         <Button asChild variant="outline" className="mb-2">
           <Link href="/rooms">
@@ -181,7 +181,7 @@ export default function RoomDetailPage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
           <Card className="overflow-hidden border-border/70">
-            <div className="relative h-[400px] md:h-[520px]">
+            <div className="relative h-100 md:h-130">
               <Image
                 src={imageUrl}
                 alt={`Room ${room.roomNumber}`}

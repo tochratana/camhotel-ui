@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Loader2, RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
 import { getAdminDashboardConfig } from "@/components/dashboard/role-config";
 import { Button } from "@/components/ui/button";
@@ -189,17 +190,23 @@ export default function AdminRoomTypesPage() {
     try {
       if (editingRoomTypeId) {
         await updateRoomType({ id: editingRoomTypeId, payload }).unwrap();
-        setFeedback(`Room type ${payload.name} updated successfully.`);
+        const msg = `Room type ${payload.name} updated successfully.`;
+        setFeedback(msg);
+        toast.success(msg);
       } else {
         await createRoomType(payload).unwrap();
-        setFeedback(`Room type ${payload.name} created successfully.`);
+        const msg = `Room type ${payload.name} created successfully.`;
+        setFeedback(msg);
+        toast.success(msg);
       }
       setEditingRoomTypeId(null);
       setRoomTypeForm(EMPTY_ROOM_TYPE_FORM);
       setIsRoomTypeFormOpen(false);
       setPage(0);
     } catch (error) {
-      setFeedback(parseApiError(error, "Unable to save room type."));
+      const errorMsg = parseApiError(error, "Unable to save room type.");
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

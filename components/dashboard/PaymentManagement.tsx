@@ -4,7 +4,8 @@ import { useState } from "react";
 import { 
   useGetPaymentsQuery, 
   useUpdatePaymentStatusMutation,
-  useCreatePaymentMutation
+  useCreatePaymentMutation,
+  useGetPaymentStatsQuery
 } from "@/lib/feature/paymentSlice";
 import { 
   Table, 
@@ -72,6 +73,9 @@ export default function PaymentManagement() {
     keyword: searchKeyword || undefined,
   });
 
+  const { data: statsResponse } = useGetPaymentStatsQuery();
+  const grandTotalRevenue = statsResponse?.data?.totalAmount ?? 0;
+
   const [updateStatus, updateStatusState] = useUpdatePaymentStatusMutation();
   const isUpdating = updateStatusState.isLoading;
   const [createPayment, { isLoading: isCreating }] = useCreatePaymentMutation();
@@ -85,8 +89,23 @@ export default function PaymentManagement() {
   const startItem = totalElements === 0 ? 0 : page * 10 + 1;
   const endItem = totalElements === 0 ? 0 : Math.min((page + 1) * 10, totalElements);
 
-  // Calculate total price for current page
+  // Calculate totals for current page
   const pageTotal = payments.reduce((sum, payment) => sum + (payment.amount || 0), 0);
+  const pagePaidTotal = payments
+    .filter(p => p.paymentStatus === "PAID")
+    .reduce((sum, payment) => sum + (payment.amount || 0), 0);
+
+  const pagePendingTotal = payments
+    .filter(p => p.paymentStatus === "PENDING")
+    .reduce((sum, payment) => sum + (payment.amount || 0), 0);
+
+  const pageFailedTotal = payments
+    .filter(p => p.paymentStatus === "FAILED")
+    .reduce((sum, payment) => sum + (payment.amount || 0), 0);
+
+  const pageRefundedTotal = payments
+    .filter(p => p.paymentStatus === "REFUNDED")
+    .reduce((sum, payment) => sum + (payment.amount || 0), 0);
 
   const handleCreatePayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,33 +175,104 @@ export default function PaymentManagement() {
   return (
     <div className="p-4 lg:p-8 space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-border/60 shadow-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100 fill-mode-both">
+        {/* Total Transactions Count */}
+        <Card className="border-border/60 shadow-sm bg-indigo-50/50 dark:bg-indigo-500/5 border-indigo-100 dark:border-indigo-900/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-heading">Total Transactions</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-bold font-heading text-indigo-600 dark:text-indigo-400 uppercase tracking-tight">Total Count</CardTitle>
+            <CreditCard className="h-4 w-4 text-indigo-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalElements}</div>
-            <p className="text-xs text-muted-foreground">Across all pages</p>
+            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">
+              {totalElements.toLocaleString()}
+            </div>
+            <p className="text-[10px] font-medium text-slate-500 uppercase">All transactions</p>
           </CardContent>
         </Card>
-        <Card className="border-border/60 shadow-sm bg-primary/5 dark:bg-primary/10">
+
+        {/* Gross Revenue (All Statuses) */}
+        <Card className="border-border/60 shadow-lg bg-slate-900 dark:bg-slate-100 dark:border-slate-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-heading">Page Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-bold font-heading text-slate-100 dark:text-slate-900 uppercase tracking-tight">Gross Revenue</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-slate-700 dark:bg-slate-300 flex items-center justify-center">
+              <span className="text-[10px] font-bold text-slate-100 dark:text-slate-900">$</span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-black text-slate-100 dark:text-slate-900">
+              ${pageTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+            <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase">Sum of all statuses</p>
+          </CardContent>
+        </Card>
+
+        {/* Paid Revenue */}
+        <Card className="border-border/60 shadow-sm bg-emerald-50/50 dark:bg-emerald-500/5">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium font-heading text-emerald-600 dark:text-emerald-400">Page Paid</CardTitle>
             <div className="h-4 w-4 rounded-full bg-emerald-500/20 flex items-center justify-center">
               <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">$</span>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">${pageTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              ${pagePaidTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
             <p className="text-xs text-muted-foreground">Current view sum</p>
+          </CardContent>
+        </Card>
+
+        {/* Pending Revenue */}
+        <Card className="border-border/60 shadow-sm bg-amber-50/50 dark:bg-amber-500/5">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium font-heading text-amber-600 dark:text-amber-400">Page Pending</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-amber-500/20 flex items-center justify-center">
+              <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">$</span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+              ${pagePendingTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+            <p className="text-xs text-muted-foreground">Awaiting payment</p>
+          </CardContent>
+        </Card>
+
+        {/* Failed Revenue */}
+        <Card className="border-border/60 shadow-sm bg-rose-50/50 dark:bg-rose-500/5">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium font-heading text-rose-600 dark:text-rose-400">Page Failed</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-rose-500/20 flex items-center justify-center">
+              <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400">$</span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-rose-600 dark:text-rose-400">
+              ${pageFailedTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+            <p className="text-xs text-muted-foreground">Unsuccessful</p>
+          </CardContent>
+        </Card>
+
+        {/* Refunded Revenue */}
+        <Card className="border-border/60 shadow-sm bg-slate-50/50 dark:bg-slate-500/5">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium font-heading text-slate-600 dark:text-slate-400">Page Refunded</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-slate-500/20 flex items-center justify-center">
+              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">$</span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-slate-600 dark:text-slate-400">
+              ${pageRefundedTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+            <p className="text-xs text-muted-foreground">Returned</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Filters and Actions */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           <div className="relative w-full md:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -304,7 +394,7 @@ export default function PaymentManagement() {
       </div>
 
       {/* Payments Table */}
-      <Card className="border-border/60 shadow-sm overflow-hidden">
+      <Card className="border-border/60 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 fill-mode-both">
         <CardHeader className="bg-muted/30 pb-4">
           <CardTitle className="text-lg">Recent Transactions</CardTitle>
           <CardDescription>Comprehensive list of all guest payments</CardDescription>

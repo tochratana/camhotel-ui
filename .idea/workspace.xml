@@ -5,12 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5e933579-1eb3-4cc3-8bcb-84b65307408d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/dashboard/PaymentManagement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/PaymentManagement.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/dashboard/role-config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/role-config.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="151" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -55,6 +60,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -122,6 +128,7 @@
       <workItem from="1775627395979" duration="6447000" />
       <workItem from="1775656810563" duration="313000" />
       <workItem from="1775657130291" duration="4557000" />
+      <workItem from="1776586433127" duration="15117000" />
     </task>
     <servers />
   </component>

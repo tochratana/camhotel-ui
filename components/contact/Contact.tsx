@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
 import { ChevronDown, Mail, MapPin, Phone } from "lucide-react";
 
 type InquiryForm = {
@@ -76,19 +77,22 @@ export default function Contact() {
     setSubmitMessage({ type: "idle", message: "" });
 
     if (!form.fullName.trim() || !form.email.trim() || !form.message.trim()) {
+      const msg = "Please fill in your full name, email, and message.";
       setSubmitMessage({
         type: "error",
-        message: "Please fill in your full name, email, and message.",
+        message: msg,
       });
+      toast.error(msg);
       return;
     }
 
     if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      const msg = "Email service is not configured yet. Please contact support.";
       setSubmitMessage({
         type: "error",
-        message:
-          "Email service is not configured yet. Please set EmailJS keys in environment variables.",
+        message: msg,
       });
+      toast.error(msg);
       return;
     }
 
@@ -115,16 +119,20 @@ export default function Contact() {
       );
 
       setForm(initialInquiryForm);
+      const msg = "Inquiry sent successfully. Our team will contact you soon.";
       setSubmitMessage({
         type: "success",
-        message: "Inquiry sent successfully. Our team will contact you soon.",
+        message: msg,
       });
+      toast.success(msg);
     } catch (error) {
       console.error("EmailJS send failed:", error);
+      const msg = "Failed to send inquiry. Please try again in a moment.";
       setSubmitMessage({
         type: "error",
-        message: "Failed to send inquiry. Please try again in a moment.",
+        message: msg,
       });
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -134,7 +142,7 @@ export default function Contact() {
     <div className="min-h-screen  font-sans text-[#1a1b21] dark:text-[#f1f0f7] transition-colors duration-300">
       <main className="pt-24 pb-16">
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-8 py-14">
+        <section className="max-w-7xl mx-auto px-8 py-14 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 fill-mode-both">
           <div className="flex flex-col md:flex-row items-end justify-between gap-6 mb-12">
             <div className="max-w-2xl">
               <span className="text-xs font-bold tracking-[0.2em] uppercase text-[#1e3a8a] dark:text-[#b6c4ff] mb-3 block">
@@ -158,7 +166,7 @@ export default function Contact() {
           </div>
 
           {/* Bento Contact Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both">
             {/* Contact Form Card */}
             <div className="lg:col-span-7 bg-white dark:bg-input-bg rounded-xl p-10 shadow-sm border border-slate-100 dark:border-white/5">
               <h2 className="text-2xl font-bold mb-8 dark:text-white">
@@ -319,7 +327,7 @@ export default function Contact() {
           </div>
 
           {/* FAQs Section */}
-          <section className="mt-24">
+          <section className="mt-24 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 fill-mode-both">
             <div className="flex flex-col md:flex-row justify-between items-start gap-12">
               <div className="md:w-1/3">
                 <h2 className="text-3xl font-bold tracking-tight mb-4 dark:text-white">

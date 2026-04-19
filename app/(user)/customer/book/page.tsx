@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   CalendarDays,
@@ -303,14 +304,18 @@ export default function CustomerBookRoomPage() {
 
       const bookingId = response.data?.id ?? null;
       setCreatedBookingId(bookingId);
+      const msg = bookingId
+        ? `Booking #${bookingId} created successfully.`
+        : "Booking created successfully.";
       setFeedback({
         type: "success",
-        message: bookingId
-          ? `Booking #${bookingId} created successfully.`
-          : "Booking created successfully.",
+        message: msg,
       });
+      toast.success(msg);
     } catch (error) {
-      setFeedback({ type: "error", message: parseApiError(error) });
+      const errorMsg = parseApiError(error);
+      setFeedback({ type: "error", message: errorMsg });
+      toast.error(errorMsg);
     }
   };
 
