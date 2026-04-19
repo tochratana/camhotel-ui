@@ -36,11 +36,11 @@ export default function DashboardShell({
             <SectionCards cards={cards} />
           </div>
           <div className="px-4 lg:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
-            <ChartAreaInteractive
-              data={chartData}
-              title={chartTitle}
-              description={chartDescription}
-            />
+            {/*<ChartAreaInteractive*/}
+            {/*  data={chartData}*/}
+            {/*  title={chartTitle}*/}
+            {/*  description={chartDescription}*/}
+            {/*/>*/}
           </div>
           <div className="px-4 lg:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 fill-mode-both">
             <DataTable data={data} />
