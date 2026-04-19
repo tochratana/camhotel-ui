@@ -80,9 +80,9 @@ export default function Footer() {
                 priority={false}
               />
             </div>
-            <h3 className="font-bold text-xl text-blue-900 dark:text-blue-200">
-              CamHotel Management Platform
-            </h3>
+            <Link href="/" className="text-2xl font-bold tracking-tighter text-green-900 dark:text-blue-200 font-sans">
+              CAM<span className="text-amber-400">-</span>HOTEL
+            </Link>
             <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300 max-w-md">
               School final project showcasing complete hotel workflows from
               public browsing to customer booking and admin or staff operations.
