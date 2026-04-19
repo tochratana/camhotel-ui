@@ -165,7 +165,7 @@ export default function About() {
         <main
             className="relative min-h-screen overflow-hidden bg-[#f5f8ff] text-slate-900 dark:bg-[#070f22] dark:text-slate-100 font-sans"
         >
-            <section className="relative mx-auto max-w-6xl px-6 pb-14 pt-24 md:px-10">
+            <section className="relative mx-auto max-w-6xl px-6 pb-14 pt-24 md:px-10 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100 fill-mode-both">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f63b3] dark:text-blue-300">
                     About CamHotel Team
                 </p>
@@ -182,7 +182,7 @@ export default function About() {
             </section>
 
             <section
-                className="relative mx-auto max-w-6xl border-y border-slate-200 px-6 py-14 dark:border-slate-700 md:px-10">
+                className="relative mx-auto max-w-6xl border-y border-slate-200 px-6 py-14 dark:border-slate-700 md:px-10 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both">
                 <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
                     <article className="space-y-4">
                         <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#3659a9] dark:text-blue-300">
@@ -220,7 +220,7 @@ export default function About() {
                 </div>
             </section>
 
-            <section className="relative mx-auto max-w-6xl px-6 py-14 md:px-10">
+            <section className="relative mx-auto max-w-6xl px-6 py-14 md:px-10 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500 fill-mode-both">
                 <div className="mb-6 flex items-center gap-3">
                     <UserRound className="h-5 w-5 text-[#3558aa] dark:text-blue-300"/>
                     <h2
@@ -241,7 +241,7 @@ export default function About() {
             </section>
 
             <section
-                className="relative mx-auto max-w-6xl border-t border-slate-200 px-6 py-14 dark:border-slate-700 md:px-10">
+                className="relative mx-auto max-w-6xl border-t border-slate-200 px-6 py-14 dark:border-slate-700 md:px-10 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-700 fill-mode-both">
                 <div className="mb-6 flex items-center gap-3">
                     <UsersRound className="h-5 w-5 text-[#3558aa] dark:text-blue-300"/>
                     <h2

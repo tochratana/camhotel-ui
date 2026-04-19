@@ -244,7 +244,7 @@ export default function RoomListUser() {
           </p>
         </section>
 
-        <section className="max-w-7xl mx-auto px-6 mb-12">
+        <section className="max-w-7xl mx-auto px-6 mb-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 fill-mode-both">
           <div className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-2xl shadow-sm border border-[#c5c5d3]/30 dark:border-slate-800 flex flex-col gap-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
               <SlidersHorizontal className="h-4 w-4" />
@@ -357,7 +357,7 @@ export default function RoomListUser() {
           </div>
         </section>
 
-        <section className="max-w-7xl mx-auto px-6">
+        <section className="max-w-7xl mx-auto px-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both">
           {isLoading ? (
             <div className="min-h-75 flex items-center justify-center text-slate-500">
               <Loader2 className="h-5 w-5 animate-spin mr-2" />

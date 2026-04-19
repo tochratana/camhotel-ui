@@ -4,20 +4,16 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import React from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import PageAnimate from "@/components/layout/PageAnimate";
 import StoreProvider from "@/components/provider/StoreProvider";
-import { Playfair_Display, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-inter",
-});
-
-const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -38,7 +34,6 @@ export default function RootLayout({
         "h-full antialiased",
         "font-sans",
         poppins.variable,
-        playfairDisplay.variable,
       )}
       suppressHydrationWarning
     >
@@ -50,7 +45,7 @@ export default function RootLayout({
         <StoreProvider>
           <ThemeProvider>
             <Navbar />
-            {children}
+            <PageAnimate>{children}</PageAnimate>
             <Footer />
             <Toaster richColors position="top-right" />
           </ThemeProvider>

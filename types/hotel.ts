@@ -158,6 +158,7 @@ export type AdminRatingPayload = {
 };
 
 export type FacilitiesData = {
+  id?: number;
   exquisiteHeader: string;
   exquisiteBody: string;
   accommodationsHeader: string;
