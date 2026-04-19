@@ -59,10 +59,6 @@ const statsCards: Array<{
 }> = [
   { key: "totalUsers", label: "Total Users", hint: "Guests & accounts" },
   { key: "totalRooms", label: "Total Rooms", hint: "All room inventory" },
-  { key: "totalRoomTypes", label: "Room Types", hint: "Available categories" },
-  { key: "totalBookings", label: "Total Bookings", hint: "Reservation records" },
-  { key: "totalStaff", label: "Staff Members", hint: "Ops team members" },
-  { key: "totalRatings", label: "Guest Ratings", hint: "Published reviews" },
 ];
 
 export default function Homepage() {
