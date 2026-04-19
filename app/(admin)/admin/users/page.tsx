@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Loader2, RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
 import { getAdminDashboardConfig } from "@/components/dashboard/role-config";
 import { Badge } from "@/components/ui/badge";
@@ -174,9 +175,13 @@ export default function AdminUsersPage() {
       setStaffForm(EMPTY_STAFF_FORM);
       setIsStaffFormOpen(false);
       setPage(0);
-      setFeedback(`Staff account created for ${payload.fullName}.`);
+      const msg = `Staff account created for ${payload.fullName}.`;
+      setFeedback(msg);
+      toast.success(msg);
     } catch (error) {
-      setFeedback(parseApiError(error, "Unable to create staff account."));
+      const errorMsg = parseApiError(error, "Unable to create staff account.");
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 
@@ -214,9 +219,13 @@ export default function AdminUsersPage() {
     setFeedback(null);
     try {
       await updateUserRole({ id: user.id, role: nextRole }).unwrap();
-      setFeedback(`${user.fullName} role updated to ${formatRole(nextRole)}.`);
+      const msg = `${user.fullName} role updated to ${formatRole(nextRole)}.`;
+      setFeedback(msg);
+      toast.success(msg);
     } catch (error) {
-      setFeedback(parseApiError(error, "Unable to update user role."));
+      const errorMsg = parseApiError(error, "Unable to update user role.");
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 
@@ -229,9 +238,13 @@ export default function AdminUsersPage() {
     setFeedback(null);
     try {
       await deleteUser(user.id).unwrap();
-      setFeedback(`${user.fullName} deleted successfully.`);
+      const msg = `${user.fullName} deleted successfully.`;
+      setFeedback(msg);
+      toast.success(msg);
     } catch (error) {
-      setFeedback(parseApiError(error, "Unable to delete user."));
+      const errorMsg = parseApiError(error, "Unable to delete user.");
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

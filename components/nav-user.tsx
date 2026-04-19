@@ -22,6 +22,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useLogoutMutation } from "@/lib/feature/userSlice"
+import { toast } from "sonner"
 import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
 
 export function NavUser({
@@ -40,6 +41,7 @@ export function NavUser({
   const handleLogout = async () => {
     try {
       await logout().unwrap()
+      toast.success("Successfully logged out")
     } finally {
       router.push("/login")
     }

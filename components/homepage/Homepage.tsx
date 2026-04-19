@@ -115,7 +115,7 @@ export default function Homepage() {
   return (
     <main className="bg-background min-h-screen font-sans selection:bg-[#dce1ff] dark:selection:bg-blue-900/50">
       {/* Hero Section */}
-      <header className="relative h-screen flex items-center justify-center overflow-hidden">
+      <header className="relative h-screen flex items-center justify-center overflow-hidden animate-in fade-in duration-1000">
         <div className="absolute inset-0 z-0">
           <Image
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz59i7Cb4S5Pgd5Y4_GeLXk8Ue3HN6sxYdWnkKI0C1CaSnUPVJR17SWDR4KQiGQCGpJB5iEH8wZlpf7hdSQIxnSHoyFRTh-q2MoQ46K2Ad1E-mM27NmYpUKU27eFJbMasZvxc7DP7XPhNdKyluxELTY02cMoPmhUf8SyEpZOPzoGFOAdIdHDRjA9L9B9apEwbNPldjF6d5rxBtaNLVyYImCghrBftSIiNfE11oiFNqWn1ntDVtEwtvh-9UUTVvJ0Ruop8lqTrg1K0"
@@ -153,7 +153,7 @@ export default function Homepage() {
       </header>
 
       {/* About Section */}
-      <section id="about" className="py-24 px-8 bg-background">
+      <section id="about" className="py-24 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="relative">
             <div className="aspect-4/5 rounded-2xl overflow-hidden shadow-2xl">
@@ -213,7 +213,7 @@ export default function Homepage() {
       </section>
 
       {/* Stats Placeholder Section */}
-      <section id="stats" className="py-20 px-8 bg-background">
+      <section id="stats" className="py-20 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 fill-mode-both">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-5">
             <div className="max-w-2xl">
@@ -251,7 +251,7 @@ export default function Homepage() {
       </section>
 
       {/* Rooms Section */}
-      <section id="rooms" className="py-24 px-8 bg-section-alt-bg">
+      <section id="rooms" className="py-24 px-8 bg-section-alt-bg animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600 fill-mode-both">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
             <div className="max-w-xl">
@@ -284,7 +284,7 @@ export default function Homepage() {
       </section>
 
       {/* Signature Experience Section */}
-      <section id="experience" className="relative overflow-hidden py-24 px-8 bg-background">
+      <section id="experience" className="relative overflow-hidden py-24 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-800 fill-mode-both">
         <div className="pointer-events-none absolute -top-16 right-0 h-72 w-72 rounded-full bg-[#dce1ff]/50 dark:bg-blue-900/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 left-0 h-72 w-72 rounded-full bg-amber-100/60 dark:bg-amber-900/20 blur-3xl" />
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-stretch relative z-10">
@@ -397,7 +397,7 @@ export default function Homepage() {
       </section>
 
       {/* Booking CTA */}
-      <section className="py-24 px-8 bg-section-alt-bg">
+      <section className="py-24 px-8 bg-section-alt-bg animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-1000 fill-mode-both">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-14 gap-5">
             <div className="max-w-xl">

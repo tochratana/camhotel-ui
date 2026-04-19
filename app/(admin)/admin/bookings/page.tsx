@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Loader2, RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
 import { getAdminDashboardConfig } from "@/components/dashboard/role-config";
 import { Badge } from "@/components/ui/badge";
@@ -158,9 +159,13 @@ export default function AdminBookingsPage() {
         id: booking.id,
         status: nextStatus,
       }).unwrap();
-      setFeedback(`Booking #${booking.id} updated to ${toTitleCase(nextStatus)}.`);
+      const msg = `Booking #${booking.id} updated to ${toTitleCase(nextStatus)}.`;
+      setFeedback(msg);
+      toast.success(msg);
     } catch (error) {
-      setFeedback(parseApiError(error));
+      const errorMsg = parseApiError(error);
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2, LogOut, UserRound, Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { navBarData } from "@/data/menuData";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import {
@@ -52,6 +53,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       await logout().unwrap();
+      toast.success("Successfully logged out");
     } finally {
       router.push("/login");
     }

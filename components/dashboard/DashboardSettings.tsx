@@ -7,6 +7,7 @@ import { Theme, useTheme } from "@/components/theme/ThemeProvider";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -102,7 +103,10 @@ export default function DashboardSettings({ config }: DashboardSettingsProps) {
                             <Button
                               type="button"
                               variant={isActive ? "default" : "outline"}
-                              onClick={() => setTheme(option.value)}
+                              onClick={() => {
+                                setTheme(option.value);
+                                toast.success(`Theme changed to ${option.value} mode`);
+                              }}
                               className="w-full"
                             >
                               {isActive ? (
@@ -142,7 +146,10 @@ export default function DashboardSettings({ config }: DashboardSettingsProps) {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => toggleTheme()}
+                          onClick={() => {
+                            toggleTheme();
+                            toast.success("Theme toggled successfully");
+                          }}
                         >
                           Toggle
                         </Button>

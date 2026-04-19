@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -142,9 +143,13 @@ export default function CustomerProfilePage() {
       setFullNameDraft(null);
       setEmailDraft(null);
       setPhoneNumberDraft(null);
-      setSuccessMessage("Profile updated successfully.");
+      const msg = "Profile updated successfully.";
+      setSuccessMessage(msg);
+      toast.success(msg);
     } catch (error) {
-      setErrorMessage(extractErrorMessage(error, "Failed to update profile."));
+      const errorMsg = extractErrorMessage(error, "Failed to update profile.");
+      setErrorMessage(errorMsg);
+      toast.error(errorMsg);
     }
   };
 
@@ -191,9 +196,13 @@ export default function CustomerProfilePage() {
         URL.revokeObjectURL(previewUrl);
       }
       setPreviewUrl("");
-      setSuccessMessage("Profile image uploaded successfully.");
+      const msg = "Profile image uploaded successfully.";
+      setSuccessMessage(msg);
+      toast.success(msg);
     } catch (error) {
-      setErrorMessage(extractErrorMessage(error, "Failed to upload image."));
+      const errorMsg = extractErrorMessage(error, "Failed to upload image.");
+      setErrorMessage(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CommandIcon, LogOutIcon } from "lucide-react";
 import { useLogoutMutation } from "@/lib/feature/userSlice";
+import { toast } from "sonner";
 
 export function AppSidebar({
   data,
@@ -32,6 +33,7 @@ export function AppSidebar({
   const handleLogout = async () => {
     try {
       await logout().unwrap();
+      toast.success("Successfully logged out");
     } finally {
       router.push("/login");
     }

@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { Loader2, RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
 import { getAdminDashboardConfig } from "@/components/dashboard/role-config";
 import { Badge } from "@/components/ui/badge";
@@ -222,9 +223,13 @@ export default function AdminRoomsPage() {
         id: room.id,
         status: nextStatus,
       }).unwrap();
-      setFeedback(`Room ${room.roomNumber} updated to ${toTitleCase(nextStatus)}.`);
+      const successMsg = `Room ${room.roomNumber} updated to ${toTitleCase(nextStatus)}.`;
+      setFeedback(successMsg);
+      toast.success(successMsg);
     } catch (error) {
-      setFeedback(parseApiError(error, "Unable to update room status."));
+      const errorMsg = parseApiError(error, "Unable to update room status.");
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 
@@ -303,17 +308,23 @@ export default function AdminRoomsPage() {
     try {
       if (editingRoomId) {
         await updateRoom({ id: editingRoomId, payload }).unwrap();
-        setFeedback(`Room ${payload.roomNumber} updated successfully.`);
+        const msg = `Room ${payload.roomNumber} updated successfully.`;
+        setFeedback(msg);
+        toast.success(msg);
       } else {
         await createRoom(payload).unwrap();
-        setFeedback(`Room ${payload.roomNumber} created successfully.`);
+        const msg = `Room ${payload.roomNumber} created successfully.`;
+        setFeedback(msg);
+        toast.success(msg);
       }
       setEditingRoomId(null);
       setRoomForm(EMPTY_ROOM_FORM);
       setIsRoomFormOpen(false);
       setPage(0);
     } catch (error) {
-      setFeedback(parseApiError(error, "Unable to save room."));
+      const errorMsg = parseApiError(error, "Unable to save room.");
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 
@@ -326,9 +337,13 @@ export default function AdminRoomsPage() {
     setFeedback(null);
     try {
       await deleteRoom(room.id).unwrap();
-      setFeedback(`Room ${room.roomNumber} deleted successfully.`);
+      const msg = `Room ${room.roomNumber} deleted successfully.`;
+      setFeedback(msg);
+      toast.success(msg);
     } catch (error) {
-      setFeedback(parseApiError(error, "Unable to delete room."));
+      const errorMsg = parseApiError(error, "Unable to delete room.");
+      setFeedback(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

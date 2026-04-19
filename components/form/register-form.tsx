@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -125,9 +126,12 @@ export default function RegisterForm() {
         password: data.password,
       }).unwrap();
 
+      toast.success("Account created successfully! Please login.");
       router.replace("/login");
     } catch (error) {
-      setServerError(getErrorMessage(error));
+      const errorMsg = getErrorMessage(error);
+      setServerError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
