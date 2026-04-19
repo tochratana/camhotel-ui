@@ -18,6 +18,7 @@ type DashboardShellProps = {
   chartData: DashboardChartPoint[];
   chartTitle?: string;
   chartDescription?: string;
+  isReadOnly?: boolean;
 };
 
 export default function DashboardShell({
@@ -27,6 +28,7 @@ export default function DashboardShell({
   chartData,
   chartTitle,
   chartDescription,
+  isReadOnly = false,
 }: DashboardShellProps) {
   return (
     <DashboardFrame config={config}>
@@ -43,7 +45,7 @@ export default function DashboardShell({
             {/*/>*/}
           </div>
           <div className="px-4 lg:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 fill-mode-both">
-            <DataTable data={data} />
+            <DataTable data={data} isReadOnly={isReadOnly} />
           </div>
         </div>
       </div>
