@@ -67,6 +67,7 @@ export default function AdminDashboard() {
       cards={dashboardData.cards}
       chartData={dashboardData.chart}
       chartTitle="Booking Throughput"
+      isReadOnly={true}
       chartDescription={
         hasError
           ? "Some metrics failed to load; showing available backend data."

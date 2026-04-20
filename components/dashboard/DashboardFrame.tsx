@@ -32,12 +32,12 @@ export default function DashboardFrame({
         className="dashboard-theme h-screen overflow-hidden"
       >
         <AppSidebar data={config} variant="inset" />
-        <SidebarInset className="flex flex-col h-screen">
+        <SidebarInset className="flex flex-col h-screen pb-5">
           <SiteHeader
             title={headerTitle ?? config.headerTitle}
             description={headerDescription ?? config.headerDescription}
           />
-          <main className="flex-1 overflow-y-auto bg-background animate-in fade-in slide-in-from-bottom-2 duration-700 mb-5">
+          <main className="flex-1 bg-background animate-in fade-in slide-in-from-bottom-2 duration-700 overflow-y-auto">
             {children}
           </main>
         </SidebarInset>
