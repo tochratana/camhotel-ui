@@ -3,20 +3,28 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  BedDouble,
+  CalendarCheck,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   ConciergeBell,
+  DoorOpen,
   Mail,
   MapPin,
   Phone,
   Star,
   Utensils,
+  Users,
+  type LucideIcon,
 } from "lucide-react";
 import { roomCard } from "@/data/roomCard";
-import { useGetRatingsQuery, useGetRoomsQuery } from "@/lib/feature/hotelSlice";
+import {
+  useGetHomepageStatsQuery,
+  useGetRatingsQuery,
+  useGetRoomsQuery,
+} from "@/lib/feature/hotelSlice";
 import { resolveMediaUrl } from "@/lib/media-url";
 import RoomCard from "@/components/homepage/RoomCard";
+import type { HomepageStatsResponse } from "@/types/hotel";
 
 function toSafeImage(imageUrl: string | null | undefined, fallback: string) {
   const resolvedImage = resolveMediaUrl(imageUrl);
@@ -36,34 +44,89 @@ function addDays(date: Date, days: number): Date {
   return next;
 }
 
-type HomepageStatsPlaceholder = {
-  totalUsers: string;
-  totalRooms: string;
-  totalRoomTypes: string;
-  totalBookings: string;
-  totalStaff: string;
-  totalRatings: string;
-};
-
-const statsPlaceholder: HomepageStatsPlaceholder = {
-  totalUsers: "--",
-  totalRooms: "--",
-  totalRoomTypes: "--",
-  totalBookings: "--",
-  totalStaff: "--",
-  totalRatings: "--",
-};
-
 const statsCards: Array<{
-  key: keyof HomepageStatsPlaceholder;
+  key: keyof HomepageStatsResponse;
   label: string;
   hint: string;
+  icon: LucideIcon;
+  decimal?: boolean;
 }> = [
-  { key: "totalUsers", label: "Total Users", hint: "Guests & accounts" },
-  { key: "totalRooms", label: "Total Rooms", hint: "All room inventory" },
+  {
+    key: "totalUsers",
+    label: "Users",
+    hint: "Registered active users",
+    icon: Users,
+  },
+  {
+    key: "totalRooms",
+    label: "Rooms",
+    hint: "Total active inventory",
+    icon: BedDouble,
+  },
+  {
+    key: "availableRooms",
+    label: "Available",
+    hint: "Ready to book now",
+    icon: DoorOpen,
+  },
+  {
+    key: "occupiedRooms",
+    label: "Occupied",
+    hint: "Currently in use",
+    icon: CalendarCheck,
+  },
+  {
+    key: "averageRating",
+    label: "Average Rating",
+    hint: "Guest score",
+    icon: Star,
+    decimal: true,
+  },
 ];
 
 export default function Homepage() {
+  const {
+    data: homepageStatsData,
+    isFetching: isHomepageStatsFetching,
+    isError: isHomepageStatsError,
+  } = useGetHomepageStatsQuery();
+
+  const homepageStats = homepageStatsData?.data;
+  const integerFormat = useMemo(() => new Intl.NumberFormat("en-US"), []);
+  const decimalFormat = useMemo(
+    () => new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+    [],
+  );
+
+  const occupancyRate = useMemo(() => {
+    if (!homepageStats || homepageStats.totalRooms <= 0) {
+      return 0;
+    }
+    const occupancy = (homepageStats.occupiedRooms / homepageStats.totalRooms) * 100;
+    return Math.min(100, Math.max(0, Math.round(occupancy)));
+  }, [homepageStats]);
+
+  const activeBookingsValue = useMemo(() => {
+    if (!homepageStats) {
+      return "--";
+    }
+    return integerFormat.format(homepageStats.activeBookings);
+  }, [homepageStats, integerFormat]);
+
+  const formatStatsValue = (
+    key: keyof HomepageStatsResponse,
+    useDecimal = false,
+  ): string => {
+    if (!homepageStats) {
+      return "--";
+    }
+    const value = homepageStats[key];
+    if (typeof value !== "number") {
+      return "--";
+    }
+    return useDecimal ? decimalFormat.format(value) : integerFormat.format(value);
+  };
+
   const defaultDateRange = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -104,7 +167,7 @@ export default function Homepage() {
     });
   }, [data, defaultDateRange.checkInDate, defaultDateRange.checkOutDate]);
 
-  const { data: ratingData, isFetching: isRatingsFetching } = useGetRatingsQuery({
+  const { data: ratingData } = useGetRatingsQuery({
     page: 0,
     size: 24,
   });
@@ -157,19 +220,6 @@ export default function Homepage() {
     return [...featuredRatings, ...featuredRatings];
   }, [featuredRatings]);
 
-  const scrollRatings = (direction: "left" | "right") => {
-    const track = ratingsTrackRef.current;
-    if (!track) {
-      return;
-    }
-
-    const distance = Math.max(track.clientWidth * 0.8, 320);
-    track.scrollBy({
-      left: direction === "left" ? -distance : distance,
-      behavior: "smooth",
-    });
-  };
-
   return (
     <main className="bg-background min-h-screen font-sans selection:bg-[#dce1ff] dark:selection:bg-blue-900/50">
       {/* Hero Section */}
@@ -211,7 +261,10 @@ export default function Homepage() {
       </header>
 
       {/* About Section */}
-      <section id="about" className="py-24 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both">
+      <section
+        id="about"
+        className="py-24 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both"
+      >
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="relative">
             <div className="aspect-4/5 rounded-2xl overflow-hidden shadow-2xl">
@@ -270,8 +323,11 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Stats Placeholder Section */}
-      <section id="stats" className="py-20 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 fill-mode-both">
+      {/* Dynamic Stats Section */}
+      <section
+        id="stats"
+        className="py-20 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 fill-mode-both"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-5">
             <div className="max-w-2xl">
@@ -279,37 +335,100 @@ export default function Homepage() {
                 Platform Snapshot
               </span>
               <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mt-2">
-                System Totals
+                Live Performance
               </h2>
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm italic">
-              Placeholder values • replace with API counts
+              {isHomepageStatsFetching
+                ? "Refreshing live metrics..."
+                : isHomepageStatsError
+                  ? "Failed to load stats • showing fallback values"
+                  : "Powered by real-time backend totals"}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-            {statsCards.map((item) => (
-              <article
-                key={item.key}
-                className="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-5 shadow-sm"
-              >
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                  {item.label}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <article className="lg:col-span-5 relative overflow-hidden rounded-3xl border border-[#00236f]/15 dark:border-blue-400/30 bg-gradient-to-br from-[#00236f] via-[#17439f] to-[#2b5dbf] p-6 md:p-7 shadow-xl">
+              <div className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+              <div className="pointer-events-none absolute -bottom-12 -left-10 h-36 w-36 rounded-full bg-blue-200/20 blur-2xl" />
+
+              <div className="relative z-10">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-100/90">
+                  Active Bookings
                 </p>
-                <p className="mt-3 text-4xl font-extrabold text-[#00236f] dark:text-blue-300 leading-none">
-                  {statsPlaceholder[item.key]}
+                <p className="mt-3 text-5xl font-extrabold text-white leading-none">
+                  {activeBookingsValue}
                 </p>
-                <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                  {item.hint}
+                <p className="mt-3 text-sm text-blue-100/90">
+                  Guests currently in reservation flow
                 </p>
-              </article>
-            ))}
+
+                <div className="mt-6 rounded-2xl bg-white/10 border border-white/20 p-4 backdrop-blur-sm">
+                  <div className="flex items-center justify-between text-xs text-blue-100/90 uppercase tracking-wider">
+                    <span>Occupancy</span>
+                    <span>{occupancyRate}%</span>
+                  </div>
+                  <div className="mt-3 h-2 rounded-full bg-white/20 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-white transition-all duration-500"
+                      style={{ width: `${occupancyRate}%` }}
+                    />
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-3 text-blue-50">
+                    <div>
+                      <p className="text-xs uppercase tracking-widest text-blue-100/75">
+                        Available
+                      </p>
+                      <p className="text-xl font-bold">
+                        {formatStatsValue("availableRooms")}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-widest text-blue-100/75">
+                        Occupied
+                      </p>
+                      <p className="text-xl font-bold">
+                        {formatStatsValue("occupiedRooms")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {statsCards.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <article
+                    key={item.key}
+                    className="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-5 shadow-sm transition-transform duration-300 hover:-translate-y-1"
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        {item.label}
+                      </p>
+                      <Icon className="w-4 h-4 text-[#00236f] dark:text-blue-300" />
+                    </div>
+                    <p className="mt-3 text-4xl font-extrabold text-[#00236f] dark:text-blue-300 leading-none">
+                      {formatStatsValue(item.key, item.decimal)}
+                    </p>
+                    <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                      {item.hint}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Rooms Section */}
-      <section id="rooms" className="py-24 px-8 bg-section-alt-bg animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600 fill-mode-both">
+      <section
+        id="rooms"
+        className="py-24 px-8 bg-section-alt-bg animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600 fill-mode-both"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
             <div className="max-w-xl">
@@ -342,7 +461,10 @@ export default function Homepage() {
       </section>
 
       {/* Signature Experience Section */}
-      <section id="experience" className="relative overflow-hidden py-24 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-800 fill-mode-both">
+      <section
+        id="experience"
+        className="relative overflow-hidden py-24 px-8 bg-background animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-800 fill-mode-both"
+      >
         <div className="pointer-events-none absolute -top-16 right-0 h-72 w-72 rounded-full bg-[#dce1ff]/50 dark:bg-blue-900/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 left-0 h-72 w-72 rounded-full bg-amber-100/60 dark:bg-amber-900/20 blur-3xl" />
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-stretch relative z-10">
@@ -535,7 +657,9 @@ export default function Homepage() {
                             </div>
                           )}
                           <div>
-                            <p className="font-semibold text-slate-900 dark:text-white">{rating.name}</p>
+                            <p className="font-semibold text-slate-900 dark:text-white">
+                              {rating.name}
+                            </p>
                             <p className="text-xs text-slate-500 dark:text-slate-400">
                               {rating.jobTitle || "Guest"}
                             </p>
@@ -546,7 +670,9 @@ export default function Homepage() {
                             <Star
                               key={`${rating.id}-${index}-star-${starIndex}`}
                               className={`h-4 w-4 transition-transform duration-300 group-hover:scale-110 ${
-                                starIndex < rating.stars ? "fill-current" : "text-slate-300 dark:text-slate-600"
+                                starIndex < rating.stars
+                                  ? "fill-current"
+                                  : "text-slate-300 dark:text-slate-600"
                               }`}
                             />
                           ))}
@@ -567,8 +693,6 @@ export default function Homepage() {
           )}
         </div>
       </section>
-
-      
     </main>
   );
 }

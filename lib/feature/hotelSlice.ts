@@ -12,6 +12,7 @@ import type {
   BookingsQuery,
   CreateBookingPayload,
   CreateStaffPayload,
+  HomepageStatsResponse,
   MyRatingPayload,
   PaginationQuery,
   RatingResponse,
@@ -228,6 +229,10 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
         }),
       providesTags: ["Auth"],
     }),
+    getHomepageStats: builder.query<ApiResponse<HomepageStatsResponse>, void>({
+      query: () => "/homepage/stats",
+      providesTags: ["Auth"],
+    }),
     getMyRating: builder.query<ApiResponse<RatingResponse>, void>({
       query: () => "/ratings/me",
       providesTags: ["Auth"],
@@ -321,6 +326,7 @@ export const {
   useUpdateRoomStatusMutation,
   useGetBookingPolicyQuery,
   useGetRatingsQuery,
+  useGetHomepageStatsQuery,
   useGetMyRatingQuery,
   useUploadRoomImageMutation,
   useCreateMyRatingMutation,

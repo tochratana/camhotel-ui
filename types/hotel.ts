@@ -59,6 +59,15 @@ export type RatingResponse = {
   updatedAt: string;
 };
 
+export type HomepageStatsResponse = {
+  totalUsers: number;
+  totalRooms: number;
+  availableRooms: number;
+  occupiedRooms: number;
+  activeBookings: number;
+  averageRating: number;
+};
+
 export type SpringPage<T> = {
   content: T[];
   totalElements: number;
