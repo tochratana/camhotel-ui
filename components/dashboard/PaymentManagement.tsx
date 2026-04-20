@@ -127,15 +127,15 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
     const keywordLower = debouncedKeyword.toLowerCase().replace(/^(pym-|#?bk-)/i, "");
     
     // 1. Add exact matches from specific endpoints (even if on different pages)
-    if (paymentByIdData?.data?.data) {
-      const p = paymentByIdData.data.data;
+    if (paymentByIdData?.data) {
+      const p = paymentByIdData.data;
       if (p.id === searchPaymentId && (statusFilter === "ALL" || p.paymentStatus === statusFilter)) {
         specificResults.push(p);
       }
     }
     
-    if (paymentByBookingIdData?.data?.data) {
-      const p = paymentByBookingIdData.data.data;
+    if (paymentByBookingIdData?.data) {
+      const p = paymentByBookingIdData.data;
       if (p.booking?.id === searchBookingId && (statusFilter === "ALL" || p.paymentStatus === statusFilter)) {
         if (!specificResults.find(r => r.id === p.id)) {
           specificResults.push(p);
