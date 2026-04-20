@@ -88,7 +88,7 @@ const baseQueryWithReauth: BaseQueryFn<
   const hasToken = Boolean(getStoredBasicToken());
 
   const shouldRefresh =
-    (status === 401 || status === 403) &&
+    status === 401 &&
     hasToken &&
     !shouldSkipRefresh(requestUrl);
 

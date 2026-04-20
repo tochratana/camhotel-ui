@@ -25,7 +25,9 @@ export default function StaffDashboard() {
 
   const isLoading =
     profileQuery.isLoading || roomsQuery.isLoading || bookingsQuery.isLoading;
-  const hasError = profileQuery.isError || roomsQuery.isError || bookingsQuery.isError;
+  
+  // Only consider it an error if profile fails or ALL data fails
+  const hasError = profileQuery.isError || (roomsQuery.isError && bookingsQuery.isError);
 
   const config = getStaffDashboardConfig(profile);
 

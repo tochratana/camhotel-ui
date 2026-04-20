@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="5e933579-1eb3-4cc3-8bcb-84b65307408d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/PaymentManagement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/PaymentManagement.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/role-config.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/role-config.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/contact/Contact.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/contact/Contact.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/dashboard/CustomerDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/CustomerDashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/dashboard/dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/dashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/data-table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/data-table.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +130,7 @@
       <workItem from="1775627395979" duration="6447000" />
       <workItem from="1775656810563" duration="313000" />
       <workItem from="1775657130291" duration="4557000" />
-      <workItem from="1776586433127" duration="15117000" />
+      <workItem from="1776586433127" duration="22427000" />
     </task>
     <servers />
   </component>
