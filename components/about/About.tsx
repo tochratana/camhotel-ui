@@ -23,30 +23,33 @@ const mentors: TeamProfile[] = [
     name: "Chan Chhaya",
     role: "Backend",
     intro:
-      "Chhaya mentors our roadmap and keeps each feature connected to real business outcomes.",
+      "Chhaya mentors backend development and ensures our systems are scalable, secure, and reliable.",
     quote:
-      "A product is not complete when it ships. It is complete when users trust it naturally.",
-    strengths: ["Roadmap Coaching", "Product Strategy", "Team Direction"],
+      "A strong backend is invisible to users, but essential to everything they experience.",
+    strengths: ["API Design", "System Architecture", "Scalability"],
     image: "/mt-mb/mt_chhaya.jpg",
   },
   {
     name: "Mom Reksmey",
     role: "Frontend",
     intro:
-      "Reksmey supports architecture decisions and helps the team turn complex problems into maintainable systems.",
+      "Reksmey guides frontend development and helps the team build clean, responsive, and user-friendly interfaces.",
     quote:
-      "Clean structure is kindness to your future team. Build it once, scale it calmly.",
-    strengths: ["Architecture", "Code Quality", "Performance"],
+      "Great UI is not just seen—it is felt through smooth and intuitive interactions.",
+    strengths: [
+      "UI Development",
+      "Responsive Design",
+      "Performance Optimization",
+    ],
     image: "/mt-mb/mt_reksmey.jpg",
   },
   {
     name: "Kit Tara",
     role: "Database",
     intro:
-      "Tara guides experience design so each flow feels clear, trustworthy, and premium.",
-    quote:
-      "When design is right, users do not notice the UI. They notice their confidence.",
-    strengths: ["UX Guidance", "Design Systems", "Brand Consistency"],
+      "Tara ensures our data is well-structured, efficient, and secure across all systems.",
+    quote: "Good data design is the foundation of every reliable application.",
+    strengths: ["Database Design", "Data Modeling", "Query Optimization"],
     image: "/mt-mb/mt_tara.jpg",
   },
 ];
@@ -59,7 +62,7 @@ const members: TeamProfile[] = [
       "Menglong builds user-facing pages with strong responsiveness and smooth interaction details. Build some backend endpoint.",
     quote:
       "Don't said I'm busy, we still have free time. So, let's do your best!",
-    strengths: ["UI Development", "Responsive UX", "Backend"],
+    strengths: ["UI Development", "Responsive", "Backend"],
     image: "/mt-mb/mb_menglong.png",
   },
   {
@@ -104,9 +107,9 @@ function StoryRow({
   const typeLabel = type === "mentor" ? "Mentor" : "Member";
 
   return (
-    <article className="grid grid-cols-1 items-center gap-8 border-t border-slate-200 py-10 first:border-t-0 dark:border-slate-700 md:grid-cols-12">
-      <div className={`relative md:col-span-4 ${imageOrderClass}`}>
-        <div className="relative aspect-3/4 overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800">
+    <article className="grid grid-cols-1 items-start gap-6 border-t border-slate-200 py-8 first:border-t-0 dark:border-slate-700 md:grid-cols-12">
+      <div className={`relative md:col-span-3 ${imageOrderClass}`}>
+        <div className="relative aspect-square overflow-hidden rounded-lg border border-slate-200 shadow-sm dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800">
           <Image
             src={profile.image}
             alt={profile.name}
@@ -117,22 +120,22 @@ function StoryRow({
         </div>
       </div>
 
-      <div className={`space-y-4 md:col-span-8 ${textOrderClass}`}>
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#3a5fae] dark:text-blue-300">
+      <div className={`space-y-3 md:col-span-9 ${textOrderClass}`}>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#3a5fae] dark:text-blue-300">
           {typeLabel}
         </p>
-        <h3 className="text-3xl font-bold text-[#102d74] dark:text-blue-200 font-sans">
+        <h3 className="text-xl font-bold text-[#102d74] dark:text-blue-200 font-sans">
           {profile.name}
         </h3>
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#4467b4] dark:text-blue-400">
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#4467b4] dark:text-blue-400">
           {profile.role}
         </p>
-        <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
+        <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
           {profile.intro}
         </p>
 
-        <blockquote className="rounded-r-2xl border-l-4 border-[#1f4fb3] bg-[#ecf3ff]/75 px-5 py-4 text-sm italic leading-relaxed text-[#1c3f87] dark:border-blue-400 dark:bg-blue-950/40 dark:text-blue-200">
-          <Quote className="mb-2 h-4 w-4" />
+        <blockquote className="rounded-r-xl border-l-4 border-[#1f4fb3] bg-[#ecf3ff]/75 px-4 py-3 text-xs italic leading-relaxed text-[#1c3f87] dark:border-blue-400 dark:bg-blue-950/40 dark:text-blue-200">
+          <Quote className="mb-1 h-3 w-3" />
           {profile.quote}
         </blockquote>
 
