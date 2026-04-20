@@ -308,21 +308,23 @@ export default function Homepage() {
             </div>
 
             {/* Modern Heading with better hierarchy */}
-            <div className="space-y-4 text-center animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100 fill-mode-both">
-              <div className="inline-block">
-                <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-white mb-3 tracking-tighter leading-[1.1]">
-                  Premium
-                </h1>
+            <div className="space-y-8 text-center animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100 fill-mode-both">
+              <div className="space-y-6">
+                <div>
+                  <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[1.2]">
+                    Discover Your
+                  </h1>
+                </div>
+                <div className="relative">
+                  <h2 className="text-6xl sm:text-7xl md:text-8xl font-black bg-gradient-to-r from-blue-200 via-blue-100 to-blue-300 bg-clip-text text-transparent tracking-tighter leading-[1.2]">
+                    Perfect Escape
+                  </h2>
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full blur-sm"></div>
+                </div>
               </div>
-              <div className="relative inline-block">
-                <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-white tracking-tighter">
-                  Hospitality
-                </h2>
-                <div className="absolute -bottom-4 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-400 rounded-full blur-sm"></div>
-              </div>
-              <p className="text-base sm:text-lg md:text-xl text-blue-50 dark:text-blue-100 pt-6 font-light max-w-2xl mx-auto leading-relaxed">
-                Experience timeless elegance, impeccable service, and moments
-                that linger. Every stay is a story.
+              <p className="text-base sm:text-lg md:text-xl text-blue-50 dark:text-blue-100 pt-8 font-light max-w-3xl mx-auto leading-relaxed">
+                Experience timeless elegance, seamless booking, and
+                unforgettable moments. Every stay tells a story at CamHotel.
               </p>
             </div>
 
