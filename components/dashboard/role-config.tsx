@@ -10,6 +10,7 @@ import {
     CreditCardIcon,
     LayoutDashboardIcon,
     Settings2Icon,
+    StarIcon,
     UserRoundIcon, Warehouse,
 } from "lucide-react";
 
@@ -152,6 +153,11 @@ export const customerDashboardConfig: DashboardShellConfig = {
             title: "Profile",
             url: "/customer/profile",
             icon: <UserRoundIcon/>,
+        },
+        {
+            title: "My Rating",
+            url: "/customer/rating",
+            icon: <StarIcon/>,
         },
         {
             title: "Settings",

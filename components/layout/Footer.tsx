@@ -24,6 +24,7 @@ const customerFeatureLinks: FooterLink[] = [
   { title: "Book a Room", href: "/customer/book" },
   { title: "My Bookings", href: "/customer/mybookings" },
   { title: "Profile", href: "/customer/profile" },
+  { title: "My Rating", href: "/customer/rating" },
   { title: "Customer Settings", href: "/customer/settings" },
 ];
 

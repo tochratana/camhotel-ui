@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
@@ -45,9 +45,11 @@ import {
   useDeleteRoomMutation,
   useGetRoomTypesQuery,
   useGetRoomsQuery,
+  useUploadRoomImageMutation,
   useUpdateRoomMutation,
   useUpdateRoomStatusMutation,
 } from "@/lib/feature/hotelSlice";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { RoomPayload, RoomResponse, RoomStatus } from "@/types/hotel";
 
 const ROOM_STATUS_OPTIONS: RoomStatus[] = [
@@ -158,6 +160,8 @@ export default function AdminRoomsPage() {
   const [roomForm, setRoomForm] = useState<RoomFormState>(EMPTY_ROOM_FORM);
   const [editingRoomId, setEditingRoomId] = useState<number | null>(null);
   const [isRoomFormOpen, setIsRoomFormOpen] = useState(false);
+  const [selectedRoomImageFile, setSelectedRoomImageFile] = useState<File | null>(null);
+  const [roomImagePreviewUrl, setRoomImagePreviewUrl] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const config = getAdminDashboardConfig(profileQuery.data?.data);
@@ -179,6 +183,7 @@ export default function AdminRoomsPage() {
   const [createRoom, createRoomState] = useCreateRoomMutation();
   const [updateRoom, updateRoomState] = useUpdateRoomMutation();
   const [deleteRoom, deleteRoomState] = useDeleteRoomMutation();
+  const [uploadRoomImage, uploadRoomImageState] = useUploadRoomImageMutation();
 
   const pageData = roomsQuery.data?.data;
   const rooms = pageData?.content ?? [];
@@ -192,7 +197,19 @@ export default function AdminRoomsPage() {
   const maintenanceCount = rooms.filter((room) => room.status === "MAINTENANCE").length;
 
   const isLoading = roomsQuery.isLoading || roomsQuery.isFetching;
-  const isSavingRoom = createRoomState.isLoading || updateRoomState.isLoading;
+  const isSavingRoom =
+    createRoomState.isLoading ||
+    updateRoomState.isLoading ||
+    uploadRoomImageState.isLoading;
+  const roomImagePreview = roomImagePreviewUrl || resolveMediaUrl(roomForm.imageUrl);
+
+  useEffect(() => {
+    return () => {
+      if (roomImagePreviewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(roomImagePreviewUrl);
+      }
+    };
+  }, [roomImagePreviewUrl]);
 
   const handleStatusFilterChange = (value: FilterStatus) => {
     setStatusFilter(value);
@@ -240,6 +257,11 @@ export default function AdminRoomsPage() {
   const handleEditRoom = (room: RoomResponse) => {
     setEditingRoomId(room.id);
     setRoomForm(toRoomFormState(room));
+    setSelectedRoomImageFile(null);
+    if (roomImagePreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(roomImagePreviewUrl);
+    }
+    setRoomImagePreviewUrl("");
     setIsRoomFormOpen(true);
     setFeedback(`Editing room ${room.roomNumber}.`);
   };
@@ -247,6 +269,11 @@ export default function AdminRoomsPage() {
   const handleStartCreateRoom = () => {
     setEditingRoomId(null);
     setRoomForm(EMPTY_ROOM_FORM);
+    setSelectedRoomImageFile(null);
+    if (roomImagePreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(roomImagePreviewUrl);
+    }
+    setRoomImagePreviewUrl("");
     setFeedback(null);
     setIsRoomFormOpen(true);
   };
@@ -256,14 +283,48 @@ export default function AdminRoomsPage() {
     if (!open) {
       setEditingRoomId(null);
       setRoomForm(EMPTY_ROOM_FORM);
+      setSelectedRoomImageFile(null);
+      if (roomImagePreviewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(roomImagePreviewUrl);
+      }
+      setRoomImagePreviewUrl("");
     }
   };
 
   const handleCancelRoomEdit = () => {
     setEditingRoomId(null);
     setRoomForm(EMPTY_ROOM_FORM);
+    setSelectedRoomImageFile(null);
+    if (roomImagePreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(roomImagePreviewUrl);
+    }
+    setRoomImagePreviewUrl("");
     setIsRoomFormOpen(false);
     setFeedback("Form closed.");
+  };
+
+  const handleRoomImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    setSelectedRoomImageFile(file);
+
+    if (roomImagePreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(roomImagePreviewUrl);
+    }
+
+    if (!file) {
+      setRoomImagePreviewUrl("");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setSelectedRoomImageFile(null);
+      setRoomImagePreviewUrl("");
+      setFeedback("Please select a valid image file.");
+      return;
+    }
+
+    setRoomImagePreviewUrl(URL.createObjectURL(file));
+    setFeedback(null);
   };
 
   const handleSaveRoom = async (event: FormEvent<HTMLFormElement>) => {
@@ -275,18 +336,46 @@ export default function AdminRoomsPage() {
       return;
     }
 
+    const roomNumber = roomForm.roomNumber.trim();
+    let imageUrl = roomForm.imageUrl.trim();
+
+    if (selectedRoomImageFile) {
+      try {
+        const result = await uploadRoomImage({ file: selectedRoomImageFile }).unwrap();
+        const uploadedPath = result?.data?.filePath?.trim();
+
+        if (!uploadedPath) {
+          setFeedback("Image uploaded but no file path was returned.");
+          return;
+        }
+
+        imageUrl = uploadedPath;
+        handleRoomFormChange("imageUrl", uploadedPath);
+        setSelectedRoomImageFile(null);
+        if (roomImagePreviewUrl.startsWith("blob:")) {
+          URL.revokeObjectURL(roomImagePreviewUrl);
+        }
+        setRoomImagePreviewUrl("");
+      } catch (error) {
+        const errorMsg = parseApiError(error, "Unable to upload room image.");
+        setFeedback(errorMsg);
+        toast.error(errorMsg);
+        return;
+      }
+    }
+
     const payload: RoomPayload = {
       floorNumber: Number(roomForm.floorNumber),
-      roomNumber: roomForm.roomNumber.trim(),
+      roomNumber,
       currentPrice: Number(roomForm.currentPrice),
-      imageUrl: roomForm.imageUrl.trim(),
+      imageUrl,
       rating: Number(roomForm.rating),
       status: roomForm.status,
       roomTypeId: Number(roomForm.roomTypeId),
     };
 
     if (!payload.roomNumber || !payload.imageUrl) {
-      setFeedback("Room number and image URL are required.");
+      setFeedback("Room number and uploaded image are required.");
       return;
     }
 
@@ -319,6 +408,11 @@ export default function AdminRoomsPage() {
       }
       setEditingRoomId(null);
       setRoomForm(EMPTY_ROOM_FORM);
+      setSelectedRoomImageFile(null);
+      if (roomImagePreviewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(roomImagePreviewUrl);
+      }
+      setRoomImagePreviewUrl("");
       setIsRoomFormOpen(false);
       setPage(0);
     } catch (error) {
@@ -702,14 +796,30 @@ export default function AdminRoomsPage() {
                 />
               </div>
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="drawer-room-image-url">Image URL</Label>
+                <Label htmlFor="drawer-room-image-file">Room Image</Label>
                 <Input
-                  id="drawer-room-image-url"
+                  id="drawer-room-image-file"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleRoomImageFileChange}
+                />
+                <p className="text-xs text-muted-foreground">
+                  The image uploads automatically when you click{" "}
+                  {editingRoomId ? "Save Changes" : "Create Room"}.
+                </p>
+                {roomImagePreview ? (
+                  <div className="overflow-hidden rounded-md border">
+                    <img
+                      src={roomImagePreview}
+                      alt="Room preview"
+                      className="h-44 w-full object-cover"
+                    />
+                  </div>
+                ) : null}
+                <Input
                   value={roomForm.imageUrl}
-                  onChange={(event) =>
-                    handleRoomFormChange("imageUrl", event.target.value)
-                  }
-                  placeholder="https://..."
+                  placeholder="Upload an image to generate file path"
+                  readOnly
                   required
                 />
               </div>

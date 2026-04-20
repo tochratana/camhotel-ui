@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ConciergeBell,
   Mail,
   MapPin,
@@ -104,13 +106,69 @@ export default function Homepage() {
 
   const { data: ratingData, isFetching: isRatingsFetching } = useGetRatingsQuery({
     page: 0,
-    size: 6,
+    size: 24,
   });
 
   const featuredRatings = useMemo(() => {
     const ratings = ratingData?.data?.content ?? [];
-    return ratings.slice(0, 3);
+    return ratings;
   }, [ratingData]);
+
+  const ratingsTrackRef = useRef<HTMLDivElement | null>(null);
+  const [isRatingsHovered, setIsRatingsHovered] = useState(false);
+
+  useEffect(() => {
+    const track = ratingsTrackRef.current;
+    if (!track) {
+      return;
+    }
+    track.scrollLeft = 0;
+  }, [featuredRatings.length]);
+
+  useEffect(() => {
+    if (featuredRatings.length <= 1) {
+      return;
+    }
+
+    let frameId = 0;
+
+    const animate = () => {
+      const track = ratingsTrackRef.current;
+      if (track && !isRatingsHovered) {
+        track.scrollLeft += 0.35;
+        const resetPoint = track.scrollWidth / 2;
+        if (track.scrollLeft >= resetPoint) {
+          track.scrollLeft -= resetPoint;
+        }
+      }
+      frameId = window.requestAnimationFrame(animate);
+    };
+
+    frameId = window.requestAnimationFrame(animate);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [featuredRatings.length, isRatingsHovered]);
+
+  const marqueeRatings = useMemo(() => {
+    if (featuredRatings.length <= 1) {
+      return featuredRatings;
+    }
+    return [...featuredRatings, ...featuredRatings];
+  }, [featuredRatings]);
+
+  const scrollRatings = (direction: "left" | "right") => {
+    const track = ratingsTrackRef.current;
+    if (!track) {
+      return;
+    }
+
+    const distance = Math.max(track.clientWidth * 0.8, 320);
+    track.scrollBy({
+      left: direction === "left" ? -distance : distance,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <main className="bg-background min-h-screen font-sans selection:bg-[#dce1ff] dark:selection:bg-blue-900/50">
@@ -408,67 +466,99 @@ export default function Homepage() {
                 What Our Guests Say
               </h2>
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm italic">
-              {isRatingsFetching ? "Loading recent ratings..." : "Real feedback from verified customers"}
-            </p>
+            {/* <div className="flex flex-col items-start md:items-end gap-2">
+              <p className="text-slate-500 dark:text-slate-400 text-sm italic">
+                {isRatingsFetching ? "Loading recent ratings..." : "Real feedback from verified customers"}
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => scrollRatings("left")}
+                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-2 text-slate-700 dark:text-slate-200 hover:border-[#00236f]/40 dark:hover:border-blue-400/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled={featuredRatings.length <= 1}
+                  aria-label="Scroll ratings left"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollRatings("right")}
+                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-2 text-slate-700 dark:text-slate-200 hover:border-[#00236f]/40 dark:hover:border-blue-400/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled={featuredRatings.length <= 1}
+                  aria-label="Scroll ratings right"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div> */}
           </div>
 
           {featuredRatings.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {featuredRatings.map((rating) => {
-                const imageUrl = resolveMediaUrl(rating.profileImage);
-                const initials = (rating.name || "G")
-                  .trim()
-                  .split(/\s+/)
-                  .slice(0, 2)
-                  .map((part) => part.charAt(0).toUpperCase())
-                  .join("");
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-[#f6f7fc] to-transparent dark:from-[#121625]" />
+              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-[#f6f7fc] to-transparent dark:from-[#121625]" />
+              <div
+                ref={ratingsTrackRef}
+                className="flex gap-6 overflow-x-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-2 px-1"
+                onMouseEnter={() => setIsRatingsHovered(true)}
+                onMouseLeave={() => setIsRatingsHovered(false)}
+              >
+                {marqueeRatings.map((rating, index) => {
+                  const imageUrl = resolveMediaUrl(rating.profileImage);
+                  const initials = (rating.name || "G")
+                    .trim()
+                    .split(/\s+/)
+                    .slice(0, 2)
+                    .map((part) => part.charAt(0).toUpperCase())
+                    .join("");
 
-                return (
-                  <article
-                    key={rating.id}
-                    className="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-6 shadow-sm"
-                  >
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex items-center gap-3">
-                        {imageUrl ? (
-                          <Image
-                            src={imageUrl}
-                            alt={rating.name}
-                            width={48}
-                            height={48}
-                            className="h-12 w-12 rounded-full object-cover"
-                            unoptimized={true}
-                          />
-                        ) : (
-                          <div className="h-12 w-12 rounded-full bg-[#dce1ff] dark:bg-blue-900/70 text-[#00236f] dark:text-blue-200 font-bold flex items-center justify-center">
-                            {initials || "G"}
+                  return (
+                    <article
+                      key={`${rating.id}-${index}`}
+                      className="group min-w-[300px] md:min-w-[360px] lg:min-w-[390px] max-w-[390px] shrink-0 rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-6 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 animate-in fade-in slide-in-from-right-6 duration-700 fill-mode-both"
+                      style={{ animationDelay: `${(index % 10) * 70}ms` }}
+                    >
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="flex items-center gap-3">
+                          {imageUrl ? (
+                            <Image
+                              src={imageUrl}
+                              alt={rating.name}
+                              width={48}
+                              height={48}
+                              className="h-12 w-12 rounded-full object-cover"
+                              unoptimized={true}
+                            />
+                          ) : (
+                            <div className="h-12 w-12 rounded-full bg-[#dce1ff] dark:bg-blue-900/70 text-[#00236f] dark:text-blue-200 font-bold flex items-center justify-center">
+                              {initials || "G"}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-semibold text-slate-900 dark:text-white">{rating.name}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              {rating.jobTitle || "Guest"}
+                            </p>
                           </div>
-                        )}
-                        <div>
-                          <p className="font-semibold text-slate-900 dark:text-white">{rating.name}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {rating.jobTitle || "Guest"}
-                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 text-amber-500">
+                          {Array.from({ length: 5 }).map((_, starIndex) => (
+                            <Star
+                              key={`${rating.id}-${index}-star-${starIndex}`}
+                              className={`h-4 w-4 transition-transform duration-300 group-hover:scale-110 ${
+                                starIndex < rating.stars ? "fill-current" : "text-slate-300 dark:text-slate-600"
+                              }`}
+                            />
+                          ))}
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 text-amber-500">
-                        {Array.from({ length: 5 }).map((_, index) => (
-                          <Star
-                            key={index}
-                            className={`h-4 w-4 ${
-                              index < rating.stars ? "fill-current" : "text-slate-300 dark:text-slate-600"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                      {rating.description}
-                    </p>
-                  </article>
-                );
-              })}
+                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-6">
+                        {rating.description}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-10 text-center text-slate-500 dark:text-slate-400">

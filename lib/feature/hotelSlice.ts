@@ -1,5 +1,9 @@
 import { fakeStoreApi } from "@/lib/feature/api";
-import type { ApiResponse, UserResponse } from "@/types/auth";
+import type {
+  ApiResponse,
+  FileMetadataResponse,
+  UserResponse,
+} from "@/types/auth";
 import type {
   AdminRatingPayload,
   ApiPageResponse,
@@ -21,6 +25,10 @@ import type {
   UpdateRoomStatusPayload,
   UpdateUserRolePayload,
 } from "@/types/hotel";
+
+type UploadRoomImagePayload = {
+  file: File;
+};
 
 function withQuery(path: string, params?: Record<string, unknown>) {
   if (!params) return path;
@@ -224,6 +232,22 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
       query: () => "/ratings/me",
       providesTags: ["Auth"],
     }),
+    uploadRoomImage: builder.mutation<
+      ApiResponse<FileMetadataResponse>,
+      UploadRoomImagePayload
+    >({
+      query: ({ file }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        return {
+          url: "/files/upload/simple",
+          method: "POST",
+          body: formData,
+        };
+      },
+      invalidatesTags: ["Auth"],
+    }),
     createMyRating: builder.mutation<ApiResponse<RatingResponse>, MyRatingPayload>({
       query: (payload) => ({
         url: "/ratings/me",
@@ -298,6 +322,7 @@ export const {
   useGetBookingPolicyQuery,
   useGetRatingsQuery,
   useGetMyRatingQuery,
+  useUploadRoomImageMutation,
   useCreateMyRatingMutation,
   useUpdateMyRatingMutation,
   useDeleteMyRatingMutation,
