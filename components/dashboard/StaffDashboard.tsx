@@ -46,6 +46,7 @@ export default function StaffDashboard() {
       cards={dashboardData.cards}
       chartData={dashboardData.chart}
       chartTitle="Operational Flow"
+      isReadOnly={true}
       chartDescription={
         hasError
           ? "Some metrics failed to load; showing available backend data."

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   useGetPaymentsQuery, 
   useUpdatePaymentStatusMutation,
   useCreatePaymentMutation,
-  useGetPaymentStatsQuery
+  useGetPaymentByIdQuery,
+  useGetPaymentByBookingIdQuery
 } from "@/lib/feature/paymentSlice";
 import { 
   Table, 
@@ -51,7 +52,7 @@ import {
   Plus
 } from "lucide-react";
 import { toast } from "sonner";
-import { PaymentStatus, PaymentMethod } from "@/types/hotel";
+import { PaymentStatus, PaymentMethod, PaymentResponse } from "@/types/hotel";
 import { cn } from "@/lib/utils";
 
 export default function PaymentManagement({ isStaff = false }: { isStaff?: boolean }) {
@@ -59,6 +60,7 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
   const [statusFilter, setStatusFilter] = useState<PaymentStatus | "ALL">("ALL");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
   const [draftStatuses, setDraftStatuses] = useState<Record<number, PaymentStatus>>({});
   
   // Form State
@@ -66,25 +68,113 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH");
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("PENDING");
 
-  const { data: apiResponse, error: queryError, isLoading, isFetching, refetch } = useGetPaymentsQuery({
+  // Debounce search keyword
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(searchKeyword);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchKeyword]);
+
+  // Determine search mode
+  const isNumeric = /^\d+$/.test(debouncedKeyword);
+  const paymentIdMatch = debouncedKeyword.match(/^PYM-(\d+)$/i);
+  const bookingIdMatch = debouncedKeyword.match(/^#?BK-(\d+)$/i);
+
+  // Parse IDs based on patterns
+  const searchPaymentId = paymentIdMatch ? parseInt(paymentIdMatch[1]) : (isNumeric ? parseInt(debouncedKeyword) : undefined);
+  const searchBookingId = bookingIdMatch ? parseInt(bookingIdMatch[1]) : (isNumeric ? parseInt(debouncedKeyword) : undefined);
+
+  // We are searching by ID if we have a pattern or if it's a number
+  const isSearchingById = (!!searchPaymentId || !!searchBookingId) && debouncedKeyword !== "";
+
+  // Queries
+  const { data: apiResponse, error: queryError, isLoading: isListLoading, isFetching: isListFetching, refetch } = useGetPaymentsQuery({
     page,
     size: 10,
     status: statusFilter === "ALL" ? undefined : statusFilter as PaymentStatus,
-    keyword: searchKeyword || undefined,
+    keyword: debouncedKeyword || undefined,
+  }, {
+    // Only skip list query if we have a very specific prefix search
+    skip: !!paymentIdMatch || !!bookingIdMatch
   });
 
-  const { data: statsResponse } = useGetPaymentStatsQuery(undefined, { skip: isStaff });
-  const grandTotalRevenue = statsResponse?.data?.totalAmount ?? 0;
+  const { data: paymentByIdData, isFetching: isFetchingById } = useGetPaymentByIdQuery(searchPaymentId!, {
+    skip: !searchPaymentId
+  });
+
+  const { data: paymentByBookingIdData, isFetching: isFetchingByBooking } = useGetPaymentByBookingIdQuery(searchBookingId!, {
+    skip: !searchBookingId
+  });
 
   const [updateStatus, updateStatusState] = useUpdatePaymentStatusMutation();
   const isUpdating = updateStatusState.isLoading;
   const [createPayment, { isLoading: isCreating }] = useCreatePaymentMutation();
 
-  const payments = apiResponse?.data?.content ?? [];
-  const totalPages = apiResponse?.data?.totalPages ?? 0;
-  const totalElements = apiResponse?.data?.totalElements ?? 0;
-  const isFirstPage = apiResponse?.data?.first ?? true;
-  const isLastPage = apiResponse?.data?.last ?? true;
+  const isLoading = isListLoading || (isSearchingById && (isFetchingById || isFetchingByBooking));
+  const isFetching = isListFetching || (isSearchingById && (isFetchingById || isFetchingByBooking));
+
+  // Derive display data
+  let payments: PaymentResponse[] = [];
+  let totalElements = 0;
+  let totalPages = 0;
+  let isFirstPage = true;
+  let isLastPage = true;
+
+  // Decision logic for what to show: ID-CENTRIC MATCHING
+  if (isSearchingById) {
+    const specificResults: PaymentResponse[] = [];
+    const keywordLower = debouncedKeyword.toLowerCase().replace(/^(pym-|#?bk-)/i, "");
+    
+    // 1. Add exact matches from specific endpoints (even if on different pages)
+    if (paymentByIdData?.data?.data) {
+      const p = paymentByIdData.data.data;
+      if (p.id === searchPaymentId && (statusFilter === "ALL" || p.paymentStatus === statusFilter)) {
+        specificResults.push(p);
+      }
+    }
+    
+    if (paymentByBookingIdData?.data?.data) {
+      const p = paymentByBookingIdData.data.data;
+      if (p.booking?.id === searchBookingId && (statusFilter === "ALL" || p.paymentStatus === statusFilter)) {
+        if (!specificResults.find(r => r.id === p.id)) {
+          specificResults.push(p);
+        }
+      }
+    }
+
+    // 2. Add partial matches from the list query that hit the ID fields
+    // This ensures that "1" finds "1", "10", "100", etc., but ONLY if the ID matches.
+    const listMatches = (apiResponse?.data?.content ?? []).filter(p => {
+      const pId = p.id.toString();
+      const bId = p.booking?.id.toString() || "";
+      // Only keep if the ID or Booking ID contains the search term
+      const matchesId = pId.includes(keywordLower) || bId.includes(keywordLower);
+      // Ensure it respects the status filter
+      const matchesStatus = statusFilter === "ALL" || p.paymentStatus === statusFilter;
+      return matchesId && matchesStatus;
+    });
+
+    // Merge without duplicates
+    listMatches.forEach(p => {
+      if (!specificResults.find(r => r.id === p.id)) {
+        specificResults.push(p);
+      }
+    });
+
+    payments = specificResults;
+    totalElements = specificResults.length;
+    totalPages = specificResults.length > 0 ? 1 : 0;
+    isFirstPage = true;
+    isLastPage = true;
+  } else {
+    // Standard keyword search or default view (shows all)
+    payments = apiResponse?.data?.content ?? [];
+    totalElements = apiResponse?.data?.totalElements ?? 0;
+    totalPages = apiResponse?.data?.totalPages ?? 0;
+    isFirstPage = apiResponse?.data?.first ?? true;
+    isLastPage = apiResponse?.data?.last ?? true;
+  }
 
   const startItem = totalElements === 0 ? 0 : page * 10 + 1;
   const endItem = totalElements === 0 ? 0 : Math.min((page + 1) * 10, totalElements);
@@ -183,7 +273,7 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100 fill-mode-both">
         {/* Total Transactions Count */}
-        <Card className="border-border/60 shadow-sm bg-indigo-50/50 dark:bg-indigo-500/5 border-indigo-100 dark:border-indigo-900/30">
+        <Card className="border-border/60 shadow-sm bg-indigo-50/50 dark:bg-indigo-500/5 dark:border-indigo-900/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-bold font-heading text-indigo-600 dark:text-indigo-400 uppercase tracking-tight">Total Count</CardTitle>
             <CreditCard className="h-4 w-4 text-indigo-500" />
@@ -424,8 +514,13 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
           </Dialog>
         </div>
 
-        <div className="text-sm font-medium text-muted-foreground">
-          Total Transactions: <span className="text-foreground">{totalElements}</span>
+        <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+          {isSearchingById && (
+            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 animate-pulse">
+              {paymentIdMatch || (isNumeric && payments.some(p => p.id === searchPaymentId)) ? "Payment ID Mode" : "Booking ID Mode"}
+            </Badge>
+          )}
+          <span>Total Transactions: <span className="text-foreground font-bold">{totalElements}</span></span>
         </div>
       </div>
 
@@ -441,7 +536,7 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
               <Loader2 className="size-8 animate-spin text-primary" />
               <p>Loading transactions...</p>
             </div>
-          ) : (queryError as any)?.status === 403 ? (
+          ) : (queryError as { status?: number })?.status === 403 ? (
             <div className="h-64 flex flex-col items-center justify-center gap-3 text-muted-foreground p-6 text-center">
               <div className="p-3 rounded-full bg-rose-50 dark:bg-rose-950/30 text-rose-500">
                 <Filter className="size-8" />

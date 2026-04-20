@@ -178,8 +178,9 @@ export default function AdminBookingsPage() {
       headerTitle="Booking Management"
       headerDescription="Review and update all hotel bookings"
     >
-      <div className="flex flex-col w-full h-full">
-        <div className="flex flex-col gap-6 h-full px-4 py-6 lg:px-6 lg:py-8 pb-20">
+      <div className="w-full">
+        <div className="flex flex-col gap-6 px-4 py-6 lg:px-6 lg:py-8">
+
           <Card>
             <CardHeader>
               <CardTitle>Admin Booking Board</CardTitle>

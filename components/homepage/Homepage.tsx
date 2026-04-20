@@ -316,7 +316,7 @@ export default function Homepage() {
                   </h1>
                 </div>
                 <div className="relative">
-                  <h2 className="text-6xl sm:text-7xl md:text-8xl font-black bg-gradient-to-r from-blue-200 via-blue-100 to-blue-300 bg-clip-text text-transparent tracking-tighter leading-[1.2]">
+                  <h2 className="text-6xl sm:text-7xl md:text-8xl font-black bg-linear-to-r from-blue-200 via-blue-100 to-blue-300 bg-clip-text text-transparent tracking-tighter leading-[1.2]">
                     Perfect Escape
                   </h2>
                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full blur-sm"></div>
@@ -350,28 +350,7 @@ export default function Homepage() {
                     />
                   </svg>
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </a>
-              <a
-                href="/login"
-                className="px-10 py-4 rounded-2xl font-bold uppercase tracking-wider text-sm text-white dark:text-white border-2 border-white/40 dark:border-blue-300/60 hover:border-white/80 dark:hover:border-blue-300 hover:bg-white/20 dark:hover:bg-blue-400/20 transition-all duration-300 backdrop-blur-sm group"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  <span>Sign In</span>
-                  <svg
-                    className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </span>
+                <div className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </a>
             </div>
           </div>

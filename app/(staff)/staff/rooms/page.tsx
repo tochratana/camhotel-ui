@@ -171,8 +171,9 @@ export default function StaffRoomsPage() {
       headerTitle="Room Operations"
       headerDescription="Monitor room availability and update room status"
     >
-      <div className="flex flex-col w-full h-full">
-        <div className="flex flex-col gap-6 h-full px-4 py-6 lg:px-6 lg:py-8 pb-20">
+      <div className="w-full">
+        <div className="flex flex-col gap-6 px-4 py-6 lg:px-6 lg:py-8">
+
           <Card>
             <CardHeader>
               <CardTitle>Staff Room Board</CardTitle>
