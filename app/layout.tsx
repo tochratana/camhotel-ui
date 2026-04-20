@@ -16,8 +16,10 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-const siteUrl = "https://camhotel.tochratana.com";
-const ogImagePath = "/image/cam-hotel.png";
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://camhotel-ui.tochratana.com"
+).replace(/\/+$/, "");
+const ogImagePath = "/logo/camhotel-logo.png";
 const ogImageUrl = new URL(ogImagePath, siteUrl).toString();
 
 export const metadata: Metadata = {
@@ -52,7 +54,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    url: "/",
+    url: siteUrl,
     siteName: "CamHotel",
     locale: "en_US",
     title: "CamHotel | Premium Hospitality in Cambodia",
@@ -61,8 +63,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImageUrl,
-        width: 1200,
-        height: 630,
+        width: 1980,
+        height: 1900,
         alt: "CamHotel - Premium Hospitality",
       },
     ],
