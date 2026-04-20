@@ -19,7 +19,7 @@ const poppins = Poppins({
 const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://camhotel-ui.tochratana.com"
 ).replace(/\/+$/, "");
-const ogImagePath = "/logo/camhotel-logo.png";
+const ogImagePath = "/image/cam-hotel.png";
 const ogImageUrl = new URL(ogImagePath, siteUrl).toString();
 
 export const metadata: Metadata = {
@@ -37,6 +37,8 @@ export const metadata: Metadata = {
     "room booking",
     "online hotel reservation",
     "hospitality",
+    "ISTAD",
+    "tochratana",
   ],
   alternates: {
     canonical: "/",
@@ -63,8 +65,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImageUrl,
-        width: 1980,
-        height: 1900,
+        width: 2400,
+        height: 1260,
         alt: "CamHotel - Premium Hospitality",
       },
     ],
