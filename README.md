@@ -252,17 +252,17 @@ http://localhost:3000
 
 ### Mentors (3)
 
-| No. | Name | Area |
-| --- | --- | --- |
-| 1 | Chan Chhaya | Backend Mentorship |
-| 2 | Mom Reksmey | Frontend Mentorship |
-| 3 | Kit Tara | Database Mentorship |
+| No. | Name        | Area                |
+| --- | ----------- | ------------------- |
+| 1   | Chan Chhaya | Backend Mentorship  |
+| 2   | Mom Reksmey | Frontend Mentorship |
+| 3   | Kit Tara    | Database Mentorship |
 
 ### Members (4)
 
-| No. | Name | Role |
-| --- | --- | --- |
-| 1 | Keo Menglong | Fullstack Developer |
-| 2 | Bo Vibol | UI Developer & Tester |
-| 3 | Saroeun Sothearith | UI Developer & Tester |
-| 4 | Toch Ratana | Fullstack & Deployment |
+| No. | Name               | Role                   |
+| --- | ------------------ | ---------------------- |
+| 1   | Keo Menglong       | Fullstack Developer    |
+| 2   | Bo Vibol           | UI Developer & Tester  |
+| 3   | Saroeun Sothearith | UI Developer & Tester  |
+| 4   | Toch Ratana        | Fullstack & Deployment |

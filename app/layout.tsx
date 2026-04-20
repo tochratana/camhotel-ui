@@ -16,10 +16,67 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+const siteUrl = "https://camhotel.tochratana.com";
+const ogImagePath = "/image/cam-hotel.png";
+const ogImageUrl = new URL(ogImagePath, siteUrl).toString();
+
 export const metadata: Metadata = {
-  title: "CamHotel — Premium Hospitality",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "CamHotel | Premium Hospitality in Cambodia",
+    template: "%s | CamHotel",
+  },
   description:
-    "Experience architectural elegance and curated hospitality at CamHotel.",
+    "Book stylish rooms, discover premium facilities, and enjoy a seamless hospitality experience at CamHotel.",
+  keywords: [
+    "CamHotel",
+    "hotel in Cambodia",
+    "luxury hotel",
+    "room booking",
+    "online hotel reservation",
+    "hospitality",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "CamHotel",
+    locale: "en_US",
+    title: "CamHotel | Premium Hospitality in Cambodia",
+    description:
+      "Book stylish rooms, discover premium facilities, and enjoy a seamless hospitality experience at CamHotel.",
+    images: [
+      {
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+        alt: "CamHotel - Premium Hospitality",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CamHotel | Premium Hospitality in Cambodia",
+    description:
+      "Book stylish rooms, discover premium facilities, and enjoy a seamless hospitality experience at CamHotel.",
+    images: [ogImageUrl],
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -30,11 +87,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(
-        "h-full antialiased",
-        "font-sans",
-        poppins.variable,
-      )}
+      className={cn("h-full antialiased", "font-sans", poppins.variable)}
       suppressHydrationWarning
     >
       <body
