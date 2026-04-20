@@ -90,10 +90,10 @@ export default function RoomDetailPage() {
     () => ({
       page: 0,
       size: 4,
-      status: "AVAILABLE" as const,
       roomTypeId: room?.roomType?.id,
       checkInDate: hasDateRange ? selectedCheckInDate : undefined,
       checkOutDate: hasDateRange ? selectedCheckOutDate : undefined,
+      includeUnavailable: true,
       sortBy: "rating",
       sortDirection: "desc" as const,
     }),
@@ -168,6 +168,7 @@ export default function RoomDetailPage() {
   const bookingCtaHref = hasToken
     ? bookingHref
     : `/login?redirect=${encodeURIComponent(bookingHref)}`;
+  const isRoomUnderMaintenance = room.status === "MAINTENANCE";
 
   return (
     <main className="min-h-screen bg-[#faf8ff] text-[#1a1b21] dark:bg-slate-950 dark:text-slate-100 px-6 py-24">
@@ -240,6 +241,10 @@ export default function RoomDetailPage() {
                 <Button className="w-full" disabled>
                   Checking Session...
                 </Button>
+              ) : isRoomUnderMaintenance ? (
+                <Button className="w-full" disabled>
+                  Room Under Maintenance
+                </Button>
               ) : (
                 <Button asChild className="w-full">
                   <Link href={bookingCtaHref}>
@@ -293,10 +298,10 @@ export default function RoomDetailPage() {
 
         <Card className="border-border/70">
           <CardHeader>
-            <CardTitle>{hasDateRange ? "Similar Bookable Rooms" : "Similar Available Rooms"}</CardTitle>
-            <CardDescription>
-              More options from the same room type.
-            </CardDescription>
+          <CardTitle>Similar Rooms</CardTitle>
+          <CardDescription>
+            More options from the same room type.
+          </CardDescription>
           </CardHeader>
           <CardContent>
             {relatedRoomsQuery.isLoading || relatedRoomsQuery.isFetching ? (
@@ -305,7 +310,7 @@ export default function RoomDetailPage() {
                 Loading similar rooms...
               </div>
             ) : relatedRooms.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No additional rooms available right now.</p>
+              <p className="text-sm text-muted-foreground">No additional rooms found right now.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {relatedRooms.map((relatedRoom, index) => {

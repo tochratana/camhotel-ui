@@ -98,6 +98,7 @@ export type RoomsQuery = PaginationQuery & {
   amenities?: string;
   checkInDate?: string;
   checkOutDate?: string;
+  includeUnavailable?: boolean;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
 };

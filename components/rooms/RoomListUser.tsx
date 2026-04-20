@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useGetRoomTypesQuery, useGetRoomsQuery } from "@/lib/feature/hotelSlice";
 import { resolveMediaUrl } from "@/lib/media-url";
-import type { RoomResponse, RoomStatus } from "@/types/hotel";
+import type { RoomResponse } from "@/types/hotel";
 
 type SortOption = "price_asc" | "price_desc" | "rating_desc" | "room_asc";
 
@@ -27,8 +27,6 @@ type RoomFilters = {
   checkOutDate: string;
   sort: SortOption;
 };
-
-const AVAILABLE_STATUS: RoomStatus = "AVAILABLE";
 
 const baseFilters: RoomFilters = {
   keyword: "",
@@ -182,10 +180,10 @@ export default function RoomListUser() {
       size: pageSize,
       keyword: debouncedKeyword.trim() || undefined,
       roomTypeId: filters.roomTypeId === "ALL" ? undefined : Number(filters.roomTypeId),
-      status: AVAILABLE_STATUS,
       maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
       checkInDate: hasValidDateRange ? filters.checkInDate : undefined,
       checkOutDate: hasValidDateRange ? filters.checkOutDate : undefined,
+      includeUnavailable: true,
       sortBy: sortQuery.sortBy,
       sortDirection: sortQuery.sortDirection,
     }),
@@ -240,7 +238,7 @@ export default function RoomListUser() {
             Our Sanctuaries
           </h1>
           <p className="max-w-2xl text-[#444651] dark:text-slate-300 text-lg leading-relaxed">
-            Live backend data with instant filtering. Results update for your selected stay dates.
+            Live backend data with instant filtering. All room statuses are visible, and booking conflicts are validated at checkout.
           </p>
         </section>
 
@@ -322,7 +320,7 @@ export default function RoomListUser() {
             </div>
 
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Set check-in and check-out to find rooms free for that exact date range.
+              Set check-in and check-out before booking. All rooms are shown, including occupied and maintenance states.
             </p>
             {dateRangeError ? (
               <p className="text-sm text-rose-600 dark:text-rose-400">{dateRangeError}</p>
@@ -332,7 +330,7 @@ export default function RoomListUser() {
 
         <section className="max-w-7xl mx-auto px-6 mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Showing {startItem}-{endItem} of {totalElements} available rooms
+            Showing {startItem}-{endItem} of {totalElements} rooms
           </p>
           <div className="flex items-center gap-2">
             <span className="text-sm text-slate-500 dark:text-slate-400">Rows:</span>
@@ -369,7 +367,7 @@ export default function RoomListUser() {
             </div>
           ) : rooms.length === 0 ? (
             <div className="min-h-75 rounded-xl border border-slate-300 bg-white dark:bg-slate-900 flex items-center justify-center text-sm text-slate-500 dark:text-slate-400">
-              No available rooms found for the current filters.
+              No rooms found for the current filters.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -380,7 +378,7 @@ export default function RoomListUser() {
                   filters.checkInDate,
                   filters.checkOutDate,
                 );
-                const roomBadgeLabel = hasValidDateRange ? "Bookable" : toTitleCase(room.status);
+                const roomBadgeLabel = toTitleCase(room.status);
                 const amenities = (room.roomType?.amenities ?? "")
                   .split(",")
                   .map((item) => item.trim())
@@ -407,7 +405,7 @@ export default function RoomListUser() {
                         </span>
                       </div>
                       <div className="absolute top-4 right-4">
-                        <span className="px-3 py-1 bg-emerald-600/90 text-white text-[10px] uppercase tracking-widest rounded-full">
+                        <span className="px-3 py-1 bg-slate-900/80 text-white text-[10px] uppercase tracking-widest rounded-full">
                           {roomBadgeLabel}
                         </span>
                       </div>

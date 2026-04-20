@@ -5,7 +5,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BedDouble,
   CalendarCheck,
-  ChevronDown,
   ConciergeBell,
   DoorOpen,
   Mail,
@@ -85,6 +84,41 @@ const statsCards: Array<{
 ];
 
 export default function Homepage() {
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
+
+  // Slideshow images for hero - 6 different hotel images
+  const heroImages = [
+    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=2000&q=80", // Modern hotel lobby
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=80", // Luxury bedroom
+    "https://images.unsplash.com/photo-1578500494198-246f612d03b3?auto=format&fit=crop&w=2000&q=80", // Hotel exterior
+    "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?auto=format&fit=crop&w=2000&q=80", // Premium suite
+    "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=2000&q=80", // Hotel corridor
+    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=2000&q=80", // Rooftop/view
+  ];
+
+  // Auto-scroll slideshow every 6 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
+  // Navigation handlers
+  const goToPrevious = () => {
+    setHeroImageIndex(
+      (prev) => (prev - 1 + heroImages.length) % heroImages.length,
+    );
+  };
+
+  const goToNext = () => {
+    setHeroImageIndex((prev) => (prev + 1) % heroImages.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setHeroImageIndex(index);
+  };
+
   const {
     data: homepageStatsData,
     isFetching: isHomepageStatsFetching,
@@ -94,7 +128,11 @@ export default function Homepage() {
   const homepageStats = homepageStatsData?.data;
   const integerFormat = useMemo(() => new Intl.NumberFormat("en-US"), []);
   const decimalFormat = useMemo(
-    () => new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+    () =>
+      new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      }),
     [],
   );
 
@@ -102,7 +140,8 @@ export default function Homepage() {
     if (!homepageStats || homepageStats.totalRooms <= 0) {
       return 0;
     }
-    const occupancy = (homepageStats.occupiedRooms / homepageStats.totalRooms) * 100;
+    const occupancy =
+      (homepageStats.occupiedRooms / homepageStats.totalRooms) * 100;
     return Math.min(100, Math.max(0, Math.round(occupancy)));
   }, [homepageStats]);
 
@@ -124,7 +163,9 @@ export default function Homepage() {
     if (typeof value !== "number") {
       return "--";
     }
-    return useDecimal ? decimalFormat.format(value) : integerFormat.format(value);
+    return useDecimal
+      ? decimalFormat.format(value)
+      : integerFormat.format(value);
   };
 
   const defaultDateRange = useMemo(() => {
@@ -223,40 +264,158 @@ export default function Homepage() {
   return (
     <main className="bg-background min-h-screen font-sans selection:bg-[#dce1ff] dark:selection:bg-blue-900/50">
       {/* Hero Section */}
-      <header className="relative h-screen flex items-center justify-center overflow-hidden animate-in fade-in duration-1000">
+      <header className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+        {/* Animated Background Slideshow */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz59i7Cb4S5Pgd5Y4_GeLXk8Ue3HN6sxYdWnkKI0C1CaSnUPVJR17SWDR4KQiGQCGpJB5iEH8wZlpf7hdSQIxnSHoyFRTh-q2MoQ46K2Ad1E-mM27NmYpUKU27eFJbMasZvxc7DP7XPhNdKyluxELTY02cMoPmhUf8SyEpZOPzoGFOAdIdHDRjA9L9B9apEwbNPldjF6d5rxBtaNLVyYImCghrBftSIiNfE11oiFNqWn1ntDVtEwtvh-9UUTVvJ0Ruop8lqTrg1K0"
-            className="w-full h-full object-cover"
-            alt="Lobby"
-            width={100}
-            height={400}
-            unoptimized={true}
-          />
-          <div className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px]"></div>
+          {/* Image carousel */}
+          {heroImages.map((img, index) => (
+            <Image
+              key={index}
+              src={img}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1500 ${
+                index === heroImageIndex ? "opacity-100" : "opacity-0"
+              }`}
+              alt={`Hero slide ${index + 1}`}
+              width={2000}
+              height={1200}
+              unoptimized={true}
+              priority={index === 0}
+            />
+          ))}
+
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0f2f76]/85 via-[#1a3a8a]/75 to-[#2d5ab8]/85 dark:from-[#0a1628]/90 dark:via-[#0f2a4a]/85 dark:to-[#1a3a5a]/90"></div>
+
+          {/* Decorative gradient blobs */}
+          <div className="pointer-events-none absolute -top-40 -right-40 h-96 w-96 rounded-full bg-blue-500/20 blur-3xl animate-pulse"></div>
+          <div
+            className="pointer-events-none absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-purple-500/10 blur-3xl animate-pulse"
+            style={{ animationDelay: "1s" }}
+          ></div>
         </div>
-        <div className="relative z-10 text-center px-6 max-w-4xl">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
-            Your Premium <span className="text-[#dce1ff]">Stay Awaits</span>
-          </h1>
-          <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Experience architectural elegance and curated hospitality at
-            CamHotel. Every detail designed for your ultimate comfort.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="#rooms"
-              className="w-full sm:w-auto bg-white dark:bg-blue-500 text-[#00236f] dark:text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-[#dce1ff] dark:hover:bg-blue-400 transition-colors shadow-xl"
-            >
-              Explore Rooms
-            </a>
-            <span className="text-white/80 text-xs tracking-widest uppercase">
-              Login to Book Your Stay
-            </span>
+
+        {/* Content */}
+        <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-screen px-6 py-20">
+          <div className="max-w-6xl mx-auto w-full space-y-8">
+            {/* Animated Badge */}
+            <div className="flex justify-center animate-in fade-in slide-in-from-top-8 duration-1000">
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-300/30 dark:border-blue-400/30 bg-white/10 dark:bg-white/5 px-5 py-2.5 backdrop-blur-md transition-all duration-300 hover:border-blue-300/50 dark:hover:border-blue-400/50 group hover:bg-white/15 dark:hover:bg-white/8">
+                <div className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse group-hover:scale-125 transition-transform"></div>
+                <span className="text-sm font-semibold text-blue-100 dark:text-blue-200">
+                  Discover Your Dream Stay
+                </span>
+              </div>
+            </div>
+
+            {/* Modern Heading with better hierarchy */}
+            <div className="space-y-4 text-center animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100 fill-mode-both">
+              <div className="inline-block">
+                <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-white mb-3 tracking-tighter leading-[1.1]">
+                  Premium
+                </h1>
+              </div>
+              <div className="relative inline-block">
+                <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-white tracking-tighter">
+                  Hospitality
+                </h2>
+                <div className="absolute -bottom-4 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-400 rounded-full blur-sm"></div>
+              </div>
+              <p className="text-base sm:text-lg md:text-xl text-blue-50 dark:text-blue-100 pt-6 font-light max-w-2xl mx-auto leading-relaxed">
+                Experience timeless elegance, impeccable service, and moments
+                that linger. Every stay is a story.
+              </p>
+            </div>
+
+            {/* CTA Buttons - Modern Grid Layout */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both">
+              <a
+                href="#rooms"
+                className="group relative px-10 py-4 rounded-2xl font-bold uppercase tracking-wider text-sm text-[#0f2f76] dark:text-white bg-white dark:bg-gradient-to-r dark:from-blue-400 dark:to-blue-500 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 hover:-translate-y-1 active:scale-95 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <span>Book Now</span>
+                  <svg
+                    className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </a>
+              <a
+                href="/login"
+                className="px-10 py-4 rounded-2xl font-bold uppercase tracking-wider text-sm text-white dark:text-white border-2 border-white/40 dark:border-blue-300/60 hover:border-white/80 dark:hover:border-blue-300 hover:bg-white/20 dark:hover:bg-blue-400/20 transition-all duration-300 backdrop-blur-sm group"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <span>Sign In</span>
+                  <svg
+                    className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </span>
+              </a>
+            </div>
           </div>
         </div>
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="text-white w-8 h-8" />
+
+        {/* Navigation Controls */}
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-6">
+          {/* Slide Navigation Buttons & Indicators */}
+          <div className="flex items-center gap-6">
+            {/* <button
+              onClick={goToPrevious}
+              className="group relative p-3 rounded-full border-2 border-white/30 hover:border-white/70 bg-white/10 dark:bg-white/5 hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-300 backdrop-blur-md"
+              aria-label="Previous slide"
+            >
+              <svg
+                className="w-5 h-5 text-white group-hover:scale-110 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button> */}
+
+            {/* Slide Indicators */}
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 dark:border-white/15 bg-white/8 dark:bg-white/5 backdrop-blur-md">
+              {heroImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`transition-all duration-500 rounded-full ${
+                    index === heroImageIndex
+                      ? "w-8 h-2.5 bg-white"
+                      : "w-2.5 h-2.5 bg-white/40 hover:bg-white/70"
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                  title={`Slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </header>
 
@@ -588,31 +747,6 @@ export default function Homepage() {
                 What Our Guests Say
               </h2>
             </div>
-            {/* <div className="flex flex-col items-start md:items-end gap-2">
-              <p className="text-slate-500 dark:text-slate-400 text-sm italic">
-                {isRatingsFetching ? "Loading recent ratings..." : "Real feedback from verified customers"}
-              </p>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => scrollRatings("left")}
-                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-2 text-slate-700 dark:text-slate-200 hover:border-[#00236f]/40 dark:hover:border-blue-400/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  disabled={featuredRatings.length <= 1}
-                  aria-label="Scroll ratings left"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => scrollRatings("right")}
-                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 p-2 text-slate-700 dark:text-slate-200 hover:border-[#00236f]/40 dark:hover:border-blue-400/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  disabled={featuredRatings.length <= 1}
-                  aria-label="Scroll ratings right"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div> */}
           </div>
 
           {featuredRatings.length > 0 ? (

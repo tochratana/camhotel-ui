@@ -61,6 +61,7 @@ export const hotelApi = fakeStoreApi.injectEndpoints({
           amenities: params?.amenities,
           checkInDate: params?.checkInDate,
           checkOutDate: params?.checkOutDate,
+          includeUnavailable: params?.includeUnavailable,
           sortBy: params?.sortBy,
           sortDirection: params?.sortDirection,
         }),

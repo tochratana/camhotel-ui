@@ -232,6 +232,13 @@ export default function CustomerBookRoomPage() {
     minimumCheckInDate,
     maxBookingDays,
   );
+  const roomUnavailableReason = useMemo(() => {
+    if (!room) return null;
+    if (room.status === "MAINTENANCE") {
+      return "This room is currently under maintenance and cannot be booked.";
+    }
+    return null;
+  }, [room]);
   const nights = dateRangeError ? 0 : getNights(normalizedCheckInDate, normalizedCheckOutDate);
   const totalPrice = room ? Number(room.currentPrice ?? 0) * nights : 0;
 
@@ -246,7 +253,12 @@ export default function CustomerBookRoomPage() {
   }, [email, fullName, phoneNumber]);
 
   const isSubmitting = createBookingState.isLoading || updateMyProfileState.isLoading;
-  const canSubmit = Boolean(room) && !dateRangeError && !guestError && !isSubmitting;
+  const canSubmit =
+    Boolean(room) &&
+    !dateRangeError &&
+    !guestError &&
+    !roomUnavailableReason &&
+    !isSubmitting;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -258,6 +270,11 @@ export default function CustomerBookRoomPage() {
 
     if (!room) {
       setFeedback({ type: "error", message: "Room details are still loading. Please try again." });
+      return;
+    }
+
+    if (roomUnavailableReason) {
+      setFeedback({ type: "error", message: roomUnavailableReason });
       return;
     }
 
@@ -460,6 +477,12 @@ export default function CustomerBookRoomPage() {
                     </p>
                   ) : null}
 
+                  {roomUnavailableReason ? (
+                    <p className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                      {roomUnavailableReason}
+                    </p>
+                  ) : null}
+
                   {feedback ? (
                     <p
                       className={`rounded-md px-3 py-2 text-sm ${
@@ -516,6 +539,16 @@ export default function CustomerBookRoomPage() {
                       <p className="text-sm text-slate-500">Room</p>
                       <p className="font-semibold">
                         {room.roomType?.name ?? "Room"} - Room {room.roomNumber}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm text-slate-500">Status</p>
+                      <p className="font-semibold">
+                        {room.status
+                          .toLowerCase()
+                          .split("_")
+                          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+                          .join(" ")}
                       </p>
                     </div>
                     <div className="space-y-1">
