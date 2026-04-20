@@ -85,12 +85,9 @@ const baseQueryWithReauth: BaseQueryFn<
   const status =
     typeof result.error?.status === "number" ? result.error.status : null;
   const requestUrl = getRequestUrl(args);
-  const hasToken = Boolean(getStoredBasicToken());
 
   const shouldRefresh =
-    status === 401 &&
-    hasToken &&
-    !shouldSkipRefresh(requestUrl);
+    status === 401 && !shouldSkipRefresh(requestUrl);
 
   if (!shouldRefresh) {
     return result;

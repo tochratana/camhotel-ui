@@ -1,30 +1,6 @@
-import { cookies } from "next/headers";
-
 function getApiBaseUrl(): string {
-  const rawValue = process.env.NEXT_PUBLIC_API ?? "";
+  const rawValue = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API ?? "";
   return rawValue.replace(/\/+$/, "");
-}
-
-function extractAccessToken(payload: unknown): string | null {
-  if (!payload || typeof payload !== "object") {
-    return null;
-  }
-
-  const asRecord = payload as Record<string, unknown>;
-  const nestedData =
-    asRecord.data && typeof asRecord.data === "object"
-      ? (asRecord.data as Record<string, unknown>)
-      : null;
-
-  return typeof asRecord.accessToken === "string"
-    ? asRecord.accessToken
-    : typeof nestedData?.accessToken === "string"
-      ? nestedData.accessToken
-      : typeof asRecord.token === "string"
-        ? asRecord.token
-        : typeof nestedData?.token === "string"
-          ? nestedData.token
-          : null;
 }
 
 function extractErrorMessage(payload: unknown): string {
@@ -67,18 +43,6 @@ export async function POST(req: Request) {
         { error: extractErrorMessage(payload) },
         { status: res.status },
       );
-    }
-
-    const accessToken = extractAccessToken(payload);
-
-    if (accessToken) {
-      const cookieStore = await cookies();
-      cookieStore.set("better-auth.session_data", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-      });
     }
 
     return Response.json(payload ?? { success: true }, { status: res.status });
