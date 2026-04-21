@@ -398,9 +398,9 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
       </div>
 
       {/* Filters and Actions */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <div className="relative w-full md:w-64">
+      <div className="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
+        <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
+          <div className="relative w-full xl:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input 
               type="text" 
@@ -423,7 +423,7 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
               setPage(0);
             }}
           >
-            <SelectTrigger className="w-full md:w-40 bg-background">
+            <SelectTrigger className="w-full xl:w-40 bg-background">
               <Filter className="size-3.5 mr-2 opacity-70" />
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
@@ -473,7 +473,7 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
                     required
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Payment Method</Label>
                     <Select value={paymentMethod} onValueChange={(val) => setPaymentMethod(val as PaymentMethod)}>
@@ -514,7 +514,7 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
           </Dialog>
         </div>
 
-        <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground xl:justify-end">
           {isSearchingById && (
             <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 animate-pulse">
               {paymentIdMatch || (isNumeric && payments.some(p => p.id === searchPaymentId)) ? "Payment ID Mode" : "Booking ID Mode"}
@@ -550,97 +550,196 @@ export default function PaymentManagement({ isStaff = false }: { isStaff?: boole
               <p>{isStaff ? "No visible transactions for your role" : "No transactions found"}</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/20 hover:bg-muted/20 font-heading">
-                    <TableHead className="w-24">Payment ID</TableHead>
-                    <TableHead className="w-24">Booking ID</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Paid At</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {payments.map((payment) => (
-                    <TableRow key={payment.id} className="hover:bg-muted/10 transition-colors">
-                      <TableCell className="font-mono text-xs text-muted-foreground font-bold">
-                        PYM-{payment.id}
-                      </TableCell>
-                      <TableCell className="font-mono text-xs text-primary font-bold">
-                        #BK-{payment.booking?.id}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-sm">{payment.booking?.user?.fullName}</span>
-                          <span className="text-xs text-muted-foreground truncate max-w-45">{payment.booking?.user?.email}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-bold text-primary">
-                        ${payment.amount?.toFixed(2)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider">
-                          {payment.paymentMethod}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(payment.paymentStatus)}
-                      </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
-                        {payment.paidAt ? formatDate(payment.paidAt) : <span className="opacity-50">—</span>}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Select 
-                            value={draftStatuses[payment.id] ?? payment.paymentStatus}
-                            onValueChange={(val) => setDraftStatuses(prev => ({ ...prev, [payment.id]: val as PaymentStatus }))}
-                            disabled={isUpdating}
-                          >
-                            <SelectTrigger className="h-8 w-27.5 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent align="end">
-                              <SelectItem value="PENDING">Mark Pending</SelectItem>
-                              <SelectItem value="PAID">Mark Paid</SelectItem>
-                              <SelectItem value="FAILED">Mark Failed</SelectItem>
-                              <SelectItem value="REFUNDED">Mark Refunded</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-8 px-3 text-xs font-semibold"
-                            disabled={!draftStatuses[payment.id] || isUpdating}
-                            onClick={() => handleStatusUpdate(payment.id)}
-                          >
-                            {isUpdating && updateStatusState.originalArgs?.id === payment.id ? (
-                              <Loader2 className="size-3 animate-spin" />
-                            ) : (
-                              "Save"
-                            )}
-                          </Button>
-                        </div>
-                      </TableCell>
+            <div className="space-y-3">
+              <div className="hidden overflow-x-auto xl:block">
+                <Table className="min-w-[980px]">
+                  <TableHeader>
+                    <TableRow className="bg-muted/20 hover:bg-muted/20 font-heading">
+                      <TableHead className="w-24">Payment ID</TableHead>
+                      <TableHead className="w-24">Booking ID</TableHead>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Method</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Paid At</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
+                  </TableHeader>
+                  <TableBody>
+                    {payments.map((payment) => (
+                      <TableRow key={payment.id} className="hover:bg-muted/10 transition-colors">
+                        <TableCell className="font-mono text-xs text-muted-foreground font-bold">
+                          PYM-{payment.id}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs text-primary font-bold">
+                          #BK-{payment.booking?.id}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-semibold">{payment.booking?.user?.fullName}</span>
+                            <span className="max-w-[220px] truncate text-xs text-muted-foreground">
+                              {payment.booking?.user?.email}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-bold text-primary">
+                          ${payment.amount?.toFixed(2)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider">
+                            {payment.paymentMethod}
+                          </div>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(payment.paymentStatus)}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {payment.paidAt ? formatDate(payment.paidAt) : <span className="opacity-50">—</span>}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Select
+                              value={draftStatuses[payment.id] ?? payment.paymentStatus}
+                              onValueChange={(val) =>
+                                setDraftStatuses((prev) => ({
+                                  ...prev,
+                                  [payment.id]: val as PaymentStatus,
+                                }))
+                              }
+                              disabled={isUpdating}
+                            >
+                              <SelectTrigger className="h-8 w-[110px] text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent align="end">
+                                <SelectItem value="PENDING">Mark Pending</SelectItem>
+                                <SelectItem value="PAID">Mark Paid</SelectItem>
+                                <SelectItem value="FAILED">Mark Failed</SelectItem>
+                                <SelectItem value="REFUNDED">Mark Refunded</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 px-3 text-xs font-semibold"
+                              disabled={!draftStatuses[payment.id] || isUpdating}
+                              onClick={() => handleStatusUpdate(payment.id)}
+                            >
+                              {isUpdating && updateStatusState.originalArgs?.id === payment.id ? (
+                                <Loader2 className="size-3 animate-spin" />
+                              ) : (
+                                "Save"
+                              )}
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                   {payments.length > 0 && (
-                  <tfoot className="bg-muted/10 border-t-2">
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-right font-semibold">Page Summary:</TableCell>
-                      <TableCell className="font-bold text-primary text-lg">
-                        ${pageTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                      </TableCell>
-                      <TableCell colSpan={4}></TableCell>
-                    </TableRow>
-                  </tfoot>
+                    <tfoot className="border-t-2 bg-muted/10">
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-right font-semibold">
+                          Page Summary:
+                        </TableCell>
+                        <TableCell className="text-lg font-bold text-primary">
+                          ${pageTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell colSpan={4}></TableCell>
+                      </TableRow>
+                    </tfoot>
                   )}
-                  </Table>
+                </Table>
+              </div>
 
+              <div className="grid gap-3 p-3 xl:hidden">
+                {payments.map((payment) => (
+                  <Card key={payment.id} className="border-border/70 shadow-none">
+                    <CardContent className="space-y-3 p-4">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-1">
+                          <p className="font-mono text-xs font-bold text-muted-foreground">
+                            PYM-{payment.id}
+                          </p>
+                          <p className="font-mono text-xs font-bold text-primary">
+                            #BK-{payment.booking?.id}
+                          </p>
+                        </div>
+                        {getStatusBadge(payment.paymentStatus)}
+                      </div>
+
+                      <div>
+                        <p className="text-sm font-semibold">
+                          {payment.booking?.user?.fullName || "Unknown Customer"}
+                        </p>
+                        <p className="break-all text-xs text-muted-foreground">
+                          {payment.booking?.user?.email || "-"}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <p>
+                          <span className="text-muted-foreground">Amount:</span>{" "}
+                          <span className="font-semibold text-primary">
+                            ${payment.amount?.toFixed(2)}
+                          </span>
+                        </p>
+                        <p>
+                          <span className="text-muted-foreground">Method:</span>{" "}
+                          {payment.paymentMethod}
+                        </p>
+                        <p className="col-span-2">
+                          <span className="text-muted-foreground">Paid At:</span>{" "}
+                          {payment.paidAt ? formatDate(payment.paidAt) : "—"}
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Select
+                          value={draftStatuses[payment.id] ?? payment.paymentStatus}
+                          onValueChange={(val) =>
+                            setDraftStatuses((prev) => ({
+                              ...prev,
+                              [payment.id]: val as PaymentStatus,
+                            }))
+                          }
+                          disabled={isUpdating}
+                        >
+                          <SelectTrigger className="h-8 w-full text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent align="end">
+                            <SelectItem value="PENDING">Mark Pending</SelectItem>
+                            <SelectItem value="PAID">Mark Paid</SelectItem>
+                            <SelectItem value="FAILED">Mark Failed</SelectItem>
+                            <SelectItem value="REFUNDED">Mark Refunded</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 w-full text-xs font-semibold"
+                          disabled={!draftStatuses[payment.id] || isUpdating}
+                          onClick={() => handleStatusUpdate(payment.id)}
+                        >
+                          {isUpdating && updateStatusState.originalArgs?.id === payment.id ? (
+                            <Loader2 className="size-3 animate-spin" />
+                          ) : (
+                            "Save"
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                <div className="rounded-lg border bg-muted/10 px-3 py-2 text-sm">
+                  <p className="text-muted-foreground">
+                    Page Summary:{" "}
+                    <span className="font-semibold text-primary">
+                      ${pageTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    </span>
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </CardContent>

@@ -1,11 +1,8 @@
 "use client";
 
-import { ReactNode } from "react";
 import DashboardFrame from "@/components/dashboard/DashboardFrame";
 import { DashboardShellConfig } from "@/types/dashboardTypes";
-import { Theme, useTheme } from "@/components/theme/ThemeProvider";
-import ThemeToggle from "@/components/theme/ThemeToggle";
-import { Badge } from "@/components/ui/badge";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -16,42 +13,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  CheckIcon,
-  MoonIcon,
-  PaletteIcon,
-  Settings2Icon,
-  SunIcon,
-} from "lucide-react";
+import { MoonIcon, Settings2Icon, SunIcon } from "lucide-react";
 
 type DashboardSettingsProps = {
   config: DashboardShellConfig;
 };
 
-type ThemeOption = {
-  value: Theme;
-  title: string;
-  description: string;
-  icon: ReactNode;
-};
-
-const themeOptions: ThemeOption[] = [
-  {
-    value: "light",
-    title: "Light Theme",
-    description: "Clean and bright for daytime operations.",
-    icon: <SunIcon className="size-4" />,
-  },
-  {
-    value: "dark",
-    title: "Dark Theme",
-    description: "Comfortable low-glare look for long sessions.",
-    icon: <MoonIcon className="size-4" />,
-  },
-];
-
 export default function DashboardSettings({ config }: DashboardSettingsProps) {
-  const { theme, setTheme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <DashboardFrame
@@ -79,81 +48,36 @@ export default function DashboardSettings({ config }: DashboardSettingsProps) {
                 </TabsList>
 
                 <TabsContent value="appearance" className="mt-4 space-y-4">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {themeOptions.map((option) => {
-                      const isActive = theme === option.value;
-                      return (
-                        <Card
-                          key={option.value}
-                          className="border-border/70 bg-card/80 shadow-none"
-                        >
-                          <CardHeader className="pb-2">
-                            <CardTitle className="flex items-center justify-between text-sm">
-                              <span className="inline-flex items-center gap-2">
-                                {option.icon}
-                                {option.title}
-                              </span>
-                              {isActive ? <Badge>Active</Badge> : null}
-                            </CardTitle>
-                            <CardDescription>
-                              {option.description}
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent className="pt-0">
-                            <Button
-                              type="button"
-                              variant={isActive ? "default" : "outline"}
-                              onClick={() => {
-                                setTheme(option.value);
-                                toast.success(`Theme changed to ${option.value} mode`);
-                              }}
-                              className="w-full"
-                            >
-                              {isActive ? (
-                                <>
-                                  <CheckIcon />
-                                  Selected
-                                </>
-                              ) : (
-                                <>
-                                  <PaletteIcon />
-                                  Use {option.value}
-                                </>
-                              )}
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-
                   <Card className="border-border/70 bg-card/80 shadow-none">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">Quick Toggle</CardTitle>
+                      <CardTitle className="text-sm">Theme Mode</CardTitle>
                       <CardDescription>
-                        Switch instantly with one tap.
+                        Use one button to switch your dashboard color mode.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex items-center justify-between gap-4">
+                    <CardContent className="space-y-4">
                       <p className="text-sm text-muted-foreground">
                         Current mode:{" "}
                         <span className="font-medium text-foreground">
                           {theme === "dark" ? "Dark" : "Light"}
                         </span>
                       </p>
-                      <div className="flex items-center gap-2">
-                        <ThemeToggle />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            toggleTheme();
-                            toast.success("Theme toggled successfully");
-                          }}
-                        >
-                          Toggle
-                        </Button>
-                      </div>
+                      <Button
+                        type="button"
+                        onClick={(e) => {
+                          const nextTheme = theme === "dark" ? "light" : "dark";
+                          toggleTheme(e);
+                          toast.success(`Theme changed to ${nextTheme} mode`);
+                        }}
+                        className="w-full sm:w-auto"
+                      >
+                        {theme === "dark" ? (
+                          <SunIcon className="size-4" />
+                        ) : (
+                          <MoonIcon className="size-4" />
+                        )}
+                        Switch to {theme === "dark" ? "Light" : "Dark"} Mode
+                      </Button>
                     </CardContent>
                   </Card>
                 </TabsContent>

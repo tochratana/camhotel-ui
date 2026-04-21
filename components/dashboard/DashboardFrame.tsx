@@ -29,15 +29,15 @@ export default function DashboardFrame({
             "--header-height": "calc(var(--spacing) * 12)",
           } as CSSProperties
         }
-        className="dashboard-theme h-screen overflow-hidden"
+        className="dashboard-theme h-svh overflow-hidden"
       >
         <AppSidebar data={config} variant="inset" />
-        <SidebarInset className="flex flex-col h-screen pb-5">
+        <SidebarInset className="flex h-svh min-h-0 flex-col overflow-hidden">
           <SiteHeader
             title={headerTitle ?? config.headerTitle}
             description={headerDescription ?? config.headerDescription}
           />
-          <main className="flex-1 bg-background animate-in fade-in slide-in-from-bottom-2 duration-700 overflow-y-auto">
+          <main className="min-h-0 flex-1 overflow-y-auto bg-background animate-in fade-in slide-in-from-bottom-2 duration-700">
             {children}
           </main>
         </SidebarInset>

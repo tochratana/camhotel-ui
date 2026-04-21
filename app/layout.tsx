@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageAnimate from "@/components/layout/PageAnimate";
 import StoreProvider from "@/components/provider/StoreProvider";
+import NetworkStatusBanner from "@/components/system/NetworkStatusBanner";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
@@ -102,6 +103,7 @@ export default function RootLayout({
         <StoreProvider>
           <ThemeProvider>
             <Navbar />
+            <NetworkStatusBanner />
             <PageAnimate>{children}</PageAnimate>
             <Footer />
             <Toaster richColors position="top-right" />

@@ -9,7 +9,7 @@
   --card-border: #e2e8f0;
   --section-alt-bg: #f4f3fa;
   --input-bg: #f8fafc;
-  --text-card-footer: #00164E;
+  --text-card-footer: #00164e;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -217,8 +217,11 @@
 }
 
 body {
-  transition: background-color 0s, color 0s;
+  transition:
+    background-color 0s,
+    color 0s;
 }
+
 
 @layer base {
   * {

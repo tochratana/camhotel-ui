@@ -171,7 +171,7 @@ export default function RegisterForm() {
               <Input
                 id="fullName"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Keo Menglong"
                 autoComplete="name"
                 disabled={isLoading}
                 className="h-11 border-slate-200 bg-slate-100/95 pl-10 text-[15px] focus-visible:ring-[#1f3b93]/25 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-400/30"
@@ -192,7 +192,7 @@ export default function RegisterForm() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@camhotel.com"
+                placeholder="keomenglong@gmail.com"
                 autoComplete="email"
                 disabled={isLoading}
                 className="h-11 border-slate-200 bg-slate-100/95 pl-10 text-[15px] focus-visible:ring-[#1f3b93]/25 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-blue-400/30"

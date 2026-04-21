@@ -279,7 +279,7 @@ export default function AdminUsersPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                 <Select
                   value={String(pageSize)}
                   onValueChange={(value) => {
@@ -299,12 +299,13 @@ export default function AdminUsersPage() {
                   </SelectContent>
                 </Select>
 
-                <div className="flex items-center gap-2">
+                <div className="flex w-full flex-wrap items-center gap-2 xl:w-auto">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => usersQuery.refetch()}
                     disabled={isLoading}
+                    className="flex-1 sm:flex-none"
                   >
                     {isLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -313,7 +314,11 @@ export default function AdminUsersPage() {
                     )}
                     Refresh
                   </Button>
-                  <Button type="button" onClick={handleStartCreateStaff}>
+                  <Button
+                    type="button"
+                    onClick={handleStartCreateStaff}
+                    className="flex-1 sm:flex-none"
+                  >
                     Create Staff
                   </Button>
                 </div>
@@ -325,82 +330,199 @@ export default function AdminUsersPage() {
                 </div>
               ) : null}
 
-              <div className="rounded-lg border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Role Control</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {isLoading ? (
+              <div className="space-y-3">
+                <div className="hidden rounded-lg border xl:block">
+                  <Table className="min-w-[960px]">
+                    <TableHeader>
                       <TableRow>
-                        <TableCell colSpan={9} className="h-28 text-center text-muted-foreground">
-                          <span className="inline-flex items-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Loading users...
-                          </span>
-                        </TableCell>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Role Control</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ) : users.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={9} className="h-28 text-center text-muted-foreground">
-                          No users found.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      users.map((user) => {
-                        const draftRole = getRoleDraft(user);
-                        const isUpdatingRole =
-                          updateUserRoleState.isLoading &&
-                          updateUserRoleState.originalArgs?.id === user.id;
-                        const isDeleting =
-                          deleteUserState.isLoading && deleteUserState.originalArgs === user.id;
-                        const isCurrentAdmin = currentAdminId === user.id;
+                    </TableHeader>
+                    <TableBody>
+                      {isLoading ? (
+                        <TableRow>
+                          <TableCell colSpan={9} className="h-28 text-center text-muted-foreground">
+                            <span className="inline-flex items-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Loading users...
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ) : users.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={9} className="h-28 text-center text-muted-foreground">
+                            No users found.
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        users.map((user) => {
+                          const draftRole = getRoleDraft(user);
+                          const isUpdatingRole =
+                            updateUserRoleState.isLoading &&
+                            updateUserRoleState.originalArgs?.id === user.id;
+                          const isDeleting =
+                            deleteUserState.isLoading && deleteUserState.originalArgs === user.id;
+                          const isCurrentAdmin = currentAdminId === user.id;
 
-                        return (
-                          <TableRow key={user.id}>
-                            <TableCell className="font-medium">{user.id}</TableCell>
-                            <TableCell>{user.fullName}</TableCell>
-                            <TableCell>{user.email}</TableCell>
-                            <TableCell>
+                          return (
+                            <TableRow key={user.id}>
+                              <TableCell className="font-medium">{user.id}</TableCell>
+                              <TableCell>{user.fullName}</TableCell>
+                              <TableCell>{user.email}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant="outline"
+                                  className={roleClassName(user.role?.name)}
+                                >
+                                  {formatRole(user.role?.name)}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{user.phoneNumber || "-"}</TableCell>
+                              <TableCell>{formatDate(user.createdAt)}</TableCell>
+                              <TableCell>{user.isDeleted ? "Archived" : "Active"}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <Select
+                                    value={draftRole}
+                                    onValueChange={(value) =>
+                                      handleRoleDraftChange(user.id, value as RoleName)
+                                    }
+                                  >
+                                    <SelectTrigger className="w-40">
+                                      <SelectValue placeholder="Role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {ROLE_OPTIONS.map((role) => (
+                                        <SelectItem key={role} value={role}>
+                                          {formatRole(role)}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => void handleUpdateRole(user)}
+                                    disabled={isUpdatingRole || isCurrentAdmin}
+                                  >
+                                    {isUpdatingRole ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      "Save"
+                                    )}
+                                  </Button>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => void handleDeleteUser(user)}
+                                  disabled={isDeleting || isCurrentAdmin}
+                                >
+                                  {isDeleting ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    "Delete"
+                                  )}
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                <div className="grid gap-3 xl:hidden">
+                  {isLoading ? (
+                    <div className="rounded-lg border px-3 py-6 text-center text-sm text-muted-foreground">
+                      <span className="inline-flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Loading users...
+                      </span>
+                    </div>
+                  ) : users.length === 0 ? (
+                    <div className="rounded-lg border px-3 py-6 text-center text-sm text-muted-foreground">
+                      No users found.
+                    </div>
+                  ) : (
+                    users.map((user) => {
+                      const draftRole = getRoleDraft(user);
+                      const isUpdatingRole =
+                        updateUserRoleState.isLoading &&
+                        updateUserRoleState.originalArgs?.id === user.id;
+                      const isDeleting =
+                        deleteUserState.isLoading && deleteUserState.originalArgs === user.id;
+                      const isCurrentAdmin = currentAdminId === user.id;
+
+                      return (
+                        <Card key={user.id} className="border-border/70 shadow-none">
+                          <CardContent className="space-y-3 pt-4">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <p className="text-sm font-semibold">{user.fullName}</p>
+                                <p className="break-all text-xs text-muted-foreground">
+                                  {user.email}
+                                </p>
+                              </div>
                               <Badge
                                 variant="outline"
                                 className={roleClassName(user.role?.name)}
                               >
                                 {formatRole(user.role?.name)}
                               </Badge>
-                            </TableCell>
-                            <TableCell>{user.phoneNumber || "-"}</TableCell>
-                            <TableCell>{formatDate(user.createdAt)}</TableCell>
-                            <TableCell>{user.isDeleted ? "Archived" : "Active"}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <Select
-                                  value={draftRole}
-                                  onValueChange={(value) =>
-                                    handleRoleDraftChange(user.id, value as RoleName)
-                                  }
-                                >
-                                  <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Role" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {ROLE_OPTIONS.map((role) => (
-                                      <SelectItem key={role} value={role}>
-                                        {formatRole(role)}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <p>
+                                <span className="text-muted-foreground">ID:</span> {user.id}
+                              </p>
+                              <p>
+                                <span className="text-muted-foreground">Status:</span>{" "}
+                                {user.isDeleted ? "Archived" : "Active"}
+                              </p>
+                              <p className="col-span-2">
+                                <span className="text-muted-foreground">Phone:</span>{" "}
+                                {user.phoneNumber || "-"}
+                              </p>
+                              <p className="col-span-2">
+                                <span className="text-muted-foreground">Created:</span>{" "}
+                                {formatDate(user.createdAt)}
+                              </p>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Select
+                                value={draftRole}
+                                onValueChange={(value) =>
+                                  handleRoleDraftChange(user.id, value as RoleName)
+                                }
+                              >
+                                <SelectTrigger className="w-full">
+                                  <SelectValue placeholder="Role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {ROLE_OPTIONS.map((role) => (
+                                    <SelectItem key={role} value={role}>
+                                      {formatRole(role)}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <div className="grid grid-cols-2 gap-2">
                                 <Button
                                   type="button"
                                   size="sm"
@@ -414,29 +536,27 @@ export default function AdminUsersPage() {
                                     "Save"
                                   )}
                                 </Button>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => void handleDeleteUser(user)}
+                                  disabled={isDeleting || isCurrentAdmin}
+                                >
+                                  {isDeleting ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    "Delete"
+                                  )}
+                                </Button>
                               </div>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Button
-                                type="button"
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => void handleDeleteUser(user)}
-                                disabled={isDeleting || isCurrentAdmin}
-                              >
-                                {isDeleting ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  "Delete"
-                                )}
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
-                    )}
-                  </TableBody>
-                </Table>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })
+                  )}
+                </div>
               </div>
 
               <div className="flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
