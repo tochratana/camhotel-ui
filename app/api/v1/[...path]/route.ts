@@ -16,6 +16,36 @@ function buildForwardHeaders(req: Request): Headers {
   return headers;
 }
 
+function getSetCookieHeaders(headers: Headers): string[] {
+  const maybeHeaders = headers as Headers & {
+    getSetCookie?: () => string[];
+  };
+
+  if (typeof maybeHeaders.getSetCookie === "function") {
+    return maybeHeaders.getSetCookie().filter((value) => value.length > 0);
+  }
+
+  const setCookie = headers.get("set-cookie");
+  return setCookie ? [setCookie] : [];
+}
+
+function copyResponseHeaders(upstreamHeaders: Headers): Headers {
+  const responseHeaders = new Headers();
+
+  for (const [key, value] of upstreamHeaders.entries()) {
+    if (key.toLowerCase() === "set-cookie") {
+      continue;
+    }
+    responseHeaders.set(key, value);
+  }
+
+  for (const cookie of getSetCookieHeaders(upstreamHeaders)) {
+    responseHeaders.append("set-cookie", cookie);
+  }
+
+  return responseHeaders;
+}
+
 async function handleProxy(
   req: Request,
   context: RouteContext,
@@ -46,9 +76,11 @@ async function handleProxy(
       redirect: "manual",
     });
 
+    const responseHeaders = copyResponseHeaders(upstreamResponse.headers);
+
     return new Response(upstreamResponse.body, {
       status: upstreamResponse.status,
-      headers: upstreamResponse.headers,
+      headers: responseHeaders,
     });
   } catch (error) {
     console.error("API proxy error:", error);

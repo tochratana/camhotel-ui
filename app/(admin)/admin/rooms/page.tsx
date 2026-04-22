@@ -790,6 +790,7 @@ export default function AdminRoomsPage() {
                   type="number"
                   min={0}
                   max={5}
+                  step="0.1"
                   value={roomForm.rating}
                   onChange={(event) => handleRoomFormChange("rating", event.target.value)}
                   required
@@ -820,7 +821,6 @@ export default function AdminRoomsPage() {
                   value={roomForm.imageUrl}
                   placeholder="Upload an image to generate file path"
                   readOnly
-                  required
                 />
               </div>
               <div className="space-y-2">

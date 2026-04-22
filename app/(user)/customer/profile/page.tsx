@@ -189,7 +189,15 @@ export default function CustomerProfilePage() {
     }
 
     try {
-      await uploadProfileImage({ file: selectedFile }).unwrap();
+      const uploadResult = await uploadProfileImage({ file: selectedFile }).unwrap();
+      const uploadedPath = uploadResult?.data?.filePath?.trim();
+      if (!uploadedPath) {
+        const msg = "Image uploaded but no file path was returned.";
+        setErrorMessage(msg);
+        toast.error(msg);
+        return;
+      }
+
       await profileQuery.refetch();
       setSelectedFile(null);
       if (previewUrl.startsWith("blob:")) {
