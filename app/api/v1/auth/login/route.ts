@@ -13,6 +13,19 @@ function extractErrorMessage(payload: unknown): string {
   return "Login request failed";
 }
 
+function getSetCookieHeaders(headers: Headers): string[] {
+  const maybeHeaders = headers as Headers & {
+    getSetCookie?: () => string[];
+  };
+
+  if (typeof maybeHeaders.getSetCookie === "function") {
+    return maybeHeaders.getSetCookie().filter((value) => value.length > 0);
+  }
+
+  const setCookie = headers.get("set-cookie");
+  return setCookie ? [setCookie] : [];
+}
+
 export async function POST(req: Request) {
   try {
     const apiBaseUrl = getApiBaseUrl();
@@ -45,7 +58,17 @@ export async function POST(req: Request) {
       );
     }
 
-    return Response.json(payload ?? { success: true }, { status: res.status });
+    const responseHeaders = new Headers();
+    for (const cookie of getSetCookieHeaders(res.headers)) {
+      responseHeaders.append("set-cookie", cookie);
+    }
+
+    responseHeaders.set("content-type", "application/json");
+
+    return new Response(JSON.stringify(payload ?? { success: true }), {
+      status: res.status,
+      headers: responseHeaders,
+    });
   } catch (error) {
     console.error("Login proxy error:", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });

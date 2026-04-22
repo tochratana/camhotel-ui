@@ -90,10 +90,10 @@ export default function Homepage() {
   const heroImages = [
     "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=2000&q=80", // Modern hotel lobby
     "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=80", // Luxury bedroom
-    "https://images.unsplash.com/photo-1578500494198-246f612d03b3?auto=format&fit=crop&w=2000&q=80", // Hotel exterior
+    "https://www.telegraph.co.uk/content/dam/Travel/hotels/2024/october/intercontinental-edinburgh.jpg?imwidth=640", // Hotel exterior
     "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?auto=format&fit=crop&w=2000&q=80", // Premium suite
-    "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=2000&q=80", // Hotel corridor
-    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=2000&q=80", // Rooftop/view
+    "https://www.omnihotels.com/-/media/images/hotels/bnadtn/digex/carousel/bnadnt-spa-relaxation-room.jpg?la=en&h=1286&mw=1980&w=1980&hash=82A3F08AD7F9E8752CA15C62C15E86F4113251BC", // Hotel corridor
+    "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/21/89/11/15/hotel-facade.jpg?w=900&h=500&s=1", // Rooftop/view
   ];
 
   // Auto-scroll slideshow every 6 seconds
