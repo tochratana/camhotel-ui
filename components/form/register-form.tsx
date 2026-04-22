@@ -30,6 +30,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useRegisterMutation } from "@/lib/feature/userSlice";
+import {
+  PASSWORD_POLICY_MESSAGE,
+  PASSWORD_POLICY_REGEX,
+} from "@/lib/password-policy";
 
 const registerSchema = z
   .object({
@@ -44,11 +48,11 @@ const registerSchema = z
     password: z
       .string()
       .min(1, "Password is required")
-      .min(8, "Password must be at least 8 characters"),
+      .regex(PASSWORD_POLICY_REGEX, PASSWORD_POLICY_MESSAGE),
     confirmPassword: z
       .string()
       .min(1, "Please confirm your password")
-      .min(8, "Password must be at least 8 characters"),
+      .regex(PASSWORD_POLICY_REGEX, PASSWORD_POLICY_MESSAGE),
     acceptPrivacy: z.boolean(),
   })
   .refine((value) => value.password === value.confirmPassword, {
@@ -235,6 +239,11 @@ export default function RegisterForm() {
             </div>
             {errors.password ? (
               <p className="text-sm text-rose-600 dark:text-rose-400">{errors.password.message}</p>
+            ) : null}
+            {!errors.password ? (
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Use 8+ characters with uppercase, lowercase, number, and special character.
+              </p>
             ) : null}
           </div>
 

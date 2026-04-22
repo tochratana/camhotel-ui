@@ -46,6 +46,10 @@ import {
   useGetUsersQuery,
   useUpdateUserRoleMutation,
 } from "@/lib/feature/hotelSlice";
+import {
+  PASSWORD_POLICY_MESSAGE,
+  PASSWORD_POLICY_REGEX,
+} from "@/lib/password-policy";
 import type { UserResponse } from "@/types/auth";
 
 const ROLE_OPTIONS = ["ADMIN", "STAFF", "CUSTOMER"] as const;
@@ -167,6 +171,11 @@ export default function AdminUsersPage() {
 
     if (!payload.fullName || !payload.email || !payload.password) {
       setFeedback("Full name, email, and password are required.");
+      return;
+    }
+
+    if (!PASSWORD_POLICY_REGEX.test(payload.password)) {
+      setFeedback(PASSWORD_POLICY_MESSAGE);
       return;
     }
 
@@ -645,9 +654,12 @@ export default function AdminUsersPage() {
                   onChange={(event) =>
                     setStaffForm((prev) => ({ ...prev, password: event.target.value }))
                   }
-                  placeholder="Minimum 6 characters"
+                  placeholder="8+ chars, Aa1!"
                   required
                 />
+                <p className="text-xs text-muted-foreground">
+                  Use 8+ characters with uppercase, lowercase, number, and special character.
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="drawer-staff-phone">Phone Number</Label>
