@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  Building2,
   Eye,
   EyeOff,
   Loader2,
@@ -14,6 +13,7 @@ import {
   Mail,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -132,7 +132,14 @@ export default function LoginForm() {
     <Card className="w-full rounded-2xl border border-white/80 bg-white/92 shadow-2xl shadow-slate-900/10 backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/88 dark:shadow-black/45">
       <CardHeader className="space-y-3 px-8 pt-8 pb-4 text-center">
         <div className="mx-auto mb-1 flex h-14 w-14 items-center justify-center rounded-xl bg-[#1f3b93] text-white shadow-lg shadow-[#1f3b93]/30 dark:bg-blue-600 dark:shadow-blue-950/50">
-          <Building2 className="h-6 w-6" />
+          <Image
+            src="/logo.png"
+            alt="CamHotel logo"
+            width={40}
+            height={40}
+            className="h-10 w-10 object-contain"
+            priority
+          />
         </div>
         <CardTitle className="text-4xl font-extrabold tracking-tight text-[#1f3b93] dark:text-blue-300">
           CamHotel
