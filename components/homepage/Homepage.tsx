@@ -302,7 +302,7 @@ export default function Homepage() {
               <div className="inline-flex items-center gap-2 rounded-full border border-blue-300/30 dark:border-blue-400/30 bg-white/10 dark:bg-white/5 px-5 py-2.5 backdrop-blur-md transition-all duration-300 hover:border-blue-300/50 dark:hover:border-blue-400/50 group hover:bg-white/15 dark:hover:bg-white/8">
                 <div className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse group-hover:scale-125 transition-transform"></div>
                 <span className="text-sm font-semibold text-blue-100 dark:text-blue-200">
-                  Toch Ratana
+                  Ratana Toch
                 </span>
               </div>
             </div>
